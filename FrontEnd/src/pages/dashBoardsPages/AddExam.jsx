@@ -7,7 +7,7 @@ import { getDocument } from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry";
 import "./../../styles/dashboard/AddExam.css";
 
-const CreateExamFromImage = () => {
+const CreateExamComponent = () => {
   const [file, setFile] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [message, setMessage] = useState(
@@ -15,6 +15,7 @@ const CreateExamFromImage = () => {
   );
   const [loading, setLoading] = useState(false);
   const [rawText, setRawText] = useState("");
+  const [inputMode, setInputMode] = useState("upload"); // "upload" or "manual"
 
   const onDrop = (acceptedFiles) => {
     const selectedFile = acceptedFiles[0];
@@ -95,6 +96,7 @@ const CreateExamFromImage = () => {
           match[5].trim(),
           match[6].trim(),
         ],
+        correctAnswer: null, // Add correctAnswer field
         image: null,
       }));
 
@@ -114,6 +116,32 @@ const CreateExamFromImage = () => {
     reader.readAsDataURL(file);
   };
 
+  const addManualQuestion = () => {
+    setQuestions([
+      ...questions,
+      {
+        id: questions.length + 1,
+        question: "",
+        options: ["", "", "", ""],
+        correctAnswer: null,
+        image: null,
+      },
+    ]);
+  };
+
+  const updateManualQuestion = (index, field, value) => {
+    const updatedQuestions = [...questions];
+    if (field === "question") {
+      updatedQuestions[index].question = value;
+    } else if (field.startsWith("correctAnswer")) {
+      updatedQuestions[index].correctAnswer = parseInt(value, 10);
+    } else {
+      const [optionIndex] = field.split("-");
+      updatedQuestions[index].options[optionIndex] = value;
+    }
+    setQuestions(updatedQuestions);
+  };
+
   const submitExam = () => {
     console.log("Exam Submitted:", questions);
     setMessage("تم تقديم الامتحان بنجاح!");
@@ -121,21 +149,99 @@ const CreateExamFromImage = () => {
 
   return (
     <div className="create-exam-container">
-      <h2>إنشاء امتحان من صورة أو ملف PDF</h2>
+      <h2>إنشاء امتحان</h2>
       {message && <p>{message}</p>}
 
-      {!file && <DropzoneComponent onDrop={onDrop} />}
+      {/* Input mode selection */}
+      <div className="input-mode-selection">
+        <label>
+          <input
+            type="radio"
+            name="inputMode"
+            value="upload"
+            checked={inputMode === "upload"}
+            onChange={(e) => {
+              setInputMode(e.target.value);
+              setQuestions([]); // Clear questions when switching to upload mode
+            }}
+          />
+          إدخال من ملف
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="inputMode"
+            value="manual"
+            checked={inputMode === "manual"}
+            onChange={(e) => setInputMode(e.target.value)}
+          />
+          إدخال يدوي
+        </label>
+      </div>
 
-      {loading && <p>جارٍ استخراج النصوص، يرجى الانتظار...</p>}
-
-      {rawText && (
+      {/* File upload mode */}
+      {inputMode === "upload" && !file && <DropzoneComponent onDrop={onDrop} />}
+      {loading && inputMode === "upload" && (
+        <p>جارٍ استخراج النصوص، يرجى الانتظار...</p>
+      )}
+      {rawText && inputMode === "upload" && (
         <FixArabicWordsComponent
           text={rawText}
           onFixComplete={extractQuestions}
         />
       )}
 
-      {questions.length > 0 && (
+      {/* Manual question input mode */}
+      {inputMode === "manual" && (
+        <div className="manual-input">
+          <button onClick={addManualQuestion}>إضافة سؤال جديد</button>
+          <p>عدد الأسئلة: {questions.length}</p>
+          {questions.map((q, index) => (
+            <div key={q.id} className="manual-question">
+              <textarea
+                placeholder="أدخل نص السؤال"
+                value={q.question}
+                onChange={(e) =>
+                  updateManualQuestion(index, "question", e.target.value)
+                }
+              />
+              {q.options.map((option, optIndex) => (
+                <div key={optIndex} className="option-container">
+                  <input
+                    placeholder={`خيار ${optIndex + 1}`}
+                    value={option}
+                    onChange={(e) =>
+                      updateManualQuestion(
+                        index,
+                        `${optIndex}-option`,
+                        e.target.value
+                      )
+                    }
+                  />
+                  <label>
+                    <input
+                      type="radio"
+                      name={`correctAnswer-${index}`}
+                      value={optIndex}
+                      checked={q.correctAnswer === optIndex}
+                      onChange={(e) =>
+                        updateManualQuestion(
+                          index,
+                          "correctAnswer",
+                          e.target.value
+                        )
+                      }
+                    />
+                    الإجابة الصحيحة
+                  </label>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {questions.length > 0 && inputMode === "upload" && (
         <QuestionsListComponent
           questions={questions}
           handleImageUpload={handleImageUpload}
@@ -146,4 +252,4 @@ const CreateExamFromImage = () => {
   );
 };
 
-export default CreateExamFromImage;
+export default CreateExamComponent;

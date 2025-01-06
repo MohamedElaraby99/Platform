@@ -79,7 +79,14 @@ const Layout = ({ children, role, onSignOut }) => {
                   location.pathname === "/all-videos" ||
                   location.pathname === "/all-pdfs" ||
                   location.pathname === "/all-exams" ||
-                  location.pathname === "/all-users"
+                  location.pathname === "/all-users" ||
+                    location.pathname === "/user" ||
+                    location.pathname === "/edit-user" ||
+                    location.pathname === "/edit-video" ||
+                    location.pathname === "/edit-pdf" ||
+                    location.pathname === "/edit-exam" || 
+                    location.pathname === "/all-posts" || 
+                    location.pathname === "/add-post"
                     ? "active"
                     : ""
                 }

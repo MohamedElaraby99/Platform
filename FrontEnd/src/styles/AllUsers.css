@@ -4,7 +4,7 @@
 }
 
 .search-container {
-  margin-bottom: 20px;
+  width: 50%;
 }
 
 .search-input {
@@ -17,7 +17,7 @@
 
 .users-table {
   margin-top: 20px;
-  width: 100%;
+  width: 90%;
   overflow-x: auto;
 }
 
@@ -49,4 +49,108 @@ th {
 
 .delete-button:hover {
   background-color: #c53030;
+}
+
+
+.all-users-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  width: 94%;
+  padding: 20px;
+}
+
+.users-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.edit-input,
+.edit-select {
+  width: 100%;
+  padding: 8px;
+}
+
+.editing-row {
+  background-color: #f9f9f9;
+}
+
+.save-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.edit-button,
+.delete-button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password-button {
+  margin-left: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.toggle-password-button:hover {
+  color: #007bff;
+}
+
+.table-body {
+  overflow-x: auto;
+  background-color: #ffffff;
+}
+
+.table-header {
+  background-color: #ffffff;
+}
+
+.users-table-container {
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  width: 94%;
+  padding: 20px;
+}
+
+.table-title {
+  text-align: center;
+  color: #032156;
+  font-size: 2rem;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
 }

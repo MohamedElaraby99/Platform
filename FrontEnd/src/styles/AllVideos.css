@@ -1,6 +1,6 @@
 .all-videos-container {
   padding: 20px;
-  margin: 0;
+  margin: 10px;
   background-color: #f8f9fa;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -82,4 +82,87 @@
 
 .delete-button:active {
   transform: scale(0.95);
+}
+
+.edit-input {
+  width: 90%;
+  padding: 5px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.save-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.save-button:hover,
+.cancel-button:hover {
+  opacity: 0.9;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 5px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.edit-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.edit-button,
+.delete-button {
+  margin-right: 5px;
+}
+
+.save-button:hover,
+.cancel-button:hover,
+.edit-button:hover,
+.delete-button:hover {
+  opacity: 0.9;
+}
+
+.youtube-link {
+  color: #000000;
+  text-decoration: none;
+}
+
+.edit-button:active,
+.delete-button:active {
+  transform: scale(0.95);
+}
+
+.actions:active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }

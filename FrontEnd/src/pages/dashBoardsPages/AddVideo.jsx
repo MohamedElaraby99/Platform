@@ -80,9 +80,9 @@ const AddVideo = () => {
             onChange={handleChange}
           >
             <option value="">اختر المرحلة الدراسية</option>
-            <option value="المرحلة الابتدائية">المرحلة الابتدائية</option>
-            <option value="المرحلة الإعدادية">المرحلة الإعدادية</option>
-            <option value="المرحلة الثانوية">المرحلة الثانوية</option>
+            <option value="المرحلة الابتدائية"> اولي ثانوي </option>
+            <option value="المرحلة الإعدادية"> ثاني ثانوي </option>
+            <option value="المرحلة الثانوية"> ثالث ثانوي </option>
           </select>
         </div>
         <div className="form-group">

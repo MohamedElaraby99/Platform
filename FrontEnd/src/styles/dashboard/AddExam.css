@@ -1,27 +1,30 @@
+/* Container for the exam creation component */
 .create-exam-container {
-  max-width: 700px; /* زيادة العرض قليلاً لراحة المستخدم */
+  max-width: 800px;
   margin: 50px auto;
-  padding: 30px; /* زيادة التباعد الداخلي */
+  padding: 30px;
   border: 1px solid #ddd;
-  border-radius: 10px; /* تحسين الحواف الدائرية */
-  background-color: #ffffff; /* لون خلفية أبيض أكثر وضوحاً */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* تحسين الظلال لجعل المربع بارزاً */
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
+  font-family: Arial, sans-serif;
 }
 
 .create-exam-container h2 {
-  font-size: 28px; /* زيادة حجم العنوان */
+  font-size: 30px;
   color: #333;
-  margin-bottom: 25px;
-  font-weight: bold; /* جعل النص غامقاً */
+  margin-bottom: 30px;
+  font-weight: bold;
 }
 
 .message {
-  font-size: 16px; /* زيادة حجم النص */
+  font-size: 18px;
   color: green;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
+/* Form styles */
 .create-exam-form .form-group {
   display: flex;
   flex-direction: column;
@@ -31,9 +34,8 @@
 }
 
 .create-exam-form label {
-  display: block;
-  font-size: 16px; /* زيادة حجم النص */
-  font-weight: bold; /* جعل النص غامقاً */
+  font-size: 16px;
+  font-weight: bold;
   margin-bottom: 8px;
   color: #555;
 }
@@ -42,264 +44,170 @@
 .create-exam-form textarea,
 .create-exam-form select {
   width: 100%;
-  padding: 12px; /* زيادة التباعد الداخلي */
-  font-size: 14px;
+  padding: 14px;
+  font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 8px; /* تحسين الحواف */
+  border-radius: 8px;
   box-sizing: border-box;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* تأثير جميل عند التركيز */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .create-exam-form textarea {
-  resize: vertical; /* السماح بتغيير حجم النصوص عمودياً فقط */
-  min-height: 100px; /* الحد الأدنى لارتفاع حقل النصوص */
+  resize: vertical;
+  min-height: 120px;
 }
 
 .create-exam-form input:focus,
 .create-exam-form textarea:focus,
 .create-exam-form select:focus {
   outline: none;
-  border-color: #007bff; /* تحديد لون الإطار عند التركيز */
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* تحسين التأثير */
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
 }
 
-.question-section h3 {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
-
-.submit-button {
-  background-color: #007bff;
-  color: white;
-  font-size: 18px; /* زيادة حجم النص */
-  padding: 12px 25px; /* تحسين التباعد */
-  border: none;
-  border-radius: 8px; /* تحسين الحواف */
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease; /* إضافة تأثيرات التفاعل */
-}
-
-.submit-button:hover {
-  background-color: #0056b3; /* لون داكن عند التمرير */
-  transform: translateY(-2px); /* تأثير ارتفاع الزر عند التحويم */
-}
-
-.submit-button:active {
-  background-color: #003f8a; /* لون داكن أكثر عند النقر */
-  transform: translateY(0); /* إعادة الزر لمكانه */
-}
-
-.question-section {
-  background-color: #f9f9f9; /* خلفية خفيفة */
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px; /* مسافة بين كل سؤال */
-}
-
-.question-section .form-group:last-child {
-  margin-bottom: 0;
-}
-
-.create-exam-container .form-group:last-child {
-  margin-bottom: 0;
-}
-
-.questions-list {
-  margin-top: 20px;
-  text-align: right;
-}
-
-.questions-list ul {
-  list-style: none;
-  padding: 0;
-}
-
-.questions-list li {
-  margin-bottom: 10px;
-}
-
-details summary {
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-details ul {
-  margin-top: 10px;
-  padding-left: 20px;
-}
-
-details ul li {
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.create-exam-container {
-  max-width: 700px;
-  margin: 50px auto;
-  padding: 30px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
+/* Dropzone styles */
 .dropzone {
   margin: 20px 0;
-  padding: 20px;
+  padding: 30px;
   border: 2px dashed #007bff;
-  border-radius: 8px;
+  border-radius: 12px;
   background-color: #f9f9f9;
   cursor: pointer;
-}
-
-.dropzone.dragover {
-  border-color: #0056b3;
-  background-color: #e9f5ff;
-  padding: 40px;
-}
-
-
-.dropzone p {
-  margin: 0;
-  color: #000000;
-  font-size: 16px;
-}
-
-.dropzone:hover {
-  border-color: #007bff; /* Blue border on hover */
-  background-color: #e9f5ff; /* Light blue background on hover */
-}
-
-.active-dropzone {
-  border-color: #4caf50;
-  background-color: #f0fff4; /* Light green background when active */
-}
-
-.dropzone-text {
-  font-size: 16px;
-  color: #007bff; /* Blue text color */
-  font-weight: bold;
-  transition: color 0.3s ease-in-out;
-}
-
-.dropzone:hover .dropzone-text {
-  color: #0056b3; /* Darker blue text color on hover */
-}
-
-p {
-  color: #02a720;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.active-dropzone .dropzone-text {
-  color: #4caf50; /* Green text color when active */
-  padding: 40px;
-}
-
-.message {
-  font-size: 16px;
-  color: green;
-  margin-bottom: 20px;
-}
-
-.questions-list ul {
-  list-style: none;
-  padding: 0;
-}
-
-.questions-list li {
-  margin-bottom: 10px;
-}
-
-details summary {
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-details ul {
-  margin-top: 10px;
-  padding-left: 20px;
-}
-
-
-.create-exam-container {
-  padding: 20px;
-}
-
-.dropzone {
-  border: 2px dashed #ccc;
-  padding: 20px;
   transition: all 0.3s ease-in-out;
   text-align: center;
 }
 
+.dropzone:hover {
+  border-color: #0056b3;
+  background-color: #e9f5ff;
+}
+
 .active-dropzone {
   border-color: #4caf50;
+  background-color: #f0fff4;
 }
 
+.dropzone p {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Questions list and manual entry */
 .questions-list {
-  margin-top: 20px;
+  margin-top: 30px;
+  text-align: left;
 }
 
-.question-item {
+.questions-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.questions-list li {
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.manual-question {
   margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-.question-image {
-  max-width: 100%;
-  max-height: 150px;
-}
-
-.question-input,
-.option-input,
-.correct-answer-input {
+.manual-question textarea,
+.manual-question input {
   width: 100%;
   margin-bottom: 10px;
-  padding: 5px;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 14px;
 }
 
-.image-upload-input {
+.manual-question input:focus,
+.manual-question textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.manual-question .add-option-btn {
   margin-top: 10px;
-}
-
-.submit-button {
-  margin-top: 20px;
-  padding: 10px 20px;
+  padding: 10px 15px;
   background-color: #4caf50;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  font-size: 14px;
 }
 
-.submit-button:hover {
+.manual-question .add-option-btn:hover {
   background-color: #45a049;
 }
 
+/* Buttons */
+.submit-button {
+  background-color: #007bff;
+  color: white;
+  font-size: 18px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.submit-button:active {
+  background-color: #003f8a;
+  transform: translateY(0);
+}
+
+/* Image preview styles */
 .question-image-container {
   display: flex;
   justify-content: center;
   align-items: center;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
   padding: 10px;
-  margin-bottom: 10px;
-  max-width: 200px;
   background-color: #f9f9f9;
 }
 
 .question-image-container img {
   max-width: 100%;
   max-height: 150px;
-  border-radius: 5px;
+  border-radius: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .create-exam-container {
+    padding: 20px;
+  }
+
+  .create-exam-container h2 {
+    font-size: 24px;
+  }
+
+  .create-exam-form input,
+  .create-exam-form textarea,
+  .create-exam-form select {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .submit-button {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
 }
