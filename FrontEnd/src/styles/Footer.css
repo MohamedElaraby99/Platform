@@ -1,0 +1,106 @@
+.footer {
+  background-color: #05334c;
+  color: #fff;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.footer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+  margin: 10px;
+  text-align: right;
+}
+.invisible-char {
+  visibility: hidden; /* يجعل الحرف غير مرئي */
+}
+
+.social-links {
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+  gap: 20px;
+}
+
+.social-links a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.social-links a, .whatsapp-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit; /* يتبع لون النص */
+  font-size: 16px;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.footer-section p {
+  color: #ffffff;
+}
+
+
+.social-links a:hover {
+  color: #007bff; /* لون التأثير عند التحويم */
+}
+
+.whatsapp-link:hover {
+  color: #25D366; /* لون التأثير عند التحويم */
+}
+
+.facebook-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #4267b2;
+  font-size: 16px;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.facebook-link:hover {
+  color: #365899;
+}
+
+.footer-bottom {
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.copyright {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  color: #ffffff;
+}
+
+.developer {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.developer:hover {
+  color: #007bff;
+}

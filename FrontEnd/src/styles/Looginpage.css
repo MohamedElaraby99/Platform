@@ -1,0 +1,155 @@
+
+.login-page {
+  display: flex;
+  justify-items: center;
+  justify-content: center;
+  align-content: center;
+  width: auto;
+  height: auto;
+  margin-top: 5%;
+  margin-left: 25%;
+  margin-right: 25%;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+ border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.85); 
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* النصف الأيسر: الصورة */
+.left-side {
+  flex: 1;
+  position: relative;
+  background-image: url("./../images/background.webp"); 
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.right-side {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9); /* Slightly opaque white background */
+}
+
+/* الحاوية الخاصة بالنموذج */
+.login-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ 
+  width: 100%;
+  height: 70%;
+  text-align: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* صورة الشعار */
+.logo-image {
+  width: 120px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+/* العنوان */
+.login-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 1.5rem;
+}
+
+/* حقول الإدخال */
+.input-container {
+  margin-bottom: 1.5rem;
+  text-align: right;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.input-field {
+  width: 80%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #3182ce;
+  box-shadow: 0 0 8px rgba(49, 130, 206, 0.5);
+  outline: none;
+}
+
+/* رسالة الخطأ */
+.error-message {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-bottom: 20px;
+  background-color: #fff5f5;
+  padding: 10px;
+  border: 1px solid #feb2b2;
+  border-radius: 5px;
+}
+
+/* زر تسجيل الدخول */
+.login-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #3182ce;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #225e91;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(34, 94, 145, 0.3);
+}
+
+.login-button:active {
+  background-color: #1b4b73;
+  transform: translateY(0);
+}
+
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    height: auto;
+    width: 95%;
+  }
+
+  .left-side {
+    display: none;
+  }
+
+  .right-side {
+    flex: 1;
+    padding: 2rem;
+  }
+
+  .login-form-container {
+    width: 100%;
+    padding: 1.5rem;
+    box-shadow: none;
+  }
+}
