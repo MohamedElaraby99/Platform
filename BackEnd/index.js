@@ -18,11 +18,11 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use("/", express.static(path.join(__dirname, "public")))
-console.log(path.join(__dirname, ".", "views", "404.html"));
 
 app.use("/", require("./routes/root"))
 app.use("/auth", require("./routes/authRoutes"))
 app.use("/users", require("./routes/userRoutes"))
+app.use("/lessons", require("./routes/lessonRoutes"))
 
 app.all("*", (req, res)=>{
     res.status(404)
@@ -38,7 +38,7 @@ app.all("*", (req, res)=>{
 mongoose.connection.once("open", () => {
   console.log("Connect on MongoDB");
   app.listen(PORT, () => {
-    console.log(`server runing on port ${PORT}`);
+    console.log(`server running on port ${PORT}`);
   });
 });
 

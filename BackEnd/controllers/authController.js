@@ -3,8 +3,15 @@ const bcrypt = require("bcrypt");
 const jsonWebToken = require("jsonwebtoken");
 const register = async (req, res) => {
   const { name, username, password, role, stage } = req.body;
-  if (!name || !username || !password || !role || !stage) {
-    res.status(400).json({ message: "All fields are required" });
+  if (!name || !username || !password || !role) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+  if (role !== "admin") {
+    if (!stage) {
+      return res
+        .status(400)
+        .json({ message: "stage is required when user not admin" });
+    }
   }
 
   const foundUser = await User.findOne({ username }).exec();
@@ -60,19 +67,19 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    res.status(400).json({ message: "All fields are required" });
+    return res.status(400).json({ message: "All fields are required" });
   }
 
   const foundUser = await User.findOne({ username }).exec();
 
   if (!foundUser) {
-    res.status(401).json({ message: "Uesr does not exist" });
+    return res.status(401).json({ message: "Uesr does not exist" });
   }
 
   const isMatch = await bcrypt.compare(password, foundUser.password);
 
   if (!isMatch) {
-    res.status(401).json({ message: "Wrong password" });
+    return res.status(401).json({ message: "Wrong password" });
   }
   const accessToken = jsonWebToken.sign(
     {
