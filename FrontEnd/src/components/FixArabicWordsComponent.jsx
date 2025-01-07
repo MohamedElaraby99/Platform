@@ -43,7 +43,7 @@ const FixArabicWordsComponent = ({ text, onFixComplete }) => {
     // Fix the text and call the callback
     const fixedText = fixArabicWords(text);
     onFixComplete(fixedText);
-  }, [text, onFixComplete]); // Ensure `onFixComplete` is included as a dependency
+  }, [text ]); // Ensure `onFixComplete` is included as a dependency
 
   return null; // No UI needed for this component
 };
