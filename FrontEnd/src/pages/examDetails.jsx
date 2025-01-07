@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import "./../styles/examDetails.css";
 
 const examsData = [
@@ -15,7 +15,7 @@ const examsData = [
     name: "امتحان اللغة العربية",
     date: "2025-01-15",
     description: "اختبار في قواعد ومهارات اللغة العربية.",
-    status: "منتهي",
+    status: "متاح",
   },
   {
     id: 3,
@@ -49,6 +49,15 @@ const ExamDetails = () => {
       <p>التاريخ: {exam.date}</p>
       <p>الوصف: {exam.description}</p>
       <p className={`status ${exam.status}`}>الحالة: {exam.status}</p>
+
+      {/* عرض زر البدء إذا كان الامتحان متاحًا */}
+      {exam.status === "متاح" && (
+        <Link to={`/exams/start/${exam.id}`} className="start-exam-button">
+          ابدأ الامتحان
+        </Link>
+      )}
+
+      {/* عرض زر العودة دائمًا */}
       <button className="back-button" onClick={() => navigate(-1)}>
         العودة إلى الامتحانات
       </button>

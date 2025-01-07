@@ -14,6 +14,7 @@ import DashboardPage from "./pages/DashboardPage";
 import Layout from "./pages/Layout";
 import Footer from "./pages/Footer";
 import ExamDetails from "./pages/examDetails";
+import ExamsSystem from "./pages/ExamsSysytem";
 import UserPage from "./pages/User";
 import AddUser from "./pages/dashBoardsPages/AddUser";
 import AddVideo from "./pages/dashBoardsPages/AddVideo";
@@ -67,15 +68,14 @@ const App = () => {
               <Route path="/courses" element={<CoursesPage />} />
               <Route path="/video-details" element={<VideoDetailsPage />} />
               <Route path="/exams" element={<ExamsPage />} />
-              <Route path="/exams/:id" element={<ExamDetails />} />
+              <Route path="/exams/details/:id" element={<ExamDetails />} />
+              <Route path="/exams/start/:id" element={<ExamsSystem />} />
               <Route path="/pdf" element={<PdfPage />} />
               <Route
                 path="/user"
                 element={<UserPage onSignOut={handleSignOut} />}
               />
-              {/* إضافة مسار صفحة "إضافة مستخدم جديد" */}
               <Route path="/add-user" element={<AddUser />} />
-
               <Route path="/add-video" element={<AddVideo />} />
               <Route path="/add-pdf" element={<AddPdf />} />
               <Route path="/add-exam" element={<CreateExam />} />
@@ -83,7 +83,7 @@ const App = () => {
               <Route path="/all-users" element={<AllUsers />} />
               <Route path="/all-exams" element={<AllExams />} />
               <Route path="/all-videos" element={<AllVideos />} />
-                  <Route path="/all-pdfs" element={<AllPdfs />} />
+              <Route path="/all-pdfs" element={<AllPdfs />} />
               <Route path="/all-posts" element={<AllPostsComponent />} />
               {role === "admin" && (
                 <Route path="/dashboard" element={<DashboardPage />} />

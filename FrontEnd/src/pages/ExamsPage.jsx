@@ -13,7 +13,7 @@ const examsData = [
     id: 2,
     name: "امتحان اللغة العربية",
     date: "2025-01-01T00:00:00",
-    status: "منتهي",
+    status: "متاح",
   },
   {
     id: 3,
@@ -32,7 +32,6 @@ const examsData = [
 const ExamsPage = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // تحديث الوقت الحالي كل ثانية
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -70,12 +69,17 @@ const ExamsPage = () => {
                 <span className={`status ${exam.status}`}>{exam.status}</span>
               </p>
               {exam.status === "منتهي" && (
-                <Link to={`/exams/${exam.id}`} className="exam-button">
+                <Link to={`/exams/details/${exam.id}`} className="exam-button">
                   عرض التفاصيل
                 </Link>
               )}
               {exam.status === "متاح" && (
-                <button className="exam-button active-btn">ابدأ الامتحان</button>
+                <Link
+                  to={`/exams/start/${exam.id}`}
+                  className="exam-button active-btn"
+                >
+                  ابدأ الامتحان
+                </Link>
               )}
               {exam.status === "قادم" && (
                 <button className="exam-button disabled" disabled>

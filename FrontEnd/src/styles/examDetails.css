@@ -31,3 +31,68 @@
 .back-button:hover {
   background-color: #0056b3;
 }
+
+.exam-details {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 20px auto;
+  background-color: #f9f9f9;
+}
+
+.exam-details h2 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.exam-details p {
+  margin: 5px 0;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.status.متاح {
+  color: green;
+}
+
+.status.منتهي {
+  color: red;
+}
+
+.status.قادم {
+  color: orange;
+}
+
+.start-exam-button {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.start-exam-button:hover {
+  background-color: #0056b3;
+}
+
+.back-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #aaa;
+}
