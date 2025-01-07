@@ -1,69 +1,115 @@
 .add-pdf-container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+  margin-bottom: 10px;
+  padding: 40px;
+  background-color: #fdfdfd;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
 }
 
-.add-pdf-container h2 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 20px;
+.add-pdf {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.add-pdf-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: right;
+  gap: 15px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: right;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+input,
+select,
+button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button.submit-button {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button.submit-button:hover {
+  background-color: #45a049;
 }
 
 .message {
-  font-size: 14px;
   color: green;
-  margin-bottom: 10px;
-}
-
-.add-pdf-form .form-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  font-size: 1rem;
   margin-bottom: 15px;
-  text-align: left;
 }
 
-.add-pdf-form label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 5px;
+.dropzone p {
+  margin: 0;
   color: #555;
 }
 
-.add-pdf-form input,
-.add-pdf-form select {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
+ #name {
+   width: 93%;
+}
+
+.edit-input {
+  width: 90%;
+  padding: 5px;
+  margin: 5px 0;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
+  border-radius: 4px;
 }
 
-.add-pdf-form input:focus,
-.add-pdf-form select:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.submit-button {
-  background-color: #007bff;
+.save-button {
+  background-color: #4caf50;
   color: white;
-  font-size: 16px;
-  padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  padding: 5px 10px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  margin-right: 5px;
 }
 
-.submit-button:hover {
-  background-color: #0056b3;
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.edit-button {
+  background-color: #ffa500;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.edit-button:hover,
+.save-button:hover,
+.cancel-button:hover,
+.delete-button:hover {
+  opacity: 0.9;
 }

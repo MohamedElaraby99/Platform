@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./../styles/dashboard/posts.css";
 
 const AllPostsComponent = () => {
-  // قائمة الإعلانات (محاكاة للبيانات)
+  // List of posts
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -24,55 +26,123 @@ const AllPostsComponent = () => {
     },
   ]);
 
-  // حالة لتتبع الإعلان المعروض حاليًا
   const [selectedPost, setSelectedPost] = useState(null);
+  const [editingPost, setEditingPost] = useState(null);
+  const [editContent, setEditContent] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // وظيفة لعرض تفاصيل إعلان معين
+  // Function to view post details
   const viewPostDetails = (post) => {
     setSelectedPost(post);
+    setEditingPost(null); // Exit editing mode
   };
 
-  // وظيفة لحذف إعلان
+  // Function to open edit mode
+  const editPost = (post) => {
+    setEditingPost(post);
+    setEditContent(post.content);
+    setSelectedPost(null); // Exit details view
+  };
+
+  // Function to save edited post
+  const saveEditPost = () => {
+    if (!editContent.trim()) {
+      toast.error("لا يمكن أن يكون محتوى الإعلان فارغًا!");
+      return;
+    }
+
+    setPosts(
+      posts.map((post) =>
+        post.id === editingPost.id ? { ...post, content: editContent } : post
+      )
+    );
+    toast.success("تم تحديث الإعلان بنجاح!");
+    setEditingPost(null);
+    setSelectedPost(null);
+  };
+
+  // Function to cancel editing
+  const cancelEdit = () => {
+    setEditingPost(null);
+    setEditContent("");
+    toast.info("تم إلغاء التعديلات.");
+  };
+
+  // Function to delete a post
   const deletePost = (id) => {
-    setPosts(posts.filter((post) => post.id !== id));
-    // إذا كان الإعلان المحذوف هو نفسه المعروض، قم بإغلاق نافذة التفاصيل
-    if (selectedPost && selectedPost.id === id) {
-      setSelectedPost(null);
+    const confirmed = window.confirm("هل أنت متأكد من حذف هذا الإعلان؟");
+    if (confirmed) {
+      setPosts(posts.filter((post) => post.id !== id));
+      if (selectedPost && selectedPost.id === id) {
+        setSelectedPost(null); // Exit details view if the deleted post was being viewed
+      }
+      if (editingPost && editingPost.id === id) {
+        setEditingPost(null); // Exit edit mode if the deleted post was being edited
+      }
+      toast.success("تم حذف الإعلان بنجاح!");
     }
   };
 
+  // Function to filter posts based on search term
+  const filteredPosts = posts.filter(
+    (post) =>
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.content.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="all-posts-component">
+      {/* Toast Notifications */}
+      <ToastContainer />
+
       <header className="posts-header">
-        <h2>جميع الإعلانات</h2>
+        <h2>إدارة الإعلانات</h2>
+        <input
+          type="text"
+          placeholder="ابحث عن إعلان..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
       </header>
 
       <div className="posts-container">
         <ul className="posts-list">
-          {posts.map((post) => (
-            <li key={post.id} className="post-item">
-              <div className="post-content">
-                <h4>{post.title}</h4>
-                <span className="post-time">{post.time}</span>
-              </div>
-              <div className="post-actions">
-                <button
-                  className="view-post-btn"
-                  onClick={() => viewPostDetails(post)}
-                >
-                  عرض التفاصيل
-                </button>
-                <button
-                  className="delete-post-btn"
-                  onClick={() => deletePost(post.id)}
-                >
-                  حذف
-                </button>
-              </div>
-            </li>
-          ))}
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
+              <li key={post.id} className="post-item">
+                <div className="post-content">
+                  <h4>{post.title}</h4>
+                  <span className="post-time">{post.time}</span>
+                </div>
+                <div className="post-actions">
+                  <button
+                    className="view-post-btn"
+                    onClick={() => viewPostDetails(post)}
+                  >
+                    عرض التفاصيل
+                  </button>
+                  <button
+                    className="edit-post-btn"
+                    onClick={() => editPost(post)}
+                  >
+                    تعديل
+                  </button>
+                  <button
+                    className="delete-post-btn"
+                    onClick={() => deletePost(post.id)}
+                  >
+                    حذف
+                  </button>
+                </div>
+              </li>
+            ))
+          ) : (
+            <p className="no-posts-message">لا توجد إعلانات مطابقة للبحث.</p>
+          )}
         </ul>
 
+        {/* View Post Details */}
         {selectedPost && (
           <div className="post-details">
             <h3>تفاصيل الإعلان</h3>
@@ -84,6 +154,27 @@ const AllPostsComponent = () => {
             >
               إغلاق
             </button>
+          </div>
+        )}
+
+        {/* Edit Post */}
+        {editingPost && (
+          <div className="post-edit">
+            <h3>تعديل محتوى الإعلان</h3>
+            <h4>{editingPost.title}</h4>
+            <textarea
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              className="edit-textarea"
+            />
+            <div className="edit-actions">
+              <button className="save-edit-btn" onClick={saveEditPost}>
+                حفظ
+              </button>
+              <button className="cancel-edit-btn" onClick={cancelEdit}>
+                إلغاء
+              </button>
+            </div>
           </div>
         )}
       </div>

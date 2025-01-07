@@ -88,3 +88,10 @@
 .delete-button:active {
   transform: scale(0.95);
 }
+
+.actions-cell {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}

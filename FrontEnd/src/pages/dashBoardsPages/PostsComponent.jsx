@@ -1,22 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./../../styles/dashboard/addPosts.css";
 
 const CreatePostComponent = () => {
-  // حالة لتخزين تفاصيل الإعلان الجديد
+  // State to store posts
+  const [posts, setPosts] = useState([]);
+
+  // States for new post fields
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   const [publishTime, setPublishTime] = useState("");
+  const [expireTime, setExpireTime] = useState("");
   const [selectedYears, setSelectedYears] = useState([]);
 
-  // قائمة السنوات الدراسية (محاكاة للبيانات)
+  // List of years
   const years = ["الصف الأول", "الصف الثاني", "الصف الثالث"];
 
-  // وظيفة لإضافة إعلان جديد
+  // Function to handle new post creation
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!title || !details || !publishTime || selectedYears.length === 0) {
-      alert("يرجى تعبئة جميع الحقول");
+    if (
+      !title ||
+      !details ||
+      !publishTime ||
+      !expireTime ||
+      selectedYears.length === 0
+    ) {
+      toast.error("يرجى تعبئة جميع الحقول!");
       return;
     }
 
@@ -25,19 +37,25 @@ const CreatePostComponent = () => {
       title,
       details,
       publishTime,
+      expireTime,
       years: selectedYears,
     };
 
-    console.log("تم إنشاء الإعلان:", newPost);
+    // Add the new post to the list
+    setPosts((prevPosts) => [...prevPosts, newPost]);
 
-    // إعادة تعيين الحقول بعد الإرسال
+    // Reset fields
     setTitle("");
     setDetails("");
     setPublishTime("");
+    setExpireTime("");
     setSelectedYears([]);
+
+    // Show success toast
+    toast.success("تم إنشاء الإعلان بنجاح!");
   };
 
-  // وظيفة لتحديث السنوات الدراسية المختارة
+  // Function to toggle selected years
   const handleYearToggle = (year) => {
     if (selectedYears.includes(year)) {
       setSelectedYears(selectedYears.filter((y) => y !== year));
@@ -46,8 +64,21 @@ const CreatePostComponent = () => {
     }
   };
 
+  // Effect to auto-delete expired posts
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      setPosts((prevPosts) =>
+        prevPosts.filter((post) => new Date(post.expireTime) > now)
+      );
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
+
   return (
     <div className="create-post-component">
+      <ToastContainer />
       <header className="posts-header">
         <h2>إنشاء إعلان جديد</h2>
       </header>
@@ -83,6 +114,17 @@ const CreatePostComponent = () => {
             id="publishTime"
             value={publishTime}
             onChange={(e) => setPublishTime(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="expireTime">وقت انتهاء الإعلان:</label>
+          <input
+            type="datetime-local"
+            id="expireTime"
+            value={expireTime}
+            onChange={(e) => setExpireTime(e.target.value)}
             required
           />
         </div>

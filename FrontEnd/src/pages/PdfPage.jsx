@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./../styles/pdfs.css";
 
 // Simulated list of PDF files
@@ -6,7 +6,7 @@ const pdfFiles = [
   {
     id: 1,
     name: "كتاب الرياضيات",
-    url: "/assets/محمد العربي .pdf",
+    url: "/assets/محمد العربي .pdf", // Ensure this path is correct and matches your hosted files
   },
   {
     id: 2,
@@ -26,38 +26,65 @@ const pdfFiles = [
 ];
 
 const PdfPage = () => {
-  const [selectedPdf, setSelectedPdf] = useState(null);
-
-  // Function to handle viewing a PDF
   const handleViewPdf = (url) => {
-    setSelectedPdf(url);
-  };
+    // Open a new fullscreen window
+    const newWindow = window.open("", "_blank", "fullscreen=yes");
 
-  // Block right-click
-  const blockRightClick = (e) => {
-    e.preventDefault();
-    alert("Right-click is disabled!");
-  };
-
-  // Block PrintScreen (PrtSc)
-  const blockPrintScreen = (e) => {
-    if (e.key === "PrintScreen") {
-      alert("Screenshots are not allowed!");
-      e.preventDefault();
+    if (newWindow) {
+      newWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>عرض الملف</title>
+            <style>
+              body {
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: #000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+              iframe {
+                width: 100vw;
+                height: 100vh;
+                border: none;
+              }
+            </style>
+          </head>
+          <body>
+            <iframe src="${url}#toolbar=0&navpanes=0&scrollbar=0"></iframe>
+            <script>
+              // Disable right-click
+              document.addEventListener('contextmenu', (event) => event.preventDefault());
+              
+              // Disable PrintScreen and other keyboard shortcuts
+              document.addEventListener('keydown', (event) => {
+                if (event.key === 'PrintScreen') {
+                  alert('Screenshots are disabled!');
+                  navigator.clipboard.writeText('');
+                  event.preventDefault();
+                }
+                if (
+                  (event.ctrlKey && event.key === 's') ||  // Ctrl + S
+                  (event.ctrlKey && event.key === 'p') ||  // Ctrl + P
+                  event.key === 'F12' // F12 Developer Tools
+                ) {
+                  alert('This action is disabled!');
+                  event.preventDefault();
+                }
+              });
+            </script>
+          </body>
+        </html>
+      `);
+    } else {
+      alert("Please allow pop-ups for this site.");
     }
   };
-
-  React.useEffect(() => {
-    // Add event listeners for preventing screenshots and right-click
-    document.addEventListener("contextmenu", blockRightClick);
-    document.addEventListener("keydown", blockPrintScreen);
-
-    return () => {
-      // Cleanup event listeners when component unmounts
-      document.removeEventListener("contextmenu", blockRightClick);
-      document.removeEventListener("keydown", blockPrintScreen);
-    };
-  }, []);
 
   return (
     <div className="pdf-page">
@@ -77,17 +104,6 @@ const PdfPage = () => {
           </div>
         ))}
       </div>
-
-      {selectedPdf && (
-        <div className="pdf-viewer-container">
-          <iframe
-            src={`${selectedPdf}#toolbar=0`} // Disable PDF toolbar
-            title="PDF Viewer"
-            className="pdf-viewer"
-          ></iframe>
-          <div className="pdf-overlay"></div>
-        </div>
-      )}
     </div>
   );
 };

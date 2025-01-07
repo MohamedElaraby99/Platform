@@ -3,7 +3,7 @@ body {
   margin: 0;
   font-family: "Roboto", Arial, sans-serif;
   background-color: #eef2f7;
-  color: #333;
+  color: #000000;
   direction: rtl;
 }
 
@@ -354,12 +354,13 @@ body {
 /* Page Content */
 .page-content {
   padding: 10px;
+  gap: 10px;
   flex-grow: 1;
   overflow-y: auto;
   background: #ebeaea;
   border-radius: 10px;
   margin-bottom: 80px;
-  width: 500px;
+  width: 100%;
 }
 
 /* Responsive Design */
