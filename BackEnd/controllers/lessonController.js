@@ -9,13 +9,13 @@ const getAllLessons = async (req, res) => {
 const createLesson = async (req, res) => {
   const { title, lesson_link, stage, description, notes } = req.body;
   if (!title) {
-    return res.status(400).json({ message: "title field is required" });
+    return res.status(400).json({ message: " العنوان مطلوب" });
   }
   if (!lesson_link) {
-    return res.status(400).json({ message: "lesson_link field is required" });
+    return res.status(400).json({ message: " رابط الفيديو مطلوب" });
   }
   if (!stage) {
-    return res.status(400).json({ message: "stage field is required" });
+    return res.status(400).json({ message: "المرحلة الدراسية مطلوبة" });
   }
 
   try {
@@ -28,7 +28,7 @@ const createLesson = async (req, res) => {
     });
     return res
       .status(200)
-      .json({ message: "The lesson is created successfully", ...lesson });
+      .json({ message: "الفيديو تم انشاءه بنجاح", ...lesson });
   } catch (error) {
     console.error("Error creating lesson:", error);
   }
@@ -38,13 +38,13 @@ const createLesson = async (req, res) => {
 const updateLesson = async (req, res) => {
   const { id, title, lesson_link, stage, description, notes } = req.body;
   if (!title) {
-    return res.status(400).json({ message: "title field is required" });
+    return res.status(400).json({ message: "العنوان مطلوب" });
   }
   if (!lesson_link) {
-    return res.status(400).json({ message: "lesson_link field is required" });
+    return res.status(400).json({ message: " رابط الفيديو مطلوب" });
   }
   if (!stage) {
-    return res.status(400).json({ message: "stage field is required" });
+    return res.status(400).json({ message: "المرحلة الدراسية مطلوبة" });
   }
 
   const foundLesson = await Lesson.findOne({ username }).exec();
@@ -58,7 +58,7 @@ const updateLesson = async (req, res) => {
   });
   return res
     .status(200)
-    .json({ message: "The lesson is created successfully" });
+    .json({ message: "الفيديو تم انشاءه بنجاح" });
 };
 
 module.exports = {
