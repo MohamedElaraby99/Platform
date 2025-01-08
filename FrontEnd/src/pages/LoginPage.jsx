@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./../styles/LoginPage.css";
 
 const LoginForm = ({ setRole }) => {
@@ -9,12 +10,7 @@ const LoginForm = ({ setRole }) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const users = [
-    { userName: "111", password: "111", role: "admin" },
-    { userName: "123", password: "123", role: "user" },
-  ];
-
-  // استرجاع بيانات تسجيل الدخول إذا كانت موجودة
+  // Retrieve saved login data if available
   useEffect(() => {
     const savedUsername = localStorage.getItem("userName");
     const savedPassword = localStorage.getItem("password");
@@ -27,17 +23,24 @@ const LoginForm = ({ setRole }) => {
     }
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const user = users.find(
-      (u) => u.userName === userName && u.password === password
-    );
-    if (user) {
-      setRole(user.role);
-      localStorage.setItem("role", user.role);
-      localStorage.setItem("userName", user.userName);
+    try {
+      // Make the API request to the login endpoint
+      const response = await axios.post("http://localhost:8000/auth/login", {
+        username: userName,
+        password: password,
+      });
 
-      // إذا تم تحديد "تذكرني"، قم بحفظ اسم المستخدم وكلمة المرور
+      const { role, accessToken } = response.data;
+      console.log(response);
+      
+      // Set role and token in localStorage
+      setRole(role);
+      localStorage.setItem("role", role);
+      localStorage.setItem("accessToken", accessToken);
+
+      // If "Remember Me" is checked, save username and password
       if (rememberMe) {
         localStorage.setItem("userName", userName);
         localStorage.setItem("password", password);
@@ -48,16 +51,23 @@ const LoginForm = ({ setRole }) => {
         localStorage.removeItem("rememberMe");
       }
 
-      navigate("/home");
-    } else {
-      setError("اسم المستخدم أو كلمة المرور غير صحيحة");
+      // Redirect based on role
+      if (role === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/home");
+      }
+    } catch (error) {
+      setError(
+        error.response?.data?.message || "اسم المستخدم أو كلمة المرور غير صحيحة"
+      );
     }
   };
 
   return (
     <div className="login-page-container">
       <div className="login-page">
-        {/* القسم الأيسر */}
+        {/* Left Section */}
         <div className="left-side">
           <h1 className="welcome-text">مرحبًا بعودتك!</h1>
           <p className="welcome-subtext">
@@ -65,7 +75,7 @@ const LoginForm = ({ setRole }) => {
           </p>
         </div>
 
-        {/* القسم الأيمن */}
+        {/* Right Section */}
         <div className="right-side">
           <div className="login-form-container">
             <h2 className="login-title">تسجيل الدخول</h2>

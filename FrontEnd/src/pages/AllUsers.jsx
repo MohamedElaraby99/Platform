@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./../styles/AllUsers.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 const AllUsers = () => {
-  // State for students
+  const [users, setUsers] = useState([]); // جميع المستخدمين
+  const [searchTerm, setSearchTerm] = useState(""); // مصطلح البحث
+  const [loading, setLoading] = useState(true); // حالة التحميل
+  const [error, setError] = useState(""); // حالة الخطأ
+  const [selectedTable, setSelectedTable] = useState("students"); // الجدول المختار
+
   const [students, setStudents] = useState([
     {
       id: 1,
@@ -47,7 +53,31 @@ const AllUsers = () => {
     },
   ]);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      try {
+        const response = await axios.get("http://localhost:8000/users", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setUsers(response.data);
+      } catch (err) {
+        if (err.response && err.response.status === 403) {
+          localStorage.removeItem("accessToken"); // إزالة التوكن غير الصالح
+          setError("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.");
+        } else {
+          setError("حدث خطأ أثناء تحميل البيانات.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const [editingUser, setEditingUser] = useState(null);
   const [editData, setEditData] = useState({
     name: "",
@@ -56,76 +86,92 @@ const AllUsers = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedTable, setSelectedTable] = useState("students"); // To toggle between students and managers
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleDelete = (id, type) => {
-    const targetArray = type === "student" ? students : managers;
-    const targetSetter = type === "student" ? setStudents : setManagers;
+  // const handleDelete = (id, type) => {
+  //   const targetArray = type === "student" ? students : managers;
+  //   const targetSetter = type === "student" ? setStudents : setManagers;
 
-    const userToDelete = targetArray.find((user) => user.id === id);
-    const confirmDelete = window.confirm(
-      `هل أنت متأكد من حذف المستخدم "${userToDelete.name}"؟`
-    );
-    if (confirmDelete) {
-      const updatedUsers = targetArray.filter((user) => user.id !== id);
-      targetSetter(updatedUsers);
-      toast.success(`تم حذف المستخدم "${userToDelete.name}" بنجاح!`);
-    }
-  };
+  //   const userToDelete = targetArray.find((user) => user.id === id);
+  //   const confirmDelete = window.confirm(
+  //     `هل أنت متأكد من حذف المستخدم "${userToDelete.name}"؟`
+  //   );
+  //   if (confirmDelete) {
+  //     const updatedUsers = targetArray.filter((user) => user.id !== id);
+  //     targetSetter(updatedUsers);
+  //     toast.success(`تم حذف المستخدم "${userToDelete.name}" بنجاح!`);
+  //   }
+  // };
 
-  const handleEdit = (id, type) => {
-    const targetArray = type === "student" ? students : managers;
-    const userToEdit = targetArray.find((user) => user.id === id);
-    setEditingUser({ id, type });
-    setEditData({ ...userToEdit });
-  };
+  // const handleEdit = (id, type) => {
+  //   const targetArray = type === "student" ? students : managers;
+  //   const userToEdit = targetArray.find((user) => user.id === id);
+  //   setEditingUser({ id, type });
+  //   setEditData({ ...userToEdit });
+  // };
 
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditData({
-      ...editData,
-      [name]: value,
-    });
-  };
+  // const handleEditChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setEditData({
+  //     ...editData,
+  //     [name]: value,
+  //   });
+  // };
 
-  const handleEditSave = () => {
-    if (!editData.name || !editData.username || !editData.password) {
-      toast.error("يرجى ملء جميع الحقول قبل الحفظ!");
-      return;
-    }
+  // const handleEditSave = () => {
+  //   if (!editData.name || !editData.username || !editData.password) {
+  //     toast.error("يرجى ملء جميع الحقول قبل الحفظ!");
+  //     return;
+  //   }
 
-    const targetArray = editingUser.type === "student" ? students : managers;
-    const targetSetter =
-      editingUser.type === "student" ? setStudents : setManagers;
+  //   const targetArray = editingUser.type === "student" ? students : managers;
+  //   const targetSetter =
+  //     editingUser.type === "student" ? setStudents : setManagers;
 
-    const updatedUsers = targetArray.map((user) =>
-      user.id === editingUser.id ? { ...user, ...editData } : user
-    );
-    targetSetter(updatedUsers);
-    setEditingUser(null);
-    toast.success("تم تحديث بيانات المستخدم بنجاح!");
-  };
+  //   const updatedUsers = targetArray.map((user) =>
+  //     user.id === editingUser.id ? { ...user, ...editData } : user
+  //   );
+  //   targetSetter(updatedUsers);
+  //   setEditingUser(null);
+  //   toast.success("تم تحديث بيانات المستخدم بنجاح!");
+  // };
 
-  const handleEditCancel = () => {
-    setEditingUser(null);
-    toast.info("تم إلغاء التعديلات.");
-  };
+  // const handleEditCancel = () => {
+  //   setEditingUser(null);
+  //   toast.info("تم إلغاء التعديلات.");
+  // };
 
-  const filteredStudents = students.filter(
+
+
+  // تصفية المستخدمين حسب البحث
+  const filteredUsers = users.filter(
     (user) =>
-      user.name.includes(searchTerm) ||
-      user.username.includes(searchTerm) ||
-      user.grade.includes(searchTerm)
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredManagers = managers.filter(
-    (user) =>
-      user.name.includes(searchTerm) || user.username.includes(searchTerm)
+  // تصفية الطلاب
+  const filteredStudents = filteredUsers.filter(
+    (user) => user.role === "student"
   );
+  console.log("Filtered Students:", filteredStudents); // عرض الطلاب المصفاة
+
+  // تصفية المشرفين
+  const filteredAdmins = filteredUsers.filter((user) => user.role === "admin");
+  console.log("Filtered Admins:", filteredAdmins); // عرض المشرفين المصفاة
+
+  if (loading) {
+    console.log("Loading users...");
+    return <p>جارٍ تحميل البيانات...</p>;
+  }
+
+  if (error) {
+    console.log("Error encountered:", error);
+    return <p className="error-message">{error}</p>;
+  }
 
   return (
     <div className="all-users-container">
@@ -173,7 +219,7 @@ const AllUsers = () => {
                           type="text"
                           name="name"
                           value={editData.name}
-                          onChange={handleEditChange}
+                          // onChange={handleEditChange}
                           className="edit-input"
                         />
                       </td>
@@ -182,7 +228,7 @@ const AllUsers = () => {
                           type="text"
                           name="username"
                           value={editData.username}
-                          onChange={handleEditChange}
+                          // onChange={handleEditChange}
                           className="edit-input"
                         />
                       </td>
@@ -190,7 +236,7 @@ const AllUsers = () => {
                         <select
                           name="grade"
                           value={editData.grade}
-                          onChange={handleEditChange}
+                          // onChange={handleEditChange}
                           className="edit-select"
                         >
                           <option value="أولى ثانوي">أولى ثانوي</option>
@@ -205,7 +251,7 @@ const AllUsers = () => {
                             name="password"
                             placeholder="كلمة المرور الجديدة"
                             value={editData.password}
-                            onChange={handleEditChange}
+                            // onChange={handleEditChange}
                             className="edit-input"
                           />
                           <button
@@ -221,13 +267,13 @@ const AllUsers = () => {
                       </td>
                       <td>
                         <button
-                          onClick={handleEditSave}
+                          // onClick={handleEditSave}
                           className="save-button"
                         >
                           حفظ
                         </button>
                         <button
-                          onClick={handleEditCancel}
+                          // onClick={handleEditCancel}
                           className="cancel-button"
                         >
                           إلغاء
@@ -238,17 +284,17 @@ const AllUsers = () => {
                     <>
                       <td>{user.name}</td>
                       <td>{user.username}</td>
-                      <td>{user.grade}</td>
+                      <td>{user.stage}</td>
                       <td>******</td>
                       <td className="actions-cell">
                         <button
-                          onClick={() => handleEdit(user.id, "student")}
+                          // onClick={() => handleEdit(user.id, "student")}
                           className="edit-button"
                         >
                           تعديل
                         </button>
                         <button
-                          onClick={() => handleDelete(user.id, "student")}
+                          // onClick={() => handleDelete(user.id, "student")}
                           className="delete-button"
                         >
                           حذف
@@ -276,7 +322,7 @@ const AllUsers = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredManagers.map((user) => (
+              {filteredAdmins.map((user) => (
                 <tr key={user.id}>
                   {editingUser?.id === user.id &&
                   editingUser?.type === "manager" ? (
@@ -286,7 +332,7 @@ const AllUsers = () => {
                           type="text"
                           name="name"
                           value={editData.name}
-                          onChange={handleEditChange}
+                          // onChange={handleEditChange}
                           className="edit-input"
                         />
                       </td>
@@ -295,7 +341,7 @@ const AllUsers = () => {
                           type="text"
                           name="username"
                           value={editData.username}
-                          onChange={handleEditChange}
+                          // onChange={handleEditChange}
                           className="edit-input"
                         />
                       </td>
@@ -306,7 +352,7 @@ const AllUsers = () => {
                             name="password"
                             placeholder="كلمة المرور الجديدة"
                             value={editData.password}
-                            onChange={handleEditChange}
+                            // onChange={handleEditChange}
                             className="edit-input"
                           />
                           <button
@@ -322,13 +368,13 @@ const AllUsers = () => {
                       </td>
                       <td>
                         <button
-                          onClick={handleEditSave}
+                          // onClick={handleEditSave}
                           className="save-button"
                         >
                           حفظ
                         </button>
                         <button
-                          onClick={handleEditCancel}
+                          // onClick={handleEditCancel}
                           className="cancel-button"
                         >
                           إلغاء
@@ -342,13 +388,13 @@ const AllUsers = () => {
                       <td>******</td>
                       <td className="actions-cell">
                         <button
-                          onClick={() => handleEdit(user.id, "manager")}
+                          // onClick={() => handleEdit(user.id, "manager")}
                           className="edit-button"
                         >
                           تعديل
                         </button>
                         <button
-                          onClick={() => handleDelete(user.id, "manager")}
+                          // onClick={() => handleDelete(user.id, "manager")}
                           className="delete-button"
                         >
                           حذف

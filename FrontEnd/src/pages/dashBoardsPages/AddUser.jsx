@@ -6,6 +6,7 @@ import "./../../styles/dashboard/AddUser.css";
 const AddUser = () => {
   const [user, setUser] = useState({
     type: "student", // Default to student
+    name: "",
     username: "",
     password: "",
     stage: "",
@@ -23,13 +24,22 @@ const AddUser = () => {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // Perform validation
-    if (
-      !user.username ||
-      !user.password ||
-      (user.type === "student" && !user.stage)
-    ) {
-      toast.error("الرجاء ملء جميع الحقول!");
+    if (!user.name) {
+      toast.error("الرجاء إدخال الاسم!");
+      return;
+    }
+    if (!user.username) {
+      toast.error("الرجاء إدخال اسم المستخدم!");
+      return;
+    }
+    if (!user.password) {
+      toast.error("الرجاء إدخال كلمة المرور!");
+      return;
+    }
+    if (user.type === "student" && !user.stage) {
+      toast.error("الرجاء اختيار المرحلة الدراسية!");
       return;
     }
 
@@ -39,6 +49,7 @@ const AddUser = () => {
     // Reset form
     setUser({
       type: "student",
+      name: "",
       username: "",
       password: "",
       stage: "",
@@ -51,7 +62,7 @@ const AddUser = () => {
   return (
     <div className="add-user">
       {/* Toast Notifications */}
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={3000} />
 
       <div className="add-user-container">
         <h2>إضافة مستخدم جديد</h2>
@@ -69,6 +80,16 @@ const AddUser = () => {
             </select>
           </div>
           <div className="form-group">
+            <label htmlFor="name">الاسم :</label>
+            <input
+              type="text"
+              name="name"
+              value={user.name}
+              onChange={handleChange}
+              placeholder="أدخل الاسم الكامل"
+            />
+          </div>
+          <div className="form-group">
             <label htmlFor="username">اسم المستخدم:</label>
             <input
               type="text"
@@ -76,7 +97,7 @@ const AddUser = () => {
               name="username"
               value={user.username}
               onChange={handleChange}
-              placeholder="أدخل اسم المستخدم"
+              placeholder="أدخل اسم المستخدم (على سبيل المثال: ali123)"
             />
           </div>
           <div className="form-group">
