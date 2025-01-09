@@ -3,62 +3,86 @@ import axios from "axios";
 import "./../styles/AllVideos.css";
 
 const AllVideos = () => {
-  const [videos, setVideos] = useState([]); // Initially empty array for fetched videos
+  const [videos, setVideos] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [editingVideo, setEditingVideo] = useState(null); // For editing state
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [editingVideo, setEditingVideo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Fetch videos (lessons) from the API
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const accessToken = localStorage.getItem("accessToken"); // Retrieve token from localStorage
+        const accessToken = localStorage.getItem("accessToken");
         if (!accessToken) {
           throw new Error("Access token is missing.");
         }
 
         const response = await axios.get("http://localhost:8000/lessons", {
           headers: {
-            Authorization: `Bearer ${accessToken}`, // Include token in Authorization header
+            Authorization: `Bearer ${accessToken}`,
           },
         });
-        setVideos(response.data); // Set fetched lessons as videos
+        setVideos(response.data);
         setError(null);
       } catch (err) {
-        console.error("حدث خطأ أثناء جلب بيانات الفيديوهات:", err);
+        console.error("Error fetching videos:", err);
         setError("Failed to fetch videos. Please check your credentials.");
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
     fetchVideos();
   }, []);
-// Fetch videos only once on component mount
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const confirmDelete = window.confirm("هل أنت متأكد من حذف هذا الفيديو؟");
     if (confirmDelete) {
-      const updatedVideos = videos.filter((video) => video._id !== id);
-      setVideos(updatedVideos);
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        await axios.delete(`http://localhost:8000/lessons/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setVideos(videos.filter((video) => video._id !== id));
+      } catch (err) {
+        console.error("Error deleting video:", err);
+        alert("حدث خطأ أثناء حذف الفيديو.");
+      }
     }
   };
 
   const handleEdit = (video) => {
-    setEditingVideo({ ...video }); // Clone the video object to edit
+    setEditingVideo({ ...video });
   };
 
-  const handleSaveEdit = () => {
-    const updatedVideos = videos.map((video) =>
-      video._id === editingVideo._id ? editingVideo : video
-    );
-    setVideos(updatedVideos);
-    setEditingVideo(null);
+  const handleSaveEdit = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const response = await axios.put(
+        `http://localhost:8000/lessons/${editingVideo._id}`,
+        editingVideo,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const updatedVideos = videos.map((video) =>
+        video._id === editingVideo._id ? response.data : video
+      );
+      setVideos(updatedVideos);
+      setEditingVideo(null);
+    } catch (err) {
+      console.error("Error saving video edits:", err);
+      alert("حدث خطأ أثناء تعديل الفيديو.");
+    }
   };
 
   const handleCancelEdit = () => {

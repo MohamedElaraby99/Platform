@@ -1,34 +1,31 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./../styles/HomePage.css";
 
 const HomePage = () => {
 
-  // References for each video container
-  const videoContainerRefs = useRef([]);
-  const [fullscreenIndex, setFullscreenIndex] = useState(null);
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true); // حالة التحميل
-  const [error, setError] = useState(null); // حالة الخطأ
-
-  // جلب الفيديوهات من API عند تحميل الصفحة
+  const [videos, setVideos] = useState([]); // Array to hold video data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+  const navigate = useNavigate(); // For navigation to the details page
+  // Fetch videos from API on page load
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة
+        const accessToken = localStorage.getItem("accessToken"); // Get the token
         const response = await axios.get("http://localhost:8000/lessons", {
           headers: {
-            Authorization: `Bearer ${accessToken}`, // تضمين التوكن
+            Authorization: `Bearer ${accessToken}`, // Include the token
           },
         });
 
-        setVideos(response.data); // تخزين البيانات القادمة من API
-        setError(null); // إعادة تعيين الخطأ إذا نجحت العملية
+        setVideos(response.data); // Set the video data
+        setError(null); // Clear any errors
       } catch (err) {
-        setError("حدث خطأ أثناء تحميل الفيديوهات."); // التعامل مع الأخطاء
+        setError("حدث خطأ أثناء تحميل الفيديوهات."); // Handle errors
       } finally {
-        setLoading(false); // إنهاء حالة التحميل
+        setLoading(false); // Stop loading
       }
     };
 
@@ -40,7 +37,14 @@ const HomePage = () => {
     const regExp =
       /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regExp);
-    return match ? match[1] : null; // إذا تم العثور على ID
+    return match ? match[1] : null; // Return video ID if found
+  };
+
+  // Handle click on video thumbnail
+  const handleVideoClick = (video) => {
+    navigate(`/video-details/${video._id}`, {
+      state: { video },
+    }); // التنقل إلى صفحة التفاصيل مع id الفيديو
   };
 
   if (loading) {
@@ -59,39 +63,36 @@ const HomePage = () => {
           <span className="material-icons">campaign</span>
           إعلانات مهمة
         </h2>
-        {/* Announcements content */}
       </section>
 
       {/* Educational Videos Section */}
-      {/* <section className="section video-section">
+      <section className="section video-section">
         <h2>
           <span className="material-icons">book</span>
           فيديوهات تعليمية
         </h2>
         <div className="videos-grid">
-          {videos.map((video, index) => {
-            const videoId = extractVideoId(video?.lesson_link); // Extract video ID
+          {videos.map((video) => {
+            const videoId = extractVideoId(video.lesson_link); // Extract video ID
             const thumbnailUrl = videoId
               ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-              : "https://via.placeholder.com/300x200.png?text=No+Thumbnail"; // Default thumbnail
+              : null;
 
             return (
               <div
                 className="video-container"
                 key={video._id}
-                ref={(el) => (videoContainerRefs.current[index] = el)}
+                onClick={() => handleVideoClick(video)} // On click, store the video URL and ID
               >
-                <iframe
-                  src={`${videoId}?modestbranding=1&rel=0&controls=1&fs=0`}
-                  title={video.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  className="video-iframe"
-                ></iframe>
-                <div className="top-overlay"></div>
-                <div className="video-info">
-                  <h3>{video.title}</h3>
-                  <p>{video.description || "لا يوجد وصف"}</p>
-                </div>
+                {thumbnailUrl ? (
+                  <img
+                    src={thumbnailUrl}
+                    alt={video.title}
+                    className="video-thumbnail"
+                  />
+                ) : (
+                  <p>رابط الفيديو غير صالح</p>
+                )}
               </div>
             );
           })}
@@ -101,7 +102,7 @@ const HomePage = () => {
             مشاهدة كل الفيديوهات التعليمية
           </Link>
         </p>
-      </section> */}
+      </section>
 
       {/* Upcoming Exams Section */}
       <section className="section exams-section">
@@ -109,7 +110,6 @@ const HomePage = () => {
           <span className="material-icons">edit</span>
           الامتحانات القادمة
         </h2>
-        {/* Upcoming exams content */}
       </section>
 
       {/* PDF Downloads Section */}
@@ -118,7 +118,6 @@ const HomePage = () => {
           <span className="material-icons">picture_as_pdf</span>
           ملفات PDF للتنزيل
         </h2>
-        {/* PDF files content */}
       </section>
     </div>
   );
