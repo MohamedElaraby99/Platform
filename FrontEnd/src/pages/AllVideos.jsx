@@ -1,36 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./../styles/AllVideos.css";
 
 const AllVideos = () => {
-  const [videos, setVideos] = useState([
-    {
-      id: 1,
-      title: "تعلم البرمجة",
-      youtubeLink: "https://youtube.com/example1",
-      stage: "اولي ثانوي",
-      description: "شرح أساسيات البرمجة للمبتدئين",
-      notes: "الفيديو متاح في كل الأوقات",
-    },
-    {
-      id: 2,
-      title: "أساسيات الرياضيات",
-      youtubeLink: "https://youtube.com/example2",
-      stage: "ثاني ثانوي",
-      description: "مراجعة شاملة على الجبر والهندسة",
-      notes: "الفيديو يحتوي على أسئلة إضافية",
-    },
-    {
-      id: 3,
-      title: "فيزياء المستوى الأول",
-      youtubeLink: "https://youtube.com/example3",
-      stage: "ثالث ثانوي",
-      description: "شرح قوانين الحركة الديناميكية",
-      notes: "الفيديو يشرح كافة الأمثلة بالتفصيل",
-    },
-  ]);
-
+  const [videos, setVideos] = useState([]); // Initially empty array for fetched videos
   const [searchTerm, setSearchTerm] = useState("");
   const [editingVideo, setEditingVideo] = useState(null); // For editing state
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+
+  // Fetch videos (lessons) from the API
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken"); // Retrieve token from localStorage
+        if (!accessToken) {
+          throw new Error("Access token is missing.");
+        }
+
+        const response = await axios.get("http://localhost:8000/lessons", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Include token in Authorization header
+          },
+        });
+        setVideos(response.data); // Set fetched lessons as videos
+        setError(null);
+      } catch (err) {
+        console.error("حدث خطأ أثناء جلب بيانات الفيديوهات:", err);
+        setError("Failed to fetch videos. Please check your credentials.");
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchVideos();
+  }, []);
+// Fetch videos only once on component mount
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -39,7 +44,7 @@ const AllVideos = () => {
   const handleDelete = (id) => {
     const confirmDelete = window.confirm("هل أنت متأكد من حذف هذا الفيديو؟");
     if (confirmDelete) {
-      const updatedVideos = videos.filter((video) => video.id !== id);
+      const updatedVideos = videos.filter((video) => video._id !== id);
       setVideos(updatedVideos);
     }
   };
@@ -50,7 +55,7 @@ const AllVideos = () => {
 
   const handleSaveEdit = () => {
     const updatedVideos = videos.map((video) =>
-      video.id === editingVideo.id ? editingVideo : video
+      video._id === editingVideo._id ? editingVideo : video
     );
     setVideos(updatedVideos);
     setEditingVideo(null);
@@ -69,6 +74,14 @@ const AllVideos = () => {
     (video) =>
       video.title.includes(searchTerm) || video.stage.includes(searchTerm)
   );
+
+  if (loading) {
+    return <p>Loading videos...</p>;
+  }
+
+  if (error) {
+    return <p className="error-message">{error}</p>;
+  }
 
   return (
     <div className="all-videos-container">
@@ -96,9 +109,9 @@ const AllVideos = () => {
           </thead>
           <tbody>
             {filteredVideos.map((video) => (
-              <tr key={video.id}>
+              <tr key={video._id}>
                 <td>
-                  {editingVideo && editingVideo.id === video.id ? (
+                  {editingVideo && editingVideo._id === video._id ? (
                     <input
                       type="text"
                       name="title"
@@ -111,18 +124,18 @@ const AllVideos = () => {
                   )}
                 </td>
                 <td>
-                  {editingVideo && editingVideo.id === video.id ? (
+                  {editingVideo && editingVideo._id === video._id ? (
                     <input
                       type="text"
-                      name="youtubeLink"
-                      value={editingVideo.youtubeLink}
+                      name="lesson_link"
+                      value={editingVideo.lesson_link}
                       onChange={handleEditChange}
                       className="edit-input"
                     />
                   ) : (
-                      <a 
+                    <a
                       className="youtube-link"
-                      href={video.youtubeLink}
+                      href={video.lesson_link}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -131,7 +144,7 @@ const AllVideos = () => {
                   )}
                 </td>
                 <td>
-                  {editingVideo && editingVideo.id === video.id ? (
+                  {editingVideo && editingVideo._id === video._id ? (
                     <select
                       name="stage"
                       value={editingVideo.stage}
@@ -147,7 +160,7 @@ const AllVideos = () => {
                   )}
                 </td>
                 <td>
-                  {editingVideo && editingVideo.id === video.id ? (
+                  {editingVideo && editingVideo._id === video._id ? (
                     <textarea
                       name="description"
                       value={editingVideo.description}
@@ -159,7 +172,7 @@ const AllVideos = () => {
                   )}
                 </td>
                 <td>
-                  {editingVideo && editingVideo.id === video.id ? (
+                  {editingVideo && editingVideo._id === video._id ? (
                     <textarea
                       name="notes"
                       value={editingVideo.notes}
@@ -171,7 +184,7 @@ const AllVideos = () => {
                   )}
                 </td>
                 <td>
-                  {editingVideo && editingVideo.id === video.id ? (
+                  {editingVideo && editingVideo._id === video._id ? (
                     <>
                       <button onClick={handleSaveEdit} className="save-button">
                         حفظ
@@ -184,7 +197,7 @@ const AllVideos = () => {
                       </button>
                     </>
                   ) : (
-                    <div div className="actions">
+                    <div className="actions">
                       <button
                         onClick={() => handleEdit(video)}
                         className="edit-button"
@@ -192,7 +205,7 @@ const AllVideos = () => {
                         تعديل
                       </button>
                       <button
-                        onClick={() => handleDelete(video.id)}
+                        onClick={() => handleDelete(video._id)}
                         className="delete-button"
                       >
                         حذف
