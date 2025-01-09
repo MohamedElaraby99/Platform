@@ -36,25 +36,18 @@ const App = () => {
 
   useEffect(() => {
     const savedRole = localStorage.getItem("role");
-    // const savedPath = localStorage.getItem("lastVisitedPath");
-
     setRole(savedRole);
     setIsInitialized(true);
-
-    // استعادة المسار الأخير إذا كان موجودًا
-    // if (savedRole && savedPath && savedPath !== window.location.pathname) {
-    //   window.history.replaceState({}, "", savedPath); // استعادة المسار
-    // }
 
     // جلب بيانات المستخدمين من API
     const fetchUsers = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get("http://localhost:8000/users" , {
+        const response = await axios.get("http://localhost:8000/users", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        })
+        });
         setUsers(response.data); // تخزين البيانات في حالة المستخدمين
       } catch (error) {
         console.error("حدث خطأ أثناء جلب بيانات المستخدمين:", error);
@@ -66,7 +59,7 @@ const App = () => {
 
   const handleSignOut = () => {
     localStorage.removeItem("role"); // حذف الدور
-    localStorage.removeItem("lastVisitedPath"); // حذف المسار الأخير
+    localStorage.removeItem("accessToken"); // حذف التوكن
     setRole(null); // إعادة تعيين الدور
   };
 
@@ -92,18 +85,19 @@ const App = () => {
               <Route path="/pdf" element={<PdfPage />} />
               <Route
                 path="/user"
-                element={<UserPage onSignOut={handleSignOut} />}
+                element={
+                  <UserPage
+                    onSignOut={handleSignOut}
+                    users={users}
+                  />
+                }
               />
               <Route path="/add-user" element={<AddUser />} />
               <Route path="/add-video" element={<AddVideo />} />
               <Route path="/add-pdf" element={<AddPdf />} />
               <Route path="/add-exam" element={<CreateExam />} />
               <Route path="/add-post" element={<PostsComponent />} />
-              <Route
-                path="/all-users"
-                element={<AllUsers users={users} />}
-              />{" "}
-              {/* تمرير المستخدمين */}
+              <Route path="/all-users" element={<AllUsers users={users} />} />
               <Route path="/all-exams" element={<AllExams />} />
               <Route path="/all-videos" element={<AllVideos />} />
               <Route path="/all-pdfs" element={<AllPdfs />} />
@@ -111,7 +105,7 @@ const App = () => {
               {role === "admin" && (
                 <Route
                   path="/dashboard"
-                  element={<DashboardPage users={users} />} // تمرير المستخدمين
+                  element={<DashboardPage users={users} />}
                 />
               )}
               <Route path="*" element={<Navigate to="/home" />} />

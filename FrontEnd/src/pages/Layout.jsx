@@ -1,18 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./../styles/Layout.css";
 
 const Layout = ({ children, role, onSignOut }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // حفظ المسار الحالي في localStorage عند تغييره
-  // useEffect(() => {
-  //   if (location.pathname !== "/login") {
-  //     localStorage.setItem("lastVisitedPath", location.pathname);
-  //     console.log("Path saved to localStorage:", location.pathname);
-  //   }
-  // }, [location]);
 
   return (
     <div className="layout">
@@ -52,7 +44,14 @@ const Layout = ({ children, role, onSignOut }) => {
                 <span className="material-icons">home</span> الرئيسية
               </Link>
             </li>
-            <li className={location.pathname === "/courses" ? "active" : ""}>
+            <li
+              className={
+                location.pathname === "/courses" ||
+                location.pathname === "/video-details"
+                  ? "active"
+                  : ""
+              }
+            >
               <Link to="/courses">
                 <span className="material-icons">book</span> الفيديوهات
                 التعليمية
@@ -76,7 +75,9 @@ const Layout = ({ children, role, onSignOut }) => {
                   location.pathname.startsWith("/dashboard") ||
                   location.pathname.startsWith("/add-") ||
                   location.pathname.startsWith("/edit-") ||
-                  location.pathname.startsWith("/all-")
+                  location.pathname.startsWith("/all-") ||
+                  location.pathname.startsWith("/delete-") ||
+                  location.pathname.startsWith("/show-")
                     ? "active"
                     : ""
                 }

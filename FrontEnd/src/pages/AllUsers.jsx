@@ -1,75 +1,33 @@
 import React, { useState, useEffect } from "react";
-import "./../styles/AllUsers.css";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import "./../styles/AllUsers.css";
 
 const AllUsers = () => {
-  const [users, setUsers] = useState([]); // جميع المستخدمين
-  const [searchTerm, setSearchTerm] = useState(""); // مصطلح البحث
-  const [loading, setLoading] = useState(true); // حالة التحميل
-  const [error, setError] = useState(""); // حالة الخطأ
-  const [selectedTable, setSelectedTable] = useState("students"); // الجدول المختار
+  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [editingUser, setEditingUser] = useState(null);
+  const [editData, setEditData] = useState({
+    name: "",
+    username: "",
+    stage: "",
+    password: "",
+    role: "",
+  });
 
-  const [students, setStudents] = useState([
-    {
-      id: 1,
-      name: "احمد محمد",
-      username: "ahmed123",
-      grade: "أولى ثانوي",
-      password: "123456",
-    },
-    {
-      id: 2,
-      name: "منى علي",
-      username: "mona456",
-      grade: "ثانية ثانوي",
-      password: "123456",
-    },
-    {
-      id: 3,
-      name: "سارة حسن",
-      username: "sara789",
-      grade: "ثالثة ثانوي",
-      password: "123456",
-    },
-  ]);
-
-  // State for managers
-  const [managers, setManagers] = useState([
-    {
-      id: 1,
-      name: "مستر محمود توكل",
-      username: "admin123",
-      password: "adminpass",
-    },
-    {
-      id: 2,
-      name: "ادمن منى",
-      username: "admin456",
-      password: "adminpass",
-    },
-  ]);
+  const [selectedTable, setSelectedTable] = useState("students");
 
   useEffect(() => {
     const fetchUsers = async () => {
       const accessToken = localStorage.getItem("accessToken");
       try {
         const response = await axios.get("http://localhost:8000/users", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUsers(response.data);
       } catch (err) {
-        if (err.response && err.response.status === 403) {
-          localStorage.removeItem("accessToken"); // إزالة التوكن غير الصالح
-          setError("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.");
-        } else {
-          setError("حدث خطأ أثناء تحميل البيانات.");
-        }
+        setError("حدث خطأ أثناء تحميل البيانات.");
       } finally {
         setLoading(false);
       }
@@ -78,149 +36,114 @@ const AllUsers = () => {
     fetchUsers();
   }, []);
 
-  const [editingUser, setEditingUser] = useState(null);
-  const [editData, setEditData] = useState({
-    name: "",
-    username: "",
-    grade: "",
-    password: "",
-  });
-  const [showPassword, setShowPassword] = useState(false);
+  const handleSearch = (e) => setSearchTerm(e.target.value);
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    setEditData({ ...user });
   };
 
-  // const handleDelete = (id, type) => {
-  //   const targetArray = type === "student" ? students : managers;
-  //   const targetSetter = type === "student" ? setStudents : setManagers;
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditData({
+      ...editData,
+      [name]: value,
+    });
+  };
 
-  //   const userToDelete = targetArray.find((user) => user.id === id);
-  //   const confirmDelete = window.confirm(
-  //     `هل أنت متأكد من حذف المستخدم "${userToDelete.name}"؟`
-  //   );
-  //   if (confirmDelete) {
-  //     const updatedUsers = targetArray.filter((user) => user.id !== id);
-  //     targetSetter(updatedUsers);
-  //     toast.success(`تم حذف المستخدم "${userToDelete.name}" بنجاح!`);
-  //   }
-  // };
+  const handleEditSave = async () => {
+    if (!editData.name || !editData.username || !editData.password) {
+      alert("يرجى ملء جميع الحقول قبل الحفظ!");
+      return;
+    }
 
-  // const handleEdit = (id, type) => {
-  //   const targetArray = type === "student" ? students : managers;
-  //   const userToEdit = targetArray.find((user) => user.id === id);
-  //   setEditingUser({ id, type });
-  //   setEditData({ ...userToEdit });
-  // };
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const response = await axios.put(
+        `http://localhost:8000/users/${editingUser._id}`,
+        editData,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      setUsers(
+        users.map((user) =>
+          user._id === editingUser._id ? response.data : user
+        )
+      );
+      setEditingUser(null);
+      alert("تم تحديث المستخدم بنجاح!");
+    } catch (err) {
+      alert("حدث خطأ أثناء تحديث المستخدم.");
+    }
+  };
 
-  // const handleEditChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setEditData({
-  //     ...editData,
-  //     [name]: value,
-  //   });
-  // };
+  const handleDelete = async (id) => {
+    if (window.confirm("هل أنت متأكد من حذف هذا المستخدم؟")) {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        await axios.delete(`http://localhost:8000/users/${id}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        setUsers(users.filter((user) => user._id !== id));
+      } catch (err) {
+        alert("حدث خطأ أثناء حذف المستخدم.");
+      }
+    }
+  };
 
-  // const handleEditSave = () => {
-  //   if (!editData.name || !editData.username || !editData.password) {
-  //     toast.error("يرجى ملء جميع الحقول قبل الحفظ!");
-  //     return;
-  //   }
-
-  //   const targetArray = editingUser.type === "student" ? students : managers;
-  //   const targetSetter =
-  //     editingUser.type === "student" ? setStudents : setManagers;
-
-  //   const updatedUsers = targetArray.map((user) =>
-  //     user.id === editingUser.id ? { ...user, ...editData } : user
-  //   );
-  //   targetSetter(updatedUsers);
-  //   setEditingUser(null);
-  //   toast.success("تم تحديث بيانات المستخدم بنجاح!");
-  // };
-
-  // const handleEditCancel = () => {
-  //   setEditingUser(null);
-  //   toast.info("تم إلغاء التعديلات.");
-  // };
-
-
-
-  // تصفية المستخدمين حسب البحث
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // تصفية الطلاب
-  const filteredStudents = filteredUsers.filter(
-    (user) => user.role === "student"
-  );
-  console.log("Filtered Students:", filteredStudents); // عرض الطلاب المصفاة
+  const students = filteredUsers.filter((user) => user.role === "student");
+  const admins = filteredUsers.filter((user) => user.role === "admin");
 
-  // تصفية المشرفين
-  const filteredAdmins = filteredUsers.filter((user) => user.role === "admin");
-  console.log("Filtered Admins:", filteredAdmins); // عرض المشرفين المصفاة
-
-  if (loading) {
-    console.log("Loading users...");
-    return <p>جارٍ تحميل البيانات...</p>;
-  }
-
-  if (error) {
-    console.log("Error encountered:", error);
-    return <p className="error-message">{error}</p>;
-  }
+  if (loading) return <p>جارٍ تحميل البيانات...</p>;
+  if (error) return <p className="error-message">{error}</p>;
 
   return (
     <div className="all-users-container">
-      <ToastContainer />
       <h2>إدارة المستخدمين</h2>
       <div className="search-container">
         <input
           type="text"
-          placeholder="ابحث بالاسم أو اسم المستخدم"
+          placeholder="ابحث بالاسم"
           value={searchTerm}
           onChange={handleSearch}
           className="search-input"
         />
         <select
-          className="table-selector"
           value={selectedTable}
           onChange={(e) => setSelectedTable(e.target.value)}
+          className="table-selector"
         >
           <option value="students">جدول الطلاب</option>
-          <option value="managers">جدول المشرفين</option>
+          <option value="admins">جدول المشرفين</option>
         </select>
       </div>
 
       {selectedTable === "students" && (
-        <div className="users-table">
+        <div>
           <h3>جدول الطلاب</h3>
           <table>
             <thead>
               <tr>
                 <th>الاسم</th>
                 <th>اسم المستخدم</th>
-                <th>السنة الدراسية</th>
-                <th>كلمة المرور</th>
+                <th>المرحلة</th>
                 <th>الإجراءات</th>
               </tr>
             </thead>
             <tbody>
-              {filteredStudents.map((user) => (
-                <tr key={user.id}>
-                  {editingUser?.id === user.id &&
-                  editingUser?.type === "student" ? (
+              {students.map((student) => (
+                <tr key={student._id}>
+                  {editingUser?._id === student._id ? (
                     <>
                       <td>
                         <input
                           type="text"
                           name="name"
                           value={editData.name}
-                          // onChange={handleEditChange}
-                          className="edit-input"
+                          onChange={handleEditChange}
                         />
                       </td>
                       <td>
@@ -228,16 +151,14 @@ const AllUsers = () => {
                           type="text"
                           name="username"
                           value={editData.username}
-                          // onChange={handleEditChange}
-                          className="edit-input"
+                          onChange={handleEditChange}
                         />
                       </td>
                       <td>
                         <select
-                          name="grade"
-                          value={editData.grade}
-                          // onChange={handleEditChange}
-                          className="edit-select"
+                          name="stage"
+                          value={editData.stage}
+                          onChange={handleEditChange}
                         >
                           <option value="أولى ثانوي">أولى ثانوي</option>
                           <option value="ثانية ثانوي">ثانية ثانوي</option>
@@ -245,58 +166,22 @@ const AllUsers = () => {
                         </select>
                       </td>
                       <td>
-                        <div className="password-container">
-                          <input
-                            type={showPassword ? "text" : "password"}
-                            name="password"
-                            placeholder="كلمة المرور الجديدة"
-                            value={editData.password}
-                            // onChange={handleEditChange}
-                            className="edit-input"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="toggle-password-button"
-                          >
-                            <FontAwesomeIcon
-                              icon={showPassword ? faEyeSlash : faEye}
-                            />
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        <button
-                          // onClick={handleEditSave}
-                          className="save-button"
-                        >
-                          حفظ
-                        </button>
-                        <button
-                          // onClick={handleEditCancel}
-                          className="cancel-button"
-                        >
+                        <button className="save-button" onClick={handleEditSave}>حفظ</button>
+                        <button className="cancel-button" onClick={() => setEditingUser(null)}>
                           إلغاء
                         </button>
                       </td>
                     </>
                   ) : (
                     <>
-                      <td>{user.name}</td>
-                      <td>{user.username}</td>
-                      <td>{user.stage}</td>
-                      <td>******</td>
+                      <td>{student.name}</td>
+                      <td>{student.username}</td>
+                      <td>{student.stage}</td>
                       <td className="actions-cell">
-                        <button
-                          // onClick={() => handleEdit(user.id, "student")}
-                          className="edit-button"
-                        >
+                        <button className="edit-button" onClick={() => handleEdit(student)}>
                           تعديل
                         </button>
-                        <button
-                          // onClick={() => handleDelete(user.id, "student")}
-                          className="delete-button"
-                        >
+                        <button className="delete-button" onClick={() => handleDelete(student._id)}>
                           حذف
                         </button>
                       </td>
@@ -309,31 +194,28 @@ const AllUsers = () => {
         </div>
       )}
 
-      {selectedTable === "managers" && (
-        <div className="users-table">
+      {selectedTable === "admins" && (
+        <div>
           <h3>جدول المشرفين</h3>
           <table>
             <thead>
               <tr>
                 <th>الاسم</th>
                 <th>اسم المستخدم</th>
-                <th>كلمة المرور</th>
                 <th>الإجراءات</th>
               </tr>
             </thead>
             <tbody>
-              {filteredAdmins.map((user) => (
-                <tr key={user.id}>
-                  {editingUser?.id === user.id &&
-                  editingUser?.type === "manager" ? (
+              {admins.map((admin) => (
+                <tr key={admin._id}>
+                  {editingUser?._id === admin._id ? (
                     <>
                       <td>
                         <input
                           type="text"
                           name="name"
                           value={editData.name}
-                          // onChange={handleEditChange}
-                          className="edit-input"
+                          onChange={handleEditChange}
                         />
                       </td>
                       <td>
@@ -341,62 +223,23 @@ const AllUsers = () => {
                           type="text"
                           name="username"
                           value={editData.username}
-                          // onChange={handleEditChange}
-                          className="edit-input"
+                          onChange={handleEditChange}
                         />
                       </td>
                       <td>
-                        <div className="password-container">
-                          <input
-                            type={showPassword ? "text" : "password"}
-                            name="password"
-                            placeholder="كلمة المرور الجديدة"
-                            value={editData.password}
-                            // onChange={handleEditChange}
-                            className="edit-input"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="toggle-password-button"
-                          >
-                            <FontAwesomeIcon
-                              icon={showPassword ? faEyeSlash : faEye}
-                            />
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        <button
-                          // onClick={handleEditSave}
-                          className="save-button"
-                        >
-                          حفظ
-                        </button>
-                        <button
-                          // onClick={handleEditCancel}
-                          className="cancel-button"
-                        >
+                        <button className="save-button" onClick={handleEditSave}>حفظ</button>
+                        <button className="cancel-button" onClick={() => setEditingUser(null)}>
                           إلغاء
                         </button>
                       </td>
                     </>
                   ) : (
                     <>
-                      <td>{user.name}</td>
-                      <td>{user.username}</td>
-                      <td>******</td>
+                      <td>{admin.name}</td>
+                      <td>{admin.username}</td>
                       <td className="actions-cell">
-                        <button
-                          // onClick={() => handleEdit(user.id, "manager")}
-                          className="edit-button"
-                        >
-                          تعديل
-                        </button>
-                        <button
-                          // onClick={() => handleDelete(user.id, "manager")}
-                          className="delete-button"
-                        >
+                        <button className="edit-button" onClick={() => handleEdit(admin)}>تعديل</button>
+                        <button className="delete-button" onClick={() => handleDelete(admin._id)}>
                           حذف
                         </button>
                       </td>
