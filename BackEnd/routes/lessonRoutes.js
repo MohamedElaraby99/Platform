@@ -8,5 +8,6 @@ router.use(verifyJWT);
 router.route("/").get(lessonController.getAllLessons);
 router.route("/").post(lessonController.createLesson);
 router.route("/:id").put(lessonController.updateLesson);
+router.route("/:id").delete(lessonController.deleteLesson);
 
 module.exports = router;

@@ -36,7 +36,7 @@ const createLesson = async (req, res) => {
 
 const updateLesson = async (req, res) => {
   const { id } = req.params;
-  const { title, lesson_link, stage, description, notes } = req.body;
+  const { title, lesson_link, stage } = req.body;
   if (!title) {
     return res.status(400).json({ message: "العنوان مطلوب" });
   }
@@ -57,8 +57,20 @@ const updateLesson = async (req, res) => {
   return res.status(200).json(updatedLesson);
 };
 
+const deleteLesson = async (req, res) => {
+  const { id } = req.params;
+  const lesson = await Lesson.findByIdAndDelete(id);
+
+  if (!lesson) {
+    return res.status(404).json({ message: "الفيديو غير موجود" });
+  }
+
+  return res.status(200).json({message: "تم حذف الفيديو بنجاح"});
+};
+
 module.exports = {
   getAllLessons,
   createLesson,
   updateLesson,
+  deleteLesson
 };
