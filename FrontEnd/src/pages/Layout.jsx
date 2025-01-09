@@ -21,10 +21,10 @@ const Layout = ({ children, role, onSignOut }) => {
         <div className="logo-container" onClick={() => navigate("/home")}>
           <img
             className="logo"
-            src={require("./../images/logo.png")}
+            src={require("./../images/loginlogo.png")}
             alt="محمود توكل"
           />
-          <h1 className="flash">المنصة التعليمية لمستر توكل</h1>
+          <h1 className="flash"> منصة التوكل </h1>
         </div>
         <div className="search-container">
           <input type="search" placeholder="بحث..." className="search-bar" />

@@ -4,14 +4,24 @@ import "./../styles/VideoDetailsPage.css";
 
 const VideoDetailsPage = () => {
   const location = useLocation();
-  const video = location.state;
+  const { state } = location;
+  console.log("state", state);
+  
+  const [video ] = useState(state?.video); // Store video data
+  const [loading ] = useState(false); // Loading state
+  const [error] = useState(null); // Error state
 
-  const videoContainerRef = useRef(null); // Reference for video container
-  const [isFullscreen, setIsFullscreen] = useState(false); // To track fullscreen state
-  const [isPlaying, setIsPlaying] = useState(false); // To track playing state
-  const playerRef = useRef(null); // Reference for YouTube Player
+  const videoContainerRef = useRef(null); 
+  const [isFullscreen, setIsFullscreen] = useState(false); 
+  const [isPlaying, setIsPlaying] = useState(false); 
+  const playerRef = useRef(null); 
 
   const extractEmbedUrl = (url) => {
+    console.log("from extractEmbedUrl");
+    
+    if (!url) {
+      return null; 
+    }
     const regExp =
       /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regExp);
@@ -21,10 +31,7 @@ const VideoDetailsPage = () => {
     return null;
   };
 
-
-  const videoEmbedUrl = extractEmbedUrl(video.url);
-
-  // Memoize the function to handle the player's state change
+  // Memoized function to handle YouTube player state change
   const handlePlayerStateChange = useCallback((event) => {
     if (event.data === window.YT.PlayerState.PLAYING) {
       setIsPlaying(true); // Video is playing
@@ -93,6 +100,20 @@ const VideoDetailsPage = () => {
     }
   };
 
+  if (loading) {
+    return <p>جارٍ تحميل بيانات الفيديو...</p>;
+  }
+
+  if (error) {
+    return <p className="error-message">{error}</p>;
+  }
+
+  if (!video) {
+    return <p>لا يوجد فيديو لعرضه.</p>;
+  }
+
+  const videoEmbedUrl = extractEmbedUrl(video?.lesson_link);
+
   return (
     <div className="video-details">
       <div className="video-titlee">
@@ -100,7 +121,6 @@ const VideoDetailsPage = () => {
       </div>
       <div className="video-details-page">
         <div className="video-player-container" ref={videoContainerRef}>
-          {videoEmbedUrl ? (
             <iframe
               id="youtube-player"
               src={videoEmbedUrl}
@@ -108,24 +128,6 @@ const VideoDetailsPage = () => {
               className={`video-player ${isFullscreen ? "fullscreen" : ""}`}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             ></iframe>
-          ) : (
-            <p>رابط الفيديو غير صالح</p>
-          )}
-
-          {/* Top Overlay */}
-          <div
-            className={`top-overlay ${
-              isFullscreen ? "fullscreen-overlay" : ""
-            }`}
-          ></div>
-
-          {/* Bottom Right Overlay */}
-          <div
-            className={`bottom-right-overlay ${
-              isFullscreen && isPlaying ? "shrink" : ""
-            } ${isFullscreen ? "fullscreen-overlay" : ""}`}
-          ></div>
-
           <button
             className="fullscreen-button"
             onClick={handleFullscreenToggle}

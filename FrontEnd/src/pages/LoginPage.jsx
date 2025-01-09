@@ -42,6 +42,7 @@ const LoginForm = ({ setRole }) => {
       setRole(role);
       localStorage.setItem("role", role);
       localStorage.setItem("accessToken", accessToken);
+      console.log(localStorage.getItem("accessToken"));
 
       // If "Remember Me" is checked, save username and password
       if (rememberMe) {
@@ -72,10 +73,6 @@ const LoginForm = ({ setRole }) => {
       <div className="login-page">
         {/* Left Section */}
         <div className="left-side">
-          <h1 className="welcome-text">مرحبًا بعودتك!</h1>
-          <p className="welcome-subtext">
-            يرجى تسجيل الدخول إلى حسابك للمتابعة.
-          </p>
         </div>
 
         {/* Right Section */}
@@ -83,7 +80,7 @@ const LoginForm = ({ setRole }) => {
           <div className="login-form-container">
             <h2 className="login-title">تسجيل الدخول</h2>
             <form onSubmit={handleLogin} className="login-form">
-              <div className="input-container">
+              <div className="input-containerr">
                 <label htmlFor="userName">اسم المستخدم</label>
                 <input
                   type="text"
@@ -93,25 +90,28 @@ const LoginForm = ({ setRole }) => {
                   required
                 />
               </div>
-              <div className="input-container">
+              <div className="input-containerr">
                 <label htmlFor="password">كلمة المرور</label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="toggle-password-button"
-                >
-                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                </button>
+                <div className="password-input-container">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="password-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="toggle-password-buttonn"
+                  >
+                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                  </button>
+                </div>
               </div>
               {error && <p className="error-message">{error}</p>}
-              <div className="options">
+              <div className="optionss">
                 <label className="remember-me">
                   <input
                     type="checkbox"

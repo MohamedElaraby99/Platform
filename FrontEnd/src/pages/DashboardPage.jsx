@@ -1,10 +1,57 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 import "./../styles/dashboard.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // حالة لتخزين إجمالي عدد المستخدمين
+  const [totalUsers, setTotalUsers] = useState(0);
+
+  // حالة لتخزين إجمالي عدد الدروس
+  const [totalLessons, setTotalLessons] = useState(0);
+
+  // دالة لجلب بيانات المستخدمين من الـ API
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة من Local Storage
+        const response = await axios.get("http://localhost:8000/users", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
+          },
+        });
+        setTotalUsers(response.data.length); // تخزين عدد المستخدمين
+      } catch (error) {
+        console.error("حدث خطأ أثناء جلب بيانات المستخدمين:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []); // يتم تنفيذها مرة واحدة عند تحميل الصفحة
+
+  // دالة لجلب بيانات الدروس من الـ API
+  useEffect(() => {
+    const fetchLessons = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة من Local Storage
+        const response = await axios.get("http://localhost:8000/lessons", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
+          },
+        });
+        setTotalLessons(response.data.length); // تخزين عدد المستخدمين
+      } catch (error) {
+        console.error("حدث خطأ أثناء جلب بيانات المستخدمين:", error);
+      }
+    };
+
+    fetchLessons();
+  }, []); // يتم تنفيذها مرة واحدة عند تحميل الصفحة
 
   return (
     <div
@@ -21,7 +68,7 @@ const Dashboard = () => {
 
       <div className="stats">
         <div className="stat-item" onClick={() => navigate("/all-videos")}>
-          <h2>3</h2>
+          <h2>{totalLessons}</h2> {/* عرض العدد الديناميكي للفيديوهات */}
           <p className="stat-title">إجمالي الفيديوهات</p>
           <p className="show-details">عرض</p>
         </div>
@@ -36,7 +83,7 @@ const Dashboard = () => {
           <p className="show-details">عرض</p>
         </div>
         <div className="stat-item" onClick={() => navigate("/all-users")}>
-          <h2>2</h2>
+          <h2>{totalUsers}</h2> {/* عرض العدد الديناميكي للمستخدمين */}
           <p className="stat-title">إجمالي المستخدمين </p>
           <p className="show-details">عرض</p>
         </div>

@@ -5,6 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import axios from "axios"; // مكتبة لجلب البيانات من API
 import LoginForm from "./pages/LoginPage";
 import HomePage from "./pages/homePage";
 import CoursesPage from "./pages/CoursesPage";
@@ -31,6 +32,7 @@ import AllPostsComponent from "./pages/AllPostsComponent";
 const App = () => {
   const [role, setRole] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [users, setUsers] = useState([]); // حالة لتخزين بيانات المستخدمين
 
   useEffect(() => {
     const savedRole = localStorage.getItem("role");
@@ -39,23 +41,40 @@ const App = () => {
     setRole(savedRole);
     setIsInitialized(true);
 
-    // Restore the last visited path if the role exists
+    // استعادة المسار الأخير إذا كان موجودًا
     if (savedRole && savedPath && savedPath !== window.location.pathname) {
-      window.history.replaceState({}, "", savedPath); // Restore path
+      window.history.replaceState({}, "", savedPath); // استعادة المسار
     }
+
+    // جلب بيانات المستخدمين من API
+    const fetchUsers = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get("http://localhost:8000/users" , {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        setUsers(response.data); // تخزين البيانات في حالة المستخدمين
+      } catch (error) {
+        console.error("حدث خطأ أثناء جلب بيانات المستخدمين:", error);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const handleSignOut = () => {
-    localStorage.removeItem("role"); // Clear role
-    localStorage.removeItem("lastVisitedPath"); // Clear last path
-    setRole(null); // Reset role
+    localStorage.removeItem("role"); // حذف الدور
+    localStorage.removeItem("lastVisitedPath"); // حذف المسار الأخير
+    setRole(null); // إعادة تعيين الدور
   };
 
   return (
     <Router>
       <div style={{ direction: "rtl" }}>
         {!isInitialized ? (
-          <p>Loading...</p> // Show a loader while initializing
+          <p>Loading...</p> // عرض رسالة تحميل أثناء التهيئة
         ) : !role ? (
           <Routes>
             <Route path="/login" element={<LoginForm setRole={setRole} />} />
@@ -66,7 +85,7 @@ const App = () => {
             <Routes>
               <Route path="/home" element={<HomePage />} />
               <Route path="/courses" element={<CoursesPage />} />
-              <Route path="/video-details" element={<VideoDetailsPage />} />
+              <Route path="/video-details/:id" element={<VideoDetailsPage />} />
               <Route path="/exams" element={<ExamsPage />} />
               <Route path="/exams/details/:id" element={<ExamDetails />} />
               <Route path="/exams/start/:id" element={<ExamsSystem />} />
@@ -80,13 +99,20 @@ const App = () => {
               <Route path="/add-pdf" element={<AddPdf />} />
               <Route path="/add-exam" element={<CreateExam />} />
               <Route path="/add-post" element={<PostsComponent />} />
-              <Route path="/all-users" element={<AllUsers />} />
+              <Route
+                path="/all-users"
+                element={<AllUsers users={users} />}
+              />{" "}
+              {/* تمرير المستخدمين */}
               <Route path="/all-exams" element={<AllExams />} />
               <Route path="/all-videos" element={<AllVideos />} />
               <Route path="/all-pdfs" element={<AllPdfs />} />
               <Route path="/all-posts" element={<AllPostsComponent />} />
               {role === "admin" && (
-                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route
+                  path="/dashboard"
+                  element={<DashboardPage users={users} />} // تمرير المستخدمين
+                />
               )}
               <Route path="*" element={<Navigate to="/home" />} />
             </Routes>
