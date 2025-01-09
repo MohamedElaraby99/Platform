@@ -32,11 +32,11 @@ const createLesson = async (req, res) => {
   } catch (error) {
     console.error("Error creating lesson:", error);
   }
-
 };
 
 const updateLesson = async (req, res) => {
-  const { id, title, lesson_link, stage, description, notes } = req.body;
+  const { id } = req.params;
+  const { title, lesson_link, stage, description, notes } = req.body;
   if (!title) {
     return res.status(400).json({ message: "العنوان مطلوب" });
   }
@@ -47,18 +47,14 @@ const updateLesson = async (req, res) => {
     return res.status(400).json({ message: "المرحلة الدراسية مطلوبة" });
   }
 
-  const foundLesson = await Lesson.findOne({ username }).exec();
+  const lesson = await Lesson.findByIdAndUpdate(id, req.body);
 
-  const lesson = await Lesson.create({
-    title,
-    lesson_link,
-    stage,
-    description,
-    notes,
-  });
-  return res
-    .status(200)
-    .json({ message: "الفيديو تم انشاءه بنجاح" });
+  if (!lesson) {
+    return res.status(404).json({ message: "الفيديو غير موجود" });
+  }
+
+  const updatedLesson = await Lesson.findById(id);
+  return res.status(200).json(updatedLesson);
 };
 
 module.exports = {
