@@ -36,15 +36,15 @@ const App = () => {
 
   useEffect(() => {
     const savedRole = localStorage.getItem("role");
-    const savedPath = localStorage.getItem("lastVisitedPath");
+    // const savedPath = localStorage.getItem("lastVisitedPath");
 
     setRole(savedRole);
     setIsInitialized(true);
 
     // استعادة المسار الأخير إذا كان موجودًا
-    if (savedRole && savedPath && savedPath !== window.location.pathname) {
-      window.history.replaceState({}, "", savedPath); // استعادة المسار
-    }
+    // if (savedRole && savedPath && savedPath !== window.location.pathname) {
+    //   window.history.replaceState({}, "", savedPath); // استعادة المسار
+    // }
 
     // جلب بيانات المستخدمين من API
     const fetchUsers = async () => {

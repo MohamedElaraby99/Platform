@@ -7,12 +7,12 @@ const Layout = ({ children, role, onSignOut }) => {
   const location = useLocation();
 
   // حفظ المسار الحالي في localStorage عند تغييره
-  useEffect(() => {
-    if (location.pathname !== "/login") {
-      localStorage.setItem("lastVisitedPath", location.pathname);
-      console.log("Path saved to localStorage:", location.pathname);
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   if (location.pathname !== "/login") {
+  //     localStorage.setItem("lastVisitedPath", location.pathname);
+  //     console.log("Path saved to localStorage:", location.pathname);
+  //   }
+  // }, [location]);
 
   return (
     <div className="layout">
