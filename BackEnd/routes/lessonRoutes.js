@@ -7,6 +7,6 @@ const verifyJWT = require("../middlewares/verifyToken");
 router.use(verifyJWT);
 router.route("/").get(lessonController.getAllLessons);
 router.route("/").post(lessonController.createLesson);
-router.route("/").put(lessonController.updateLesson);
+router.route("/:id").put(lessonController.updateLesson);
 
 module.exports = router;

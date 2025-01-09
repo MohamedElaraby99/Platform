@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./../../styles/dashboard/AddUser.css";
@@ -22,7 +23,7 @@ const AddUser = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Perform validation
@@ -43,20 +44,42 @@ const AddUser = () => {
       return;
     }
 
-    // Simulate saving user data
-    console.log("User added:", user);
+    // إعداد بيانات الطلب
+    const requestData = {
+      name: user.name,
+      username: user.username,
+      password: user.password,
+      role: user.type,
+      stage: user.type === "student" ? user.stage : undefined, // إذا كان مشرفًا، لا يتم إرسال المرحلة الدراسية
+    };
 
-    // Reset form
-    setUser({
-      type: "student",
-      name: "",
-      username: "",
-      password: "",
-      stage: "",
-    });
+    try {
+      // إرسال الطلب إلى الـ API
+      const response = await axios.post(
+        "http://localhost:8000/auth/register",
+        requestData
+      );
 
-    // Show success toast
-    toast.success("تم إضافة المستخدم بنجاح!");
+      // عرض رسالة نجاح
+      toast.success("تم إضافة المستخدم بنجاح!");
+
+      // إعادة تعيين النموذج
+      setUser({
+        type: "student",
+        name: "",
+        username: "",
+        password: "",
+        stage: "",
+      });
+
+      console.log("API Response:", response.data);
+    } catch (error) {
+      // معالجة الأخطاء
+      console.error("Error adding user:", error);
+      toast.error(
+        error.response?.data?.message || "حدث خطأ أثناء إضافة المستخدم!"
+      );
+    }
   };
 
   return (

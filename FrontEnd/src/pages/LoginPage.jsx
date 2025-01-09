@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./../styles/LoginPage.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const LoginForm = ({ setRole }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const [userName, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -34,7 +37,7 @@ const LoginForm = ({ setRole }) => {
 
       const { role, accessToken } = response.data;
       console.log(response);
-      
+
       // Set role and token in localStorage
       setRole(role);
       localStorage.setItem("role", role);
@@ -93,12 +96,19 @@ const LoginForm = ({ setRole }) => {
               <div className="input-container">
                 <label htmlFor="password">كلمة المرور</label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="toggle-password-button"
+                >
+                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                </button>
               </div>
               {error && <p className="error-message">{error}</p>}
               <div className="options">

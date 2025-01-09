@@ -1,22 +1,22 @@
 import React, { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./../styles/Layout.css";
-import { useNavigate } from "react-router-dom";
 
 const Layout = ({ children, role, onSignOut }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Save the current path to localStorage whenever it changes
+  // حفظ المسار الحالي في localStorage عند تغييره
   useEffect(() => {
     if (location.pathname !== "/login") {
       localStorage.setItem("lastVisitedPath", location.pathname);
-      console.log("Path saved to localStorage:", location.pathname); 
+      console.log("Path saved to localStorage:", location.pathname);
     }
   }, [location]);
 
   return (
     <div className="layout">
+      {/* Header */}
       <header className="header">
         <div className="logo-container" onClick={() => navigate("/home")}>
           <img
@@ -42,7 +42,9 @@ const Layout = ({ children, role, onSignOut }) => {
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="main-content">
+        {/* Sidebar */}
         <aside className="sidebar">
           <ul>
             <li className={location.pathname === "/home" ? "active" : ""}>
@@ -71,22 +73,10 @@ const Layout = ({ children, role, onSignOut }) => {
             {role === "admin" && (
               <li
                 className={
-                  location.pathname === "/dashboard" ||
-                  location.pathname === "/add-user" ||
-                  location.pathname === "/add-video" ||
-                  location.pathname === "/add-pdf" ||
-                  location.pathname === "/add-exam" ||
-                  location.pathname === "/all-videos" ||
-                  location.pathname === "/all-pdfs" ||
-                  location.pathname === "/all-exams" ||
-                  location.pathname === "/all-users" ||
-                  location.pathname === "/user" ||
-                  location.pathname === "/edit-user" ||
-                  location.pathname === "/edit-video" ||
-                  location.pathname === "/edit-pdf" ||
-                  location.pathname === "/edit-exam" ||
-                  location.pathname === "/all-posts" ||
-                  location.pathname === "/add-post"
+                  location.pathname.startsWith("/dashboard") ||
+                  location.pathname.startsWith("/add-") ||
+                  location.pathname.startsWith("/edit-") ||
+                  location.pathname.startsWith("/all-")
                     ? "active"
                     : ""
                 }
@@ -98,6 +88,8 @@ const Layout = ({ children, role, onSignOut }) => {
             )}
           </ul>
         </aside>
+
+        {/* Page Content */}
         <div className="page-content">{children}</div>
       </main>
     </div>

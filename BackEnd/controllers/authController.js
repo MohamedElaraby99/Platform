@@ -4,19 +4,19 @@ const jsonWebToken = require("jsonwebtoken");
 const register = async (req, res) => {
   const { name, username, password, role, stage } = req.body;
   if (!name || !username || !password || !role) {
-    return res.status(400).json({ message: "All fields are required" });
+    return res.status(400).json({ message: "كل الحقول مطلوبة" });
   }
   if (role !== "admin") {
     if (!stage) {
       return res
         .status(400)
-        .json({ message: "stage is required when user not admin" });
+        .json({ message: "المرحلة الدراسية مطلوبة اذا لم تكن مشرف" });
     }
   }
 
   const foundUser = await User.findOne({ username }).exec();
   if (foundUser) {
-    return res.status(401).json({ message: "User Already exists" });
+    return res.status(401).json({ message: "المستخدم موجود بالفعل" });
   }
 
   // const hashedPassword = await bcrypt.hash(password, 10);
@@ -67,13 +67,13 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ message: "All fields are required" });
+    return res.status(400).json({ message: "كل الحقول مطلوبة" });
   }
 
   const foundUser = await User.findOne({ username }).exec();
 
   if (!foundUser) {
-    return res.status(401).json({ message: "Uesr does not exist" });
+    return res.status(401).json({ message: "المستخدم غير موجود" });
   }
 
   // const isMatch = await bcrypt.compare(password, foundUser.password);
@@ -81,7 +81,7 @@ const login = async (req, res) => {
 
 
   if (!foundPassword) {
-    return res.status(401).json({ message: "Wrong password" });
+    return res.status(401).json({ message: "كلمة المرور خاطئة" });
   }
   const accessToken = jsonWebToken.sign(
     {
