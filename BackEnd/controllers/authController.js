@@ -19,13 +19,13 @@ const register = async (req, res) => {
     return res.status(401).json({ message: "User Already exists" });
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await User.create({
     name,
     username,
     stage,
-    password: hashedPassword,
+    password,
     role,
   });
 
@@ -76,9 +76,11 @@ const login = async (req, res) => {
     return res.status(401).json({ message: "Uesr does not exist" });
   }
 
-  const isMatch = await bcrypt.compare(password, foundUser.password);
+  // const isMatch = await bcrypt.compare(password, foundUser.password);
+    const foundPassword = await User.findOne({ password }).exec();
 
-  if (!isMatch) {
+
+  if (!foundPassword) {
     return res.status(401).json({ message: "Wrong password" });
   }
   const accessToken = jsonWebToken.sign(
