@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "./../styles/dashboard.css";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
@@ -14,6 +13,9 @@ const Dashboard = () => {
 
   // حالة لتخزين إجمالي عدد الدروس
   const [totalLessons, setTotalLessons] = useState(0);
+
+  // حالة لتخزين إجمالي عدد الإعلانات
+  const [totalPosts, setTotalPosts] = useState(0);
 
   // دالة لجلب بيانات المستخدمين من الـ API
   useEffect(() => {
@@ -44,13 +46,35 @@ const Dashboard = () => {
             Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
           },
         });
-        setTotalLessons(response.data.length); // تخزين عدد المستخدمين
+        setTotalLessons(response.data.length); // تخزين عدد الدروس
       } catch (error) {
-        console.error("حدث خطأ أثناء جلب بيانات المستخدمين:", error);
+        console.error("حدث خطأ أثناء جلب بيانات الدروس:", error);
       }
     };
 
     fetchLessons();
+  }, []); // يتم تنفيذها مرة واحدة عند تحميل الصفحة
+
+  // دالة لجلب بيانات الإعلانات من الـ API
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة من Local Storage
+        const response = await axios.get(
+          "http://localhost:8000/announcements",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
+            },
+          }
+        );
+        setTotalPosts(response.data.length); // تخزين عدد الإعلانات
+      } catch (error) {
+        console.error("حدث خطأ أثناء جلب بيانات الإعلانات:", error);
+      }
+    };
+
+    fetchPosts();
   }, []); // يتم تنفيذها مرة واحدة عند تحميل الصفحة
 
   return (
@@ -73,12 +97,12 @@ const Dashboard = () => {
           <p className="show-details">عرض</p>
         </div>
         <div className="stat-item" onClick={() => navigate("/all-pdfs")}>
-          <h2>3</h2>
+          <h2>0</h2>
           <p className="stat-title">إجمالي ملفات PDF</p>
           <p className="show-details">عرض</p>
         </div>
         <div className="stat-item" onClick={() => navigate("/all-exams")}>
-          <h2>1</h2>
+          <h2>0</h2>
           <p className="stat-title">إجمالي الاختبارات</p>
           <p className="show-details">عرض</p>
         </div>
@@ -88,7 +112,7 @@ const Dashboard = () => {
           <p className="show-details">عرض</p>
         </div>
         <div className="stat-item" onClick={() => navigate("/all-posts")}>
-          <h2>3</h2>
+          <h2>{totalPosts}</h2> {/* عرض العدد الديناميكي للإعلانات */}
           <p className="stat-title">إجمالي الإعلانات</p>
           <p className="show-details">عرض</p>
         </div>
@@ -131,19 +155,6 @@ const Dashboard = () => {
             <span className="add-text"> إضافة إعلان جديد </span>
           </button>
         </div>
-      </div>
-
-      <div className="recent-activity">
-        <h3>النشاط الأخير</h3>
-        <ul>
-          <li>تم رفع فيديو جديد: "مقدمة إلى الرياضيات" - منذ ساعتين</li>
-          <li>تمت إضافة ملف PDF: "ورقة صيَغ الفيزياء" - منذ 4 ساعات</li>
-          <li>إعلان جديد: "تحديث النظام الأسبوع المقبل" - منذ 3 ساعات</li>
-          <li>
-            تم إنشاء اختبار جديد: "الاختبار النهائي للكيمياء" - منذ 6 ساعات
-          </li>
-          <li>تم تسجيل مستخدم جديد: سارة جونسون - منذ 8 ساعات</li>
-        </ul>
       </div>
     </div>
   );

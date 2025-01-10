@@ -1,35 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./../styles/dashboard/posts.css";
 
 const AllPostsComponent = () => {
-  // List of posts
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "تحديث النظام الأسبوع المقبل",
-      time: "منذ 3 ساعات",
-      content: "سيتم إجراء تحديث شامل للنظام الأسبوع المقبل.",
-    },
-    {
-      id: 2,
-      title: "تحديث في محتوى الرياضيات",
-      time: "منذ 5 ساعات",
-      content: "تم إضافة مواضيع جديدة في مادة الرياضيات.",
-    },
-    {
-      id: 3,
-      title: "إعلان هام: موعد الامتحانات",
-      time: "منذ يوم واحد",
-      content: "موعد الامتحانات النهائية هو 15 يناير 2025.",
-    },
-  ]);
-
+  const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [editingPost, setEditingPost] = useState(null);
   const [editContent, setEditContent] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editStages, setEditStages] = useState({
+    stage_one: false,
+    stage_two: false,
+    stage_three: false,
+  });
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // Fetch posts from API
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        toast.error("لم يتم العثور على رمز الوصول. الرجاء تسجيل الدخول.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/announcements",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        toast.error("حدث خطأ أثناء تحميل الإعلانات.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   // Function to view post details
   const viewPostDetails = (post) => {
@@ -40,46 +59,127 @@ const AllPostsComponent = () => {
   // Function to open edit mode
   const editPost = (post) => {
     setEditingPost(post);
-    setEditContent(post.content);
+    setEditTitle(post.title);
+    setEditContent(post.description);
+    setEditStages({
+      stage_one: post.stage.stage_one,
+      stage_two: post.stage.stage_two,
+      stage_three: post.stage.stage_three,
+    });
     setSelectedPost(null); // Exit details view
   };
 
   // Function to save edited post
-  const saveEditPost = () => {
-    if (!editContent.trim()) {
-      toast.error("لا يمكن أن يكون محتوى الإعلان فارغًا!");
+  const saveEditPost = async () => {
+    if (!editTitle.trim() || !editContent.trim()) {
+      toast.error("العنوان ومحتوى الإعلان لا يمكن أن يكونا فارغين!");
       return;
     }
 
-    setPosts(
-      posts.map((post) =>
-        post.id === editingPost.id ? { ...post, content: editContent } : post
-      )
-    );
-    toast.success("تم تحديث الإعلان بنجاح!");
-    setEditingPost(null);
-    setSelectedPost(null);
+    // Check if at least one stage is selected
+    if (
+      !editStages.stage_one &&
+      !editStages.stage_two &&
+      !editStages.stage_three
+    ) {
+      toast.error("يجب اختيار مرحلة دراسية واحدة على الأقل!");
+      return;
+    }
+
+    const accessToken = localStorage.getItem("accessToken");
+
+    try {
+      console.log("Updating post:", editingPost._id, {
+        title: editTitle,
+        description: editContent,
+        stage: editStages,
+      });
+
+      // Update the announcement on the server
+      const response = await axios.put(
+        `http://localhost:8000/announcements/${editingPost._id}`,
+        {
+          title: editTitle,
+          description: editContent,
+          stage: editStages,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Update the announcement locally
+      setPosts(
+        posts.map((post) =>
+          post._id === editingPost._id
+            ? {
+                ...post,
+                title: response.data.title,
+                description: response.data.description,
+                stage: response.data.stage,
+              }
+            : post
+        )
+      );
+      toast.success("تم تحديث الإعلان بنجاح!");
+      setEditingPost(null);
+      setSelectedPost(null);
+    } catch (error) {
+      console.error("Error updating post:", error);
+      if (error.response) {
+        console.error("Server Response:", error.response.data);
+        toast.error(
+          `خطأ: ${error.response.data.message || "حدث خطأ أثناء التحديث."}`
+        );
+      } else {
+        toast.error("حدث خطأ أثناء تحديث الإعلان.");
+      }
+    }
   };
 
   // Function to cancel editing
   const cancelEdit = () => {
     setEditingPost(null);
+    setEditTitle("");
     setEditContent("");
+    setEditStages({
+      stage_one: false,
+      stage_two: false,
+      stage_three: false,
+    });
     toast.info("تم إلغاء التعديلات.");
   };
 
   // Function to delete a post
-  const deletePost = (id) => {
+  const deletePost = async (id) => {
     const confirmed = window.confirm("هل أنت متأكد من حذف هذا الإعلان؟");
     if (confirmed) {
-      setPosts(posts.filter((post) => post.id !== id));
-      if (selectedPost && selectedPost.id === id) {
-        setSelectedPost(null); // Exit details view if the deleted post was being viewed
+      const accessToken = localStorage.getItem("accessToken");
+
+      try {
+        // Delete the announcement from the server
+        await axios.delete(`http://localhost:8000/announcements/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        // Remove the announcement locally
+        setPosts(posts.filter((post) => post._id !== id));
+        if (selectedPost && selectedPost._id === id) {
+          setSelectedPost(null);
+        }
+        if (editingPost && editingPost._id === id) {
+          setEditingPost(null);
+        }
+        toast.success("تم حذف الإعلان بنجاح!");
+      } catch (error) {
+        console.error("Error deleting post:", error);
+        toast.error("حدث خطأ أثناء حذف الإعلان.");
       }
-      if (editingPost && editingPost.id === id) {
-        setEditingPost(null); // Exit edit mode if the deleted post was being edited
-      }
-      toast.success("تم حذف الإعلان بنجاح!");
     }
   };
 
@@ -87,7 +187,7 @@ const AllPostsComponent = () => {
   const filteredPosts = posts.filter(
     (post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchTerm.toLowerCase())
+      post.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -107,47 +207,72 @@ const AllPostsComponent = () => {
       </header>
 
       <div className="posts-container">
-        <ul className="posts-list">
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
-              <li key={post.id} className="post-item">
-                <div className="post-content">
-                  <h4>{post.title}</h4>
-                  <span className="post-time">{post.time}</span>
-                </div>
-                <div className="post-actions">
-                  <button
-                    className="view-post-btn"
-                    onClick={() => viewPostDetails(post)}
-                  >
-                    عرض التفاصيل
-                  </button>
-                  <button
-                    className="edit-post-btn"
-                    onClick={() => editPost(post)}
-                  >
-                    تعديل
-                  </button>
-                  <button
-                    className="delete-post-btn"
-                    onClick={() => deletePost(post.id)}
-                  >
-                    حذف
-                  </button>
-                </div>
-              </li>
-            ))
-          ) : (
-            <p className="no-posts-message">لا توجد إعلانات مطابقة للبحث.</p>
-          )}
-        </ul>
+        {loading ? (
+          <p className="loading-message">جارٍ تحميل الإعلانات...</p>
+        ) : (
+          <ul className="posts-list">
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post) => (
+                <li key={post._id} className="post-item">
+                  <div className="post-content">
+                    <h4>{post.title}</h4>
+                    <ul>
+                      {post.stage.stage_one && (
+                        <li>المرحلة الدراسية: أولى ثانوي</li>
+                      )}
+                      {post.stage.stage_two && (
+                        <li>المرحلة الدراسية: ثانية ثانوي</li>
+                      )}
+                      {post.stage.stage_three && (
+                        <li>المرحلة الدراسية: ثالثة ثانوي</li>
+                      )}
+                    </ul>
+                  </div>
+                  <div className="post-actions">
+                    <button
+                      className="view-post-btn"
+                      onClick={() => viewPostDetails(post)}
+                    >
+                      عرض التفاصيل
+                    </button>
+                    <button
+                      className="edit-post-btn"
+                      onClick={() => editPost(post)}
+                    >
+                      تعديل
+                    </button>
+                    <button
+                      className="delete-post-btn"
+                      onClick={() => deletePost(post._id)}
+                    >
+                      حذف
+                    </button>
+                  </div>
+                </li>
+              ))
+            ) : (
+              <p className="no-posts-message">لا توجد إعلانات مطابقة للبحث.</p>
+            )}
+          </ul>
+        )}
 
         {/* View Post Details */}
         {selectedPost && (
           <div className="post-details">
             <h3>تفاصيل الإعلان</h3>
             <h4>{selectedPost.title}</h4>
-            <p>{selectedPost.content}</p>
+            <p>{selectedPost.description}</p>
+            <ul>
+              {selectedPost.stage.stage_one && (
+                <li>المرحلة الدراسية: أولى ثانوي</li>
+              )}
+              {selectedPost.stage.stage_two && (
+                <li>المرحلة الدراسية: ثانية ثانوي</li>
+              )}
+              {selectedPost.stage.stage_three && (
+                <li>المرحلة الدراسية: ثالثة ثانوي</li>
+              )}
+            </ul>
             <button
               className="close-details-btn"
               onClick={() => setSelectedPost(null)}
@@ -161,12 +286,59 @@ const AllPostsComponent = () => {
         {editingPost && (
           <div className="post-edit">
             <h3>تعديل محتوى الإعلان</h3>
-            <h4>{editingPost.title}</h4>
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              placeholder="عنوان الإعلان"
+              className="edit-title-input"
+            />
             <textarea
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
               className="edit-textarea"
             />
+            <div className="edit-stages">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={editStages.stage_one}
+                  onChange={(e) =>
+                    setEditStages({
+                      ...editStages,
+                      stage_one: e.target.checked,
+                    })
+                  }
+                />
+                أولى ثانوي
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={editStages.stage_two}
+                  onChange={(e) =>
+                    setEditStages({
+                      ...editStages,
+                      stage_two: e.target.checked,
+                    })
+                  }
+                />
+                ثانية ثانوي
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={editStages.stage_three}
+                  onChange={(e) =>
+                    setEditStages({
+                      ...editStages,
+                      stage_three: e.target.checked,
+                    })
+                  }
+                />
+                ثالثة ثانوي
+              </label>
+            </div>
             <div className="edit-actions">
               <button className="save-edit-btn" onClick={saveEditPost}>
                 حفظ

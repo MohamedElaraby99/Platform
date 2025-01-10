@@ -1,205 +1,218 @@
-/* Container for posts */
-
+/* General container styles */
 .all-posts-component {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
+  font-family: "Arial", sans-serif;
   padding: 20px;
-  background-color: #f4f4f9;
+  max-width: 900px;
+  margin: 20px auto;
+  background-color: #f9f9f9;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.posts-container {
+/* Header styles */
+.posts-header {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 20px; /* Adds spacing between elements */
-  padding: 20px;
-  background-color: #f4f4f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
-/* List of posts */
+.posts-header h2 {
+  font-size: 24px;
+  color: #333;
+}
+
+.search-input {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Posts list styles */
 .posts-list {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .post-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #fff;
   padding: 15px;
+  margin-bottom: 10px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .post-item:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .post-content h4 {
-  margin: 0;
+  margin: 0 0 5px;
   font-size: 18px;
-  color: #333;
-  font-weight: bold;
+  color: #007bff;
 }
 
-.post-content .post-time {
+.post-content p {
+  margin: 0;
   font-size: 14px;
-  color: #999;
+  color: #555;
+}
+
+.post-content ul {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #666;
+}
+
+.post-content ul li {
+  font-size: 14px;
+  margin-bottom: 5px;
 }
 
 .post-actions {
   display: flex;
-  gap: 10px; /* Space between action buttons */
+  gap: 10px;
 }
 
 .post-actions button {
-  background: none;
-  border: none;
-  color: #007bff;
-  cursor: pointer;
+  padding: 8px 12px;
   font-size: 14px;
-  transition: color 0.2s ease;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.post-actions button:hover {
-  color: #0056b3;
+.view-post-btn {
+  background-color: #28a745;
 }
 
+.view-post-btn:hover {
+  background-color: #218838;
+}
+
+.edit-post-btn {
+  background-color: #ffc107;
+}
+
+.edit-post-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-post-btn {
+  background-color: #dc3545;
+}
+
+.delete-post-btn:hover {
+  background-color: #c82333;
+}
+
+/* Post details styles */
 .post-details,
 .post-edit {
-  margin-top: 20px;
+  background: #fff;
   padding: 20px;
+  margin-top: 20px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
+  border-radius: 6px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .post-details h3,
 .post-edit h3 {
-  margin: 0 0 10px;
   font-size: 20px;
-  color: #333;
+  margin-bottom: 10px;
+  color: #007bff;
+}
+
+.post-details h4,
+.post-edit h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 .post-details p,
 .post-edit textarea {
-  font-size: 16px;
-  line-height: 1.5;
-  color: #444;
+  font-size: 14px;
+  color: #555;
+  margin: 0;
 }
 
-/* Editable text area for post content */
-.edit-textarea {
+.post-edit textarea {
   width: 100%;
-  height: 120px;
-  margin: 10px 0;
+  height: 100px;
   padding: 10px;
-  font-size: 16px;
+  font-size: 14px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 4px;
   resize: none;
-  background-color: #f9f9f9;
-  outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.3s ease;
 }
 
-.edit-textarea:focus {
+.post-edit textarea:focus {
   border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-/* Buttons for edit actions */
 .edit-actions {
+  margin-top: 10px;
   display: flex;
-  justify-content: flex-end;
-  gap: 10px; /* Space between buttons */
+  gap: 10px;
 }
 
 .save-edit-btn {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  background-color: #28a745;
 }
 
 .save-edit-btn:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
+  background-color: #218838;
 }
 
 .cancel-edit-btn {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  background-color: #6c757d;
 }
 
 .cancel-edit-btn:hover {
-  background-color: #e53935;
-  transform: translateY(-2px);
+  background-color: #5a6268;
 }
 
-/* No posts message */
+/* Loading and no posts message */
+.loading-message,
 .no-posts-message {
+  font-size: 16px;
   text-align: center;
-  color: #999;
-  font-size: 18px;
-  margin-top: 20px;
+  color: #666;
 }
 
-/* Responsive styles */
-@media (max-width: 768px) {
-  .posts-container {
-    padding: 15px;
-  }
-
-  .post-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .post-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .post-details,
-  .post-edit {
-    padding: 15px;
-  }
-}
-
-.delete-post-btn, .edit-post-btn , .view-post-btn {
-  background-color: #f44336;
-  color: white;
+.close-details-btn {
+  background-color: #dc3545;
+  color: #fff;
   border: none;
-  padding: 8px 15px;
+  padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.close-details-btn:hover {
+  background-color: #c82333;
 }
