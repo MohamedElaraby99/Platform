@@ -18,10 +18,6 @@ const Layout = ({ children, role, onSignOut }) => {
           />
           <h1 className="flash"> منصة التوكل </h1>
         </div>
-        <div className="search-container">
-          <input type="search" placeholder="بحث..." className="search-bar" />
-          <button className="material-icons search-icon">search</button>
-        </div>
         <div className="user-menu">
           {/* Link to User Page */}
           <Link to="/user">

@@ -9,9 +9,22 @@ import "./../../styles/dashboard/AddExam.css";
 const CreateExamComponent = () => {
   const [inputMode, setInputMode] = useState("upload");
   const [questions, setQuestions] = useState([]);
+  const [examTitle, setExamTitle] = useState(""); // لإدارة عنوان الامتحان
+  const [examDate, setExamDate] = useState(""); // لإدارة تاريخ الامتحان
+  const [examGrade, setExamGrade] = useState(""); // لإدارة المرحلة الدراسية
   const [showPreview, setShowPreview] = useState(false);
 
   const handleExamSubmit = async () => {
+    if (!examTitle || !examDate || !examGrade) {
+      toast.error(
+        "يرجى تعبئة جميع بيانات الامتحان (العنوان، التاريخ، المرحلة الدراسية).",
+        {
+          position: "top-center",
+        }
+      );
+      return;
+    }
+
     if (questions.length === 0) {
       toast.error("لا توجد أسئلة لتقديمها. يرجى إضافة أسئلة أولاً.", {
         position: "top-center",
@@ -20,26 +33,28 @@ const CreateExamComponent = () => {
     }
 
     try {
-      // إرسال كل سؤال إلى API
-      for (const question of questions) {
-        const payload = {
-          questionText: question.question, // اسم النص
-          options: question.options, // الخيارات
-          correctAnswer: question.options[question.correctAnswer], // الإجابة الصحيحة
-        };
+      // إرسال بيانات الامتحان إلى API
+      const examPayload = {
+        title: examTitle,
+        date: examDate,
+        grade: examGrade,
+        questions,
+      };
 
-        await axios.post("http://localhost:8000/questions", payload);
-      }
+      await axios.post("http://localhost:8000/exams", examPayload);
 
       // إظهار رسالة النجاح باستخدام toast
       toast.success("تم تقديم الامتحان بنجاح!", {
         position: "top-center",
       });
 
-      // إعادة تعيين الأسئلة بعد الإرسال
+      // إعادة تعيين الحقول بعد الإرسال
       setQuestions([]);
+      setExamTitle("");
+      setExamDate("");
+      setExamGrade("");
     } catch (error) {
-      console.error("خطأ أثناء إرسال الأسئلة:", error);
+      console.error("خطأ أثناء تقديم الامتحان:", error);
       toast.error("حدث خطأ أثناء تقديم الامتحان. حاول مرة أخرى.", {
         position: "top-center",
       });
@@ -62,6 +77,53 @@ const CreateExamComponent = () => {
       <div className="create-exam-container">
         <h2>إنشاء امتحان</h2>
 
+        {/* إدخال عنوان الامتحان */}
+        <div className="input-container">
+          <label htmlFor="examTitle">عنوان الامتحان:</label>
+          <input
+            type="text"
+            id="examTitle"
+            value={examTitle}
+            onChange={(e) => setExamTitle(e.target.value)}
+            placeholder="أدخل عنوان الامتحان"
+            required
+            className="input-field"
+          />
+        </div>
+
+        {/* إدخال تاريخ الامتحان */}
+        <div className="input-container">
+          <label htmlFor="examDate">تاريخ الامتحان:</label>
+          <input
+            type="date"
+            id="examDate"
+            value={examDate}
+            onChange={(e) => setExamDate(e.target.value)}
+            required
+            className="input-field"
+          />
+        </div>
+
+        {/* اختيار المرحلة الدراسية */}
+        <div className="input-container">
+          <label htmlFor="examGrade">المرحلة الدراسية:</label>
+          <select
+            id="examGrade"
+            value={examGrade}
+            onChange={(e) => setExamGrade(e.target.value)}
+            required
+            className="input-field"
+          >
+            <option value="" disabled>
+              اختر المرحلة الدراسية
+            </option>
+            <option value="أولى ثانوي">أولى ثانوي</option>
+            <option value="ثانية ثانوي">ثانية ثانوي</option>
+            <option value="ثالثة ثانوي">ثالثة ثانوي</option>
+          </select>
+        </div>
+
+        {/* اختيار طريقة إدخال الأسئلة */}
         <div className="input-mode-selection">
           <label>
             <input
@@ -95,6 +157,7 @@ const CreateExamComponent = () => {
           />
         )}
 
+        {/* أزرار تقديم الامتحان والمعاينة */}
         <div className="exam-buttons">
           <button
             className="preview-button"
@@ -112,9 +175,13 @@ const CreateExamComponent = () => {
           </button>
         </div>
 
+        {/* معاينة الامتحان */}
         {showPreview && (
           <div className="exam-preview">
             <h3>معاينة الامتحان</h3>
+            <p>عنوان الامتحان: {examTitle}</p>
+            <p>تاريخ الامتحان: {examDate}</p>
+            <p>المرحلة الدراسية: {examGrade}</p>
             {questions.length > 0 ? (
               <ul>
                 {questions.map((q, index) => (

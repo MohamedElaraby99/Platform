@@ -1,37 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import "./../styles/exams.css";
 
-const examsData = [
-  {
-    id: 1,
-    name: "امتحان الرياضيات",
-    date: "2024-02-10T10:00:00",
-    status: "متاح",
-  },
-  {
-    id: 2,
-    name: "امتحان اللغة العربية",
-    date: "2025-01-01T00:00:00",
-    status: "متاح",
-  },
-  {
-    id: 3,
-    name: "امتحان الفيزياء",
-    date: "2025-01-01T12:35:00",
-    status: "متاح",
-  },
-  {
-    id: 4,
-    name: "امتحان التاريخ",
-    date: "2025-01-25T12:00:00",
-    status: "قادم",
-  },
-];
-
 const ExamsPage = () => {
+  const [exams, setExams] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [loading, setLoading] = useState(true); // حالة التحميل
+  const [error, setError] = useState(null); // حالة الخطأ
 
+  useEffect(() => {
+    // استدعاء API لجلب بيانات الامتحانات
+    const fetchExams = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/exams");
+        setExams(response.data); // تعيين البيانات المستلمة في الحالة
+        setLoading(false); // إنهاء حالة التحميل
+      } catch (err) {
+        setError("فشل في جلب بيانات الامتحانات. حاول مرة أخرى لاحقًا.");
+        setLoading(false); // إنهاء حالة التحميل حتى في حالة الخطأ
+      }
+    };
+
+    fetchExams();
+  }, []);
+
+  // تحديث الوقت الحالي كل ثانية
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -40,8 +34,8 @@ const ExamsPage = () => {
     return () => clearInterval(timer); // تنظيف المؤقت عند إلغاء المكون
   }, []);
 
-  // تحديث حالة الامتحان بناءً على الوقت الحالي
-  const updatedExams = examsData.map((exam) => {
+  // تحديث حالة الامتحانات بناءً على الوقت الحالي
+  const updatedExams = exams.map((exam) => {
     const examTime = new Date(exam.date);
     if (examTime < currentTime) {
       return { ...exam, status: "منتهي" };
@@ -51,6 +45,15 @@ const ExamsPage = () => {
       return { ...exam, status: "متاح" };
     }
   });
+
+  // عرض حالة التحميل أو الخطأ
+  if (loading) {
+    return <div className="loading">جاري تحميل الامتحانات...</div>;
+  }
+
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
 
   return (
     <div className="exams-page">

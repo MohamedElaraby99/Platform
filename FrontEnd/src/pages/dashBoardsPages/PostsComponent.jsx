@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./../../styles/dashboard/addPosts.css";
@@ -10,8 +10,6 @@ const CreatePostComponent = () => {
   // States for new post fields
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
-  const [publishTime, setPublishTime] = useState("");
-  const [expireTime, setExpireTime] = useState("");
   const [selectedYears, setSelectedYears] = useState([]);
 
   // List of years
@@ -21,13 +19,7 @@ const CreatePostComponent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (
-      !title ||
-      !details ||
-      !publishTime ||
-      !expireTime ||
-      selectedYears.length === 0
-    ) {
+    if (!title || !details || selectedYears.length === 0) {
       toast.error("يرجى تعبئة جميع الحقول!");
       return;
     }
@@ -36,8 +28,6 @@ const CreatePostComponent = () => {
       id: Date.now(),
       title,
       details,
-      publishTime,
-      expireTime,
       years: selectedYears,
     };
 
@@ -47,8 +37,6 @@ const CreatePostComponent = () => {
     // Reset fields
     setTitle("");
     setDetails("");
-    setPublishTime("");
-    setExpireTime("");
     setSelectedYears([]);
 
     // Show success toast
@@ -63,18 +51,6 @@ const CreatePostComponent = () => {
       setSelectedYears([...selectedYears, year]);
     }
   };
-
-  // Effect to auto-delete expired posts
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      setPosts((prevPosts) =>
-        prevPosts.filter((post) => new Date(post.expireTime) > now)
-      );
-    }, 60000); // Check every minute
-
-    return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, []);
 
   return (
     <div className="create-post-component">
@@ -105,28 +81,6 @@ const CreatePostComponent = () => {
             placeholder="أدخل تفاصيل الإعلان"
             required
           ></textarea>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="publishTime">وقت النشر:</label>
-          <input
-            type="datetime-local"
-            id="publishTime"
-            value={publishTime}
-            onChange={(e) => setPublishTime(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="expireTime">وقت انتهاء الإعلان:</label>
-          <input
-            type="datetime-local"
-            id="expireTime"
-            value={expireTime}
-            onChange={(e) => setExpireTime(e.target.value)}
-            required
-          />
         </div>
 
         <div className="form-group">

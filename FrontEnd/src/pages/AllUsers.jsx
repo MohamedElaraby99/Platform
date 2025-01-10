@@ -130,6 +130,7 @@ const AllUsers = () => {
                 <th>الاسم</th>
                 <th>اسم المستخدم</th>
                 <th>المرحلة</th>
+                <th>كلمة المرور</th>
                 <th>الإجراءات</th>
               </tr>
             </thead>
@@ -166,8 +167,24 @@ const AllUsers = () => {
                         </select>
                       </td>
                       <td>
-                        <button className="save-button" onClick={handleEditSave}>حفظ</button>
-                        <button className="cancel-button" onClick={() => setEditingUser(null)}>
+                        <input
+                          type="text"
+                          name="password"
+                          value={editData.password}
+                          onChange={handleEditChange}
+                        />
+                      </td>
+                      <td>
+                        <button
+                          className="save-button"
+                          onClick={handleEditSave}
+                        >
+                          حفظ
+                        </button>
+                        <button
+                          className="cancel-button"
+                          onClick={() => setEditingUser(null)}
+                        >
                           إلغاء
                         </button>
                       </td>
@@ -177,11 +194,18 @@ const AllUsers = () => {
                       <td>{student.name}</td>
                       <td>{student.username}</td>
                       <td>{student.stage}</td>
+                      <td>{"*".repeat(student.password.length)}</td>
                       <td className="actions-cell">
-                        <button className="edit-button" onClick={() => handleEdit(student)}>
+                        <button
+                          className="edit-button"
+                          onClick={() => handleEdit(student)}
+                        >
                           تعديل
                         </button>
-                        <button className="delete-button" onClick={() => handleDelete(student._id)}>
+                        <button
+                          className="delete-button"
+                          onClick={() => handleDelete(student._id)}
+                        >
                           حذف
                         </button>
                       </td>
@@ -202,6 +226,7 @@ const AllUsers = () => {
               <tr>
                 <th>الاسم</th>
                 <th>اسم المستخدم</th>
+                <th>كلمة المرور</th>
                 <th>الإجراءات</th>
               </tr>
             </thead>
@@ -227,8 +252,24 @@ const AllUsers = () => {
                         />
                       </td>
                       <td>
-                        <button className="save-button" onClick={handleEditSave}>حفظ</button>
-                        <button className="cancel-button" onClick={() => setEditingUser(null)}>
+                        <input
+                          type="text"
+                          name="password"
+                          value={editData.password}
+                          onChange={handleEditChange}
+                        />
+                      </td>
+                      <td>
+                        <button
+                          className="save-button"
+                          onClick={handleEditSave}
+                        >
+                          حفظ
+                        </button>
+                        <button
+                          className="cancel-button"
+                          onClick={() => setEditingUser(null)}
+                        >
                           إلغاء
                         </button>
                       </td>
@@ -237,9 +278,18 @@ const AllUsers = () => {
                     <>
                       <td>{admin.name}</td>
                       <td>{admin.username}</td>
+                      <td>{"*".repeat(admin.password.length)}</td>
                       <td className="actions-cell">
-                        <button className="edit-button" onClick={() => handleEdit(admin)}>تعديل</button>
-                        <button className="delete-button" onClick={() => handleDelete(admin._id)}>
+                        <button
+                          className="edit-button"
+                          onClick={() => handleEdit(admin)}
+                        >
+                          تعديل
+                        </button>
+                        <button
+                          className="delete-button"
+                          onClick={() => handleDelete(admin._id)}
+                        >
                           حذف
                         </button>
                       </td>
