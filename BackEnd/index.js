@@ -27,6 +27,7 @@ app.use("/lessons", require("./routes/lessonRoutes"));
 app.use("/exams", require("./routes/examRoutes"));
 app.use("/announcements", require("./routes/announcementRoutes"));
 
+// fake comment
 // المسارات الجديدة
 app.use("/questions", require("./routes/questionRoutes"));
 app.use("/results", require("./routes/studentResultRoutes"));
