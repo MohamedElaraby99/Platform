@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import axios from "axios"; // استيراد axios
 import "react-toastify/dist/ReactToastify.css";
 import ManualQuestionComponent from "./../../pages/exams/ManualQuestionComponent";
 import AutomaticExamComponent from "./../../pages/exams/AutomaticExamComponent";
@@ -8,9 +9,9 @@ import "./../../styles/dashboard/AddExam.css";
 const CreateExamComponent = () => {
   const [inputMode, setInputMode] = useState("upload");
   const [questions, setQuestions] = useState([]);
-  const [showPreview, setShowPreview] = useState(false); // للتحكم في عرض المعاينة
+  const [showPreview, setShowPreview] = useState(false);
 
-  const handleExamSubmit = () => {
+  const handleExamSubmit = async () => {
     if (questions.length === 0) {
       toast.error("لا توجد أسئلة لتقديمها. يرجى إضافة أسئلة أولاً.", {
         position: "top-center",
@@ -18,13 +19,31 @@ const CreateExamComponent = () => {
       return;
     }
 
-    // قم هنا بإرسال الأسئلة إلى السيرفر أو حفظها
-    console.log("تم تقديم الامتحان:", questions);
+    try {
+      // إرسال كل سؤال إلى API
+      for (const question of questions) {
+        const payload = {
+          questionText: question.question, // اسم النص
+          options: question.options, // الخيارات
+          correctAnswer: question.options[question.correctAnswer], // الإجابة الصحيحة
+        };
 
-    // إظهار رسالة النجاح باستخدام toast
-    toast.success("تم تقديم الامتحان بنجاح!", {
-      position: "top-center",
-    });
+        await axios.post("http://localhost:8000/questions", payload);
+      }
+
+      // إظهار رسالة النجاح باستخدام toast
+      toast.success("تم تقديم الامتحان بنجاح!", {
+        position: "top-center",
+      });
+
+      // إعادة تعيين الأسئلة بعد الإرسال
+      setQuestions([]);
+    } catch (error) {
+      console.error("خطأ أثناء إرسال الأسئلة:", error);
+      toast.error("حدث خطأ أثناء تقديم الامتحان. حاول مرة أخرى.", {
+        position: "top-center",
+      });
+    }
   };
 
   const handlePreview = () => {
@@ -35,7 +54,6 @@ const CreateExamComponent = () => {
       return;
     }
 
-    // عرض المعاينة
     setShowPreview(true);
   };
 
@@ -77,7 +95,6 @@ const CreateExamComponent = () => {
           />
         )}
 
-        {/* أزرار تقديم الامتحان والمعاينة */}
         <div className="exam-buttons">
           <button
             className="preview-button"
@@ -86,12 +103,15 @@ const CreateExamComponent = () => {
           >
             مشاهدة مسبقة
           </button>
-          <button className="submitt-button" onClick={handleExamSubmit} style={{ padding: "10px 20px" }}>
+          <button
+            className="submitt-button"
+            onClick={handleExamSubmit}
+            style={{ padding: "10px 20px" }}
+          >
             تقديم الامتحان
           </button>
         </div>
 
-        {/* عرض المعاينة */}
         {showPreview && (
           <div className="exam-preview">
             <h3>معاينة الامتحان</h3>
@@ -106,7 +126,7 @@ const CreateExamComponent = () => {
                           key={optIndex}
                           style={{
                             color:
-                              q.correctAnswer === optIndex ? "green" : "black", // لون أخضر للإجابة الصحيحة
+                              q.correctAnswer === optIndex ? "green" : "black",
                           }}
                         >
                           <span>خيار {optIndex + 1}: </span>
@@ -130,7 +150,6 @@ const CreateExamComponent = () => {
           </div>
         )}
 
-        {/* ToastContainer لإظهار الإشعارات */}
         <ToastContainer />
       </div>
     </div>
