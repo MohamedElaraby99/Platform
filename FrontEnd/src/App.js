@@ -28,6 +28,7 @@ import AllVideos from "./pages/AllVideos";
 import AllPdfs from "./pages/AllPDFs";
 import PostsComponent from "./pages/dashBoardsPages/PostsComponent";
 import AllPostsComponent from "./pages/AllPostsComponent";
+import ScrollToTop from "./components/ScrollTop";
 
 const App = () => {
   const [role, setRole] = useState(null);
@@ -65,6 +66,7 @@ const App = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <div style={{ direction: "rtl" }}>
         {!isInitialized ? (
           <p>Loading...</p> // عرض رسالة تحميل أثناء التهيئة
@@ -85,12 +87,7 @@ const App = () => {
               <Route path="/pdf" element={<PdfPage />} />
               <Route
                 path="/user"
-                element={
-                  <UserPage
-                    onSignOut={handleSignOut}
-                    users={users}
-                  />
-                }
+                element={<UserPage onSignOut={handleSignOut} users={users} />}
               />
               <Route path="/add-user" element={<AddUser />} />
               <Route path="/add-video" element={<AddVideo />} />

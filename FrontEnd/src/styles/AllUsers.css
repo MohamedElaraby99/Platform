@@ -178,7 +178,33 @@ button.cancel-button:hover {
   cursor: pointer;
 }
 
-.edit-button:hover 
-{
-  background-color: #1e69c4;
+.make-available-button {
+  background-color: #089f49;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.make-available-button:hover {
+  background-color: #0d541c;
+}
+
+.actionss {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.deletee-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.deletee-button:hover {
+  background-color: #c82333;
 }

@@ -24,6 +24,7 @@ app.use("/", require("./routes/root"));
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/users", require("./routes/userRoutes"));
 app.use("/lessons", require("./routes/lessonRoutes"));
+app.use("/exams", require("./routes/examRoutes"));
 app.use("/announcements", require("./routes/announcementRoutes"));
 
 // fake comment

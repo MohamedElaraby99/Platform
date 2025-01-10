@@ -1,70 +1,38 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import ResultComponent from "./ResultComponent"; // استيراد مكون عرض النتيجة
 import "react-toastify/dist/ReactToastify.css";
 import "./../styles/ExamsSystem.css";
 
 const ExamsSystem = () => {
-  const questionsArray = [
+  const [questionsArray] = useState([
     {
-      id: 1,
-      question: "تعرضت اوروبا لانتكاسه حضاريه من خلال",
-      options: [
-        "العصور القديمه",
-        "العصور الوسطي",
-        "العصور الحديثه",
-        "التاريخ المعاصر",
-      ],
-      correctAnswer: 1,
-      image: "",
-    },
-    {
-      id: 2,
-      question: "تم اكتشاف قاره استراليا في",
-      options: [
-        "العصور القديمه",
-        "العصور الوسطي",
-        "العصور الحديثه",
-        "التاريخ المعاصر",
-      ],
+      _id: 1,
+      questionText: "ما هو أكبر كوكب في النظام الشمسي؟",
+      options: ["الأرض", "المريخ", "المشتري", "زحل"],
       correctAnswer: 2,
-      image: "",
+      image:
+        "https://th.bing.com/th?id=OIP.6L7shpwxVAIr279rA0B1JQHaE7&w=306&h=204&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2",
     },
     {
-      id: 3,
-      question: "العامل الأساسي الذي يعد اول بناء معظم الحضارات القديمه هو",
-      options: [
-        "معرفة الإنسان الزراعة",
-        "معرفة الإنسان الكتابة",
-        "بناء المعابد و المقابر",
-        "معرفة و اكتشاف المعادن",
-      ],
+      _id: 2,
+      questionText: "من هو مؤسس شركة مايكروسوفت؟",
+      options: ["ستيف جوبز", "بيل جيتس", "مارك زوكربيرغ", "إيلون ماسك"],
       correctAnswer: 1,
-      image: null,
+      image:
+        "https://th.bing.com/th?id=OIP.6L7shpwxVAIr279rA0B1JQHaE7&w=306&h=204&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2",
     },
     {
-      id: 4,
-      question:
-        "أدت الرحلات الاستكشافية للرحالة الأوربيين خلال العصور الحديثة إلى",
-      options: [
-        "قيام الثورة الصناعية",
-        "ظهور النهضة الأوروبية",
-        "قيام حركة الاستعمار الأوروبي",
-        "حدوث حركات التحرر و الاستقلال",
-      ],
-      correctAnswer: 2,
-      image: null,
-    },
-    {
-      id: 5,
-      question: "اطول اشعاع حضاري على مر العصور التاريخية كان منبعه من",
-      options: ["الشرق الأوسط", "الدول الأوروبيه", "شمال اسيا", "بلاد الفرس"],
+      _id: 3,
+      questionText: "ما هي عاصمة اليابان؟",
+      options: ["طوكيو", "سول", "بكين", "هونغ كونغ"],
       correctAnswer: 0,
       image: null,
     },
-  ];
-
+  ]);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [showResult, setShowResult] = useState(false); // حالة لعرض مكون النتيجة
 
   const handleAnswerChange = (questionId, optionIndex) => {
     setAnswers((prevAnswers) => ({
@@ -74,16 +42,9 @@ const ExamsSystem = () => {
   };
 
   const handleSubmit = () => {
-    if (Object.keys(answers).length !== questionsArray.length) {
-      toast.error("يرجى الإجابة على جميع الأسئلة قبل التقديم!", {
-        position: "top-center",
-      });
-      return;
-    }
-
     let correctCount = 0;
     questionsArray.forEach((q) => {
-      if (answers[q.id] === q.correctAnswer) {
+      if (answers[q._id] === q.correctAnswer) {
         correctCount++;
       }
     });
@@ -98,16 +59,23 @@ const ExamsSystem = () => {
     setSubmitted(true);
   };
 
+  const handleShowResult = () => {
+    setShowResult(true); // الانتقال إلى عرض النتيجة
+  };
+
+  if (showResult) {
+    // إذا كانت حالة عرض النتيجة مفعلة
+    return (
+      <ResultComponent questionsArray={questionsArray} answers={answers} />
+    );
+  }
+
   return (
     <div className="exam-system-container">
       <h2 className="exam-system-title">الامتحان</h2>
       <form className="exam-system-form">
         {questionsArray.map((q, index) => (
-          <div key={q.id} className="exam-question-container">
-            <h3 className="exam-question">
-              السؤال {index + 1}: {q.question}
-            </h3>
-
+          <div key={q._id} className="exam-question-container">
             {q.image && (
               <div className="exam-image-container">
                 <img
@@ -118,16 +86,20 @@ const ExamsSystem = () => {
               </div>
             )}
 
+            <h3 className="exam-question">
+              السؤال {index + 1}: {q.questionText}
+            </h3>
+
             <ul className="exam-options-list">
               {q.options.map((option, optIndex) => {
                 let optionClass = "exam-option";
                 if (submitted) {
                   if (optIndex === q.correctAnswer) {
                     optionClass += " exam-option-correct";
-                  } else if (answers[q.id] === optIndex) {
+                  } else if (answers[q._id] === optIndex) {
                     optionClass += " exam-option-wrong";
                   }
-                } else if (answers[q.id] === optIndex) {
+                } else if (answers[q._id] === optIndex) {
                   optionClass += " exam-option-selected";
                 }
 
@@ -135,14 +107,17 @@ const ExamsSystem = () => {
                   <li key={optIndex} className={optionClass}>
                     <input
                       type="radio"
-                      id={`option-${q.id}-${optIndex}`}
-                      name={`question-${q.id}`}
+                      id={`option-${q._id}-${optIndex}`}
+                      name={`question-${q._id}`}
                       value={optIndex}
-                      checked={answers[q.id] === optIndex}
-                      onChange={() => handleAnswerChange(q.id, optIndex)}
+                      checked={answers[q._id] === optIndex}
+                      onChange={() => handleAnswerChange(q._id, optIndex)}
                       className="exam-radio"
                     />
-                    <label htmlFor={`option-${q.id}-${optIndex}`}>
+                    <label
+                      className="exam-option-label"
+                      htmlFor={`option-${q._id}-${optIndex}`}
+                    >
                       {option}
                     </label>
                   </li>
@@ -168,6 +143,16 @@ const ExamsSystem = () => {
           </button>
         )}
       </form>
+
+      {submitted && (
+        <button
+          type="button"
+          onClick={handleShowResult}
+          className="show-result-button"
+        >
+          عرض النتيجة
+        </button>
+      )}
 
       <ToastContainer />
     </div>
