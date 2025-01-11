@@ -35,7 +35,12 @@ const ManualQuestionComponent = ({ questions, setQuestions }) => {
   return (
     <div className="manual-question-container">
       <h3>إضافة أسئلة يدويًا</h3>
-      <button onClick={addManualQuestion}>إضافة سؤال جديد</button>
+      <button
+        style={{ marginBottom: "10px", backgroundColor: "#3ac43a"  , color: "white" , width: "40%" }}
+        onClick={addManualQuestion}
+      >
+        إضافة سؤال جديد
+      </button>
       <p>عدد الأسئلة: {questions.length}</p>
       {questions.map((q, index) => (
         <div key={q.id} className="manual-question">

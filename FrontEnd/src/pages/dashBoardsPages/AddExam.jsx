@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios"; // استيراد axios
+import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import ManualQuestionComponent from "./../../pages/exams/ManualQuestionComponent";
 import AutomaticExamComponent from "./../../pages/exams/AutomaticExamComponent";
@@ -9,9 +9,9 @@ import "./../../styles/dashboard/AddExam.css";
 const CreateExamComponent = () => {
   const [inputMode, setInputMode] = useState("upload");
   const [questions, setQuestions] = useState([]);
-  const [examTitle, setExamTitle] = useState(""); // لإدارة عنوان الامتحان
-  const [examDate, setExamDate] = useState(""); // لإدارة تاريخ الامتحان
-  const [examGrade, setExamGrade] = useState(""); // لإدارة المرحلة الدراسية
+  const [examTitle, setExamTitle] = useState("");
+  const [examDate, setExamDate] = useState("");
+  const [examGrade, setExamGrade] = useState("");
   const [showPreview, setShowPreview] = useState(false);
 
   const handleExamSubmit = async () => {
@@ -33,7 +33,6 @@ const CreateExamComponent = () => {
     }
 
     try {
-      // إرسال بيانات الامتحان إلى API
       const examPayload = {
         title: examTitle,
         date: examDate,
@@ -43,7 +42,6 @@ const CreateExamComponent = () => {
 
       await axios.post("http://localhost:8000/exams", examPayload);
 
-      // إظهار رسالة النجاح باستخدام toast
       toast.success("تم تقديم الامتحان بنجاح!", {
         position: "top-center",
       });
@@ -73,25 +71,22 @@ const CreateExamComponent = () => {
   };
 
   return (
+    <div className="container">
     <div className="create-exam-page">
       <div className="create-exam-container">
         <h2>إنشاء امتحان</h2>
-
-        {/* إدخال عنوان الامتحان */}
         <div className="input-container">
           <label htmlFor="examTitle">عنوان الامتحان:</label>
           <input
+            className="input-field"
             type="text"
             id="examTitle"
             value={examTitle}
             onChange={(e) => setExamTitle(e.target.value)}
             placeholder="أدخل عنوان الامتحان"
             required
-            className="input-field"
           />
         </div>
-
-        {/* إدخال تاريخ الامتحان */}
         <div className="input-container">
           <label htmlFor="examDate">تاريخ الامتحان:</label>
           <input
@@ -103,8 +98,6 @@ const CreateExamComponent = () => {
             className="input-field"
           />
         </div>
-
-        {/* اختيار المرحلة الدراسية */}
         <div className="input-container">
           <label htmlFor="examGrade">المرحلة الدراسية:</label>
           <select
@@ -122,8 +115,6 @@ const CreateExamComponent = () => {
             <option value="ثالثة ثانوي">ثالثة ثانوي</option>
           </select>
         </div>
-
-        {/* اختيار طريقة إدخال الأسئلة */}
         <div className="input-mode-selection">
           <label>
             <input
@@ -160,9 +151,9 @@ const CreateExamComponent = () => {
         {/* أزرار تقديم الامتحان والمعاينة */}
         <div className="exam-buttons">
           <button
-            className="preview-button"
+            className="previeww-button"
             onClick={handlePreview}
-            style={{ marginRight: "10px", padding: "10px 20px" }}
+            style={{ padding: "10px 20px" }}
           >
             مشاهدة مسبقة
           </button>
@@ -218,6 +209,7 @@ const CreateExamComponent = () => {
         )}
 
         <ToastContainer />
+      </div>
       </div>
     </div>
   );
