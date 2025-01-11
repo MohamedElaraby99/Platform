@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 const AddPdf = () => {
   const [pdfData, setPdfData] = useState({
     name: "",
-    file: null, // Replace link with a file object
+    file: null,
     stage: "",
   });
 
@@ -61,8 +61,7 @@ const AddPdf = () => {
     formData.append("file", pdfData.file);
     formData.append("stage", pdfData.stage);
 
-    const accessToken = localStorage.getItem("accessToken"); // جلب التوكن من LocalStorage
-
+    const accessToken = localStorage.getItem("accessToken");
     try {
       // إرسال الطلب إلى الـ API
       const response = await axios.post(
@@ -75,9 +74,7 @@ const AddPdf = () => {
         }
       );
 
-      // عرض رسالة نجاح
       toast.success("تم إضافة المستخدم بنجاح!");
-      // Reset form
       setPdfData({
         name: "",
         file: null,
@@ -85,7 +82,7 @@ const AddPdf = () => {
       });
       console.log("API Response:", response.data);
     } catch (error) {
-      // معالجة الأخطاء
+
       console.error("Error adding file:", error);
       toast.error(
         error.response?.data?.message || "حدث خطأ أثناء إضافة الملف!"

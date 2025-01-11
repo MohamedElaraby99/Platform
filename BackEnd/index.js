@@ -7,6 +7,8 @@ const corsOptions = require("./config/corsOptions");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
+const proxyRoutes = require("./routes/proxyRoutes");
+
 
 const PORT = process.env.PORT || 8000;
 
@@ -20,6 +22,8 @@ app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/", express.static(path.join(__dirname, "public")));
+app.use("/api", proxyRoutes);
+
 
 // المسارات الحالية
 app.use("/", require("./routes/root"));

@@ -1,216 +1,173 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
-import ManualQuestionComponent from "./../../pages/exams/ManualQuestionComponent";
-import AutomaticExamComponent from "./../../pages/exams/AutomaticExamComponent";
-import "./../../styles/dashboard/AddExam.css";
 
 const CreateExamComponent = () => {
-  const [inputMode, setInputMode] = useState("upload");
   const [questions, setQuestions] = useState([]);
-  const [examTitle, setExamTitle] = useState("");
-  const [examDate, setExamDate] = useState("");
-  const [examGrade, setExamGrade] = useState("");
-  const [showPreview, setShowPreview] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [options, setOptions] = useState(["", "", "", ""]);
+  const [correctAnswer, setCorrectAnswer] = useState(null);
+  const [explanation, setExplanation] = useState("");
+  const [image, setImage] = useState(null);
 
-  const handleExamSubmit = async () => {
-    if (!examTitle || !examDate || !examGrade) {
-      toast.error(
-        "يرجى تعبئة جميع بيانات الامتحان (العنوان، التاريخ، المرحلة الدراسية).",
-        {
-          position: "top-center",
-        }
-      );
-      return;
-    }
-
-    if (questions.length === 0) {
-      toast.error("لا توجد أسئلة لتقديمها. يرجى إضافة أسئلة أولاً.", {
+  const handleAddQuestion = () => {
+    if (!question || correctAnswer === null) {
+      toast.error("يرجى إدخال السؤال واختيار الإجابة الصحيحة.", {
         position: "top-center",
       });
       return;
     }
 
-    try {
-      const examPayload = {
-        title: examTitle,
-        date: examDate,
-        grade: examGrade,
-        questions,
-      };
+    const newQuestion = {
+      question,
+      options,
+      correctAnswer,
+      explanation,
+      image,
+    };
 
-      await axios.post("http://localhost:8000/exams", examPayload);
-
-      toast.success("تم تقديم الامتحان بنجاح!", {
-        position: "top-center",
-      });
-
-      // إعادة تعيين الحقول بعد الإرسال
-      setQuestions([]);
-      setExamTitle("");
-      setExamDate("");
-      setExamGrade("");
-    } catch (error) {
-      console.error("خطأ أثناء تقديم الامتحان:", error);
-      toast.error("حدث خطأ أثناء تقديم الامتحان. حاول مرة أخرى.", {
-        position: "top-center",
-      });
-    }
+    setQuestions([...questions, newQuestion]);
+    setQuestion("");
+    setOptions(["", "", "", ""]);
+    setCorrectAnswer(null);
+    setExplanation("");
+    setImage(null);
+    toast.success("تم إضافة السؤال بنجاح!", { position: "top-center" });
   };
 
-  const handlePreview = () => {
-    if (questions.length === 0) {
-      toast.warn("لا توجد أسئلة لمشاهدتها. يرجى إضافة أسئلة أولاً.", {
-        position: "top-center",
-      });
-      return;
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setImage(reader.result);
+      reader.readAsDataURL(file);
     }
-
-    setShowPreview(true);
   };
 
   return (
     <div className="container">
-    <div className="create-exam-page">
-      <div className="create-exam-container">
-        <h2>إنشاء امتحان</h2>
-        <div className="input-container">
-          <label htmlFor="examTitle">عنوان الامتحان:</label>
-          <input
-            className="input-field"
-            type="text"
-            id="examTitle"
-            value={examTitle}
-            onChange={(e) => setExamTitle(e.target.value)}
-            placeholder="أدخل عنوان الامتحان"
-            required
+      <h2>إنشاء امتحان</h2>
+      <div className="question-input">
+        <h3>إدخال سؤال يدويًا</h3>
+        <div>
+          <label>السؤال:</label>
+          <textarea
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="أدخل السؤال"
+            rows="3"
+            style={{ width: "100%", marginBottom: "10px" }}
           />
         </div>
-        <div className="input-container">
-          <label htmlFor="examDate">تاريخ الامتحان:</label>
-          <input
-            type="date"
-            id="examDate"
-            value={examDate}
-            onChange={(e) => setExamDate(e.target.value)}
-            required
-            className="input-field"
-          />
-        </div>
-        <div className="input-container">
-          <label htmlFor="examGrade">المرحلة الدراسية:</label>
-          <select
-            id="examGrade"
-            value={examGrade}
-            onChange={(e) => setExamGrade(e.target.value)}
-            required
-            className="input-field"
-          >
-            <option value="" disabled>
-              اختر المرحلة الدراسية
-            </option>
-            <option value="أولى ثانوي">أولى ثانوي</option>
-            <option value="ثانية ثانوي">ثانية ثانوي</option>
-            <option value="ثالثة ثانوي">ثالثة ثانوي</option>
-          </select>
-        </div>
-        <div className="input-mode-selection">
-          <label>
-            <input
-              type="radio"
-              name="inputMode"
-              value="upload"
-              checked={inputMode === "upload"}
-              onChange={() => setInputMode("upload")}
+        <div>
+          <label>إضافة صورة (اختياري):</label>
+          <input type="file" onChange={handleImageUpload} />
+          {image && (
+            <img
+              src={image}
+              alt="Preview"
+              style={{ maxWidth: "100px", marginTop: "10px" }}
             />
-            إدخال من ملف
-          </label>
-          <label>
+          )}
+        </div>
+        <div>
+          <label>الإجابات:</label>
+          {options.map((option, index) => (
             <input
-              type="radio"
-              name="inputMode"
-              value="manual"
-              checked={inputMode === "manual"}
-              onChange={() => setInputMode("manual")}
+              key={index}
+              type="text"
+              placeholder={`الإجابة ${index + 1}`}
+              value={option}
+              onChange={(e) =>
+                setOptions(
+                  options.map((opt, i) => (i === index ? e.target.value : opt))
+                )
+              }
+              style={{ display: "block", marginBottom: "5px" }}
             />
-            إدخال يدوي
-          </label>
+          ))}
         </div>
-
-        {inputMode === "upload" && (
-          <AutomaticExamComponent setQuestions={setQuestions} />
-        )}
-        {inputMode === "manual" && (
-          <ManualQuestionComponent
-            questions={questions}
-            setQuestions={setQuestions}
+        <div>
+          <label>اختر الإجابة الصحيحة:</label>
+          {options.map((_, index) => (
+            <label key={index} style={{ marginRight: "10px" }}>
+              <input
+                type="radio"
+                name="correctAnswer"
+                value={index}
+                checked={correctAnswer === index}
+                onChange={() => setCorrectAnswer(index)}
+              />
+              {`إجابة ${index + 1}`}
+            </label>
+          ))}
+        </div>
+        <div>
+          <label>التعليل (في حالة الخطأ):</label>
+          <textarea
+            value={explanation}
+            onChange={(e) => setExplanation(e.target.value)}
+            placeholder="أدخل التعليل"
+            rows="3"
+            style={{ width: "100%", marginBottom: "10px" }}
           />
-        )}
-
-        {/* أزرار تقديم الامتحان والمعاينة */}
-        <div className="exam-buttons">
-          <button
-            className="previeww-button"
-            onClick={handlePreview}
-            style={{ padding: "10px 20px" }}
-          >
-            مشاهدة مسبقة
-          </button>
-          <button
-            className="submitt-button"
-            onClick={handleExamSubmit}
-            style={{ padding: "10px 20px" }}
-          >
-            تقديم الامتحان
-          </button>
         </div>
+        <button onClick={handleAddQuestion} style={{ marginTop: "10px" }}>
+          إضافة السؤال
+        </button>
+      </div>
 
-        {/* معاينة الامتحان */}
-        {showPreview && (
-          <div className="exam-preview">
-            <h3>معاينة الامتحان</h3>
-            <p>عنوان الامتحان: {examTitle}</p>
-            <p>تاريخ الامتحان: {examDate}</p>
-            <p>المرحلة الدراسية: {examGrade}</p>
-            {questions.length > 0 ? (
-              <ul>
-                {questions.map((q, index) => (
-                  <li key={index} style={{ marginBottom: "10px" }}>
-                    <strong>السؤال {index + 1}:</strong> {q.question}
-                    <ul>
-                      {q.options.map((option, optIndex) => (
-                        <li
-                          key={optIndex}
-                          style={{
-                            color:
-                              q.correctAnswer === optIndex ? "green" : "black",
-                          }}
-                        >
-                          <span>خيار {optIndex + 1}: </span>
-                          {option}
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>لا توجد أسئلة.</p>
-            )}
-            <button
-              className="close-preview-button"
-              onClick={() => setShowPreview(false)}
-              style={{ marginTop: "20px", padding: "10px 20px" }}
-            >
-              إغلاق المعاينة
-            </button>
-          </div>
+      <div style={{ marginTop: "20px" }}>
+        <h3>موقع استخراج النصوص</h3>
+        <iframe
+          src="http://localhost:8000/api/proxy"
+          title="OCRify"
+          style={{
+            width: "100%",
+            height: "600px",
+            border: "1px solid #ddd",
+          }}
+        />
+      </div>
+
+      <div style={{ marginTop: "20px" }}>
+        <h3>الأسئلة المضافة</h3>
+        {questions.length > 0 ? (
+          <ul>
+            {questions.map((q, index) => (
+              <li key={index} style={{ marginBottom: "10px" }}>
+                <strong>السؤال {index + 1}:</strong> {q.question}
+                {q.image && (
+                  <img
+                    src={q.image}
+                    alt={`Question ${index + 1}`}
+                    style={{ maxWidth: "50px", marginLeft: "10px" }}
+                  />
+                )}
+                <ul>
+                  {q.options.map((option, optIndex) => (
+                    <li
+                      key={optIndex}
+                      style={{
+                        color: q.correctAnswer === optIndex ? "green" : "black",
+                      }}
+                    >
+                      <span>خيار {optIndex + 1}: </span>
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+                <p>
+                  <strong>التعليل:</strong> {q.explanation || "لا يوجد تعليل"}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>لا توجد أسئلة مضافة بعد.</p>
         )}
-
-        <ToastContainer />
       </div>
-      </div>
+      <ToastContainer />
     </div>
   );
 };
