@@ -1,9 +1,23 @@
 const Lesson = require("../models/Lesson");
 
 const getAllLessons = async (req, res) => {
-  // const users = await User.find().select("-password").lean();
-  const lessons = await Lesson.find();
-  res.json(lessons);
+  try {
+    const { role, stage } = req;
+    console.log(role, stage);
+    
+    let lessons;
+    if (role === "admin") {
+      lessons = await Lesson.find();
+    } else if (stage) {
+      lessons = await Lesson.find({ stage });
+    } else {
+      // If the user has no stage (and is not admin), return an error
+      return res.status(403).json({ message: "Access denied" });
+    }
+    return res.status(200).json(lessons);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const createLesson = async (req, res) => {
@@ -65,12 +79,12 @@ const deleteLesson = async (req, res) => {
     return res.status(404).json({ message: "الفيديو غير موجود" });
   }
 
-  return res.status(200).json({message: "تم حذف الفيديو بنجاح"});
+  return res.status(200).json({ message: "تم حذف الفيديو بنجاح" });
 };
 
 module.exports = {
   getAllLessons,
   createLesson,
   updateLesson,
-  deleteLesson
+  deleteLesson,
 };

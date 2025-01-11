@@ -33,6 +33,8 @@ const register = async (req, res) => {
     {
       userInfo: {
         id: user._id,
+        role: user.role,
+        stage: user.stage,
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
@@ -43,6 +45,8 @@ const register = async (req, res) => {
     {
       userInfo: {
         id: user._id,
+        role: user.role,
+        stage: user.stage,
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
@@ -77,8 +81,7 @@ const login = async (req, res) => {
   }
 
   // const isMatch = await bcrypt.compare(password, foundUser.password);
-    const foundPassword = await User.findOne({ password }).exec();
-
+  const foundPassword = await User.findOne({ password }).exec();
 
   if (!foundPassword) {
     return res.status(401).json({ message: "كلمة المرور خاطئة" });
@@ -87,6 +90,8 @@ const login = async (req, res) => {
     {
       userInfo: {
         id: foundUser._id,
+        role: foundUser.role,
+        stage: foundUser.stage,
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
@@ -97,6 +102,8 @@ const login = async (req, res) => {
     {
       userInfo: {
         id: foundUser._id,
+        role: foundUser.role,
+        stage: foundUser.stage,
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
