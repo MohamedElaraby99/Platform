@@ -13,9 +13,22 @@ const verifyJWT = (req, res, next) => {
     if (err) {
       return res.status(403).json({ message: "Forbidden" });
     }
+    // Extract user information from the token
     req.user_id = decoded.userInfo.id;
+    req.role = decoded.userInfo.role; // Assume the role is in userInfo
+    req.stage = decoded.userInfo.stage; // Assume the stage is in userInfo
+    console.log(req.user_id, req.role, req.stage);
+
     next();
   });
 };
 
-module.exports = verifyJWT;
+const verifyAdmin = (req, res, next) => {
+  if (req.role !== "admin") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+  next();
+};
+
+
+module.exports = {verifyJWT, verifyAdmin};

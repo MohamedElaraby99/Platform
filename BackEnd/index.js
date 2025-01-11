@@ -16,7 +16,9 @@ connectDB();
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ limit: "5mb", extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/", express.static(path.join(__dirname, "public")));
 
 // المسارات الحالية
@@ -26,11 +28,9 @@ app.use("/users", require("./routes/userRoutes"));
 app.use("/lessons", require("./routes/lessonRoutes"));
 app.use("/exams", require("./routes/examRoutes"));
 app.use("/announcements", require("./routes/announcementRoutes"));
+app.use("/files", require("./routes/fileRoutes"));
+app.use("/exams", require("./routes/examRoutes"));
 
-// fake comment
-// المسارات الجديدة
-app.use("/questions", require("./routes/questionRoutes"));
-app.use("/results", require("./routes/studentResultRoutes"));
 
 // معالجة 404
 app.all("*", (req, res) => {
