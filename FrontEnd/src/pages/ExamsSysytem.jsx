@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
 import ResultComponent from "./ResultComponent"; // استيراد مكون عرض النتيجة
 import "react-toastify/dist/ReactToastify.css";
 import "./../styles/ExamsSystem.css";
@@ -42,19 +41,11 @@ const ExamsSystem = () => {
   };
 
   const handleSubmit = () => {
-    let correctCount = 0;
     questionsArray.forEach((q) => {
       if (answers[q._id] === q.correctAnswer) {
-        correctCount++;
+        // يمكن إجراء أي منطق إضافي هنا لاحقًا إذا لزم الأمر
       }
     });
-
-    toast.success(
-      `تم تقديم الامتحان بنجاح! إجاباتك الصحيحة: ${correctCount}/${questionsArray.length}`,
-      {
-        position: "top-center",
-      }
-    );
 
     setSubmitted(true);
   };
@@ -73,67 +64,55 @@ const ExamsSystem = () => {
   return (
     <div className="exam-system-container">
       <h2 className="exam-system-title">الامتحان</h2>
-      <form className="exam-system-form">
-        {questionsArray.map((q, index) => (
-          <div key={q._id} className="exam-question-container">
-            {q.image && (
-              <div className="exam-image-container">
-                <img
-                  src={q.image}
-                  alt={`صورة للسؤال ${index + 1}`}
-                  className="exam-image"
-                />
-              </div>
-            )}
+      {!submitted ? (
+        <form className="exam-system-form">
+          {questionsArray.map((q, index) => (
+            <div key={q._id} className="exam-question-container">
+              {q.image && (
+                <div className="exam-image-container">
+                  <img
+                    src={q.image}
+                    alt={`صورة للسؤال ${index + 1}`}
+                    className="exam-image"
+                  />
+                </div>
+              )}
 
-            <h3 className="exam-question">
-              السؤال {index + 1}: {q.questionText}
-            </h3>
+              <h3 className="exam-question">
+                السؤال {index + 1}: {q.questionText}
+              </h3>
 
-            <ul className="exam-options-list">
-              {q.options.map((option, optIndex) => {
-                let optionClass = "exam-option";
-                if (submitted) {
-                  if (optIndex === q.correctAnswer) {
-                    optionClass += " exam-option-correct";
-                  } else if (answers[q._id] === optIndex) {
-                    optionClass += " exam-option-wrong";
+              <ul className="exam-options-list">
+                {q.options.map((option, optIndex) => {
+                  let optionClass = "exam-option";
+                  if (answers[q._id] === optIndex) {
+                    optionClass += " exam-option-selected";
                   }
-                } else if (answers[q._id] === optIndex) {
-                  optionClass += " exam-option-selected";
-                }
 
-                return (
-                  <li key={optIndex} className={optionClass}>
-                    <input
-                      type="radio"
-                      id={`option-${q._id}-${optIndex}`}
-                      name={`question-${q._id}`}
-                      value={optIndex}
-                      checked={answers[q._id] === optIndex}
-                      onChange={() => handleAnswerChange(q._id, optIndex)}
-                      className="exam-radio"
-                    />
-                    <label
-                      className="exam-option-label"
-                      htmlFor={`option-${q._id}-${optIndex}`}
-                    >
-                      {option}
-                    </label>
-                  </li>
-                );
-              })}
-            </ul>
+                  return (
+                    <li key={optIndex} className={optionClass}>
+                      <input
+                        type="radio"
+                        id={`option-${q._id}-${optIndex}`}
+                        name={`question-${q._id}`}
+                        value={optIndex}
+                        checked={answers[q._id] === optIndex}
+                        onChange={() => handleAnswerChange(q._id, optIndex)}
+                        className="exam-radio"
+                      />
+                      <label
+                        className="exam-option-label"
+                        htmlFor={`option-${q._id}-${optIndex}`}
+                      >
+                        {option}
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
 
-            {submitted && (
-              <p className="exam-correct-answer">
-                الإجابة الصحيحة: {q.options[q.correctAnswer]}
-              </p>
-            )}
-          </div>
-        ))}
-
-        {!submitted && (
           <button
             type="button"
             onClick={handleSubmit}
@@ -141,20 +120,22 @@ const ExamsSystem = () => {
           >
             تقديم الامتحان
           </button>
-        )}
-      </form>
-
-      {submitted && (
-        <button
-          type="button"
-          onClick={handleShowResult}
-          className="show-result-button"
-        >
-          عرض النتيجة
-        </button>
+        </form>
+      ) : (
+        <div className="submitted-message">
+          <p>
+            <span className="submitted-text">تم تقديم الامتحان.</span> اضغط علي
+            زر عرض التفاصيل لمعرفة النتيجة . &#8595;
+          </p>
+          <button
+            type="button"
+            onClick={handleShowResult}
+            className="show-result-button"
+          >
+            عرض التفاصيل
+          </button>
+        </div>
       )}
-
-      <ToastContainer />
     </div>
   );
 };

@@ -1,12 +1,10 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./../../styles/dashboard/addPosts.css";
 
 const CreatePostComponent = () => {
-  // State to store posts
-  const [posts, setPosts] = useState([]);
-
   // States for new post fields
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
@@ -16,7 +14,7 @@ const CreatePostComponent = () => {
   const years = ["الصف الأول", "الصف الثاني", "الصف الثالث"];
 
   // Function to handle new post creation
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!title || !details || selectedYears.length === 0) {
@@ -24,23 +22,45 @@ const CreatePostComponent = () => {
       return;
     }
 
+    // Prepare data to send to the API
     const newPost = {
-      id: Date.now(),
       title,
-      details,
-      years: selectedYears,
+      description: details,
+      stage: {
+        stage_one: selectedYears.includes("الصف الأول"),
+        stage_two: selectedYears.includes("الصف الثاني"),
+        stage_three: selectedYears.includes("الصف الثالث"),
+      },
     };
 
-    // Add the new post to the list
-    setPosts((prevPosts) => [...prevPosts, newPost]);
+    const accessToken = localStorage.getItem("accessToken");
 
-    // Reset fields
-    setTitle("");
-    setDetails("");
-    setSelectedYears([]);
+    try {
+      // Send POST request to API
+      await axios.post("http://localhost:8000/announcements", newPost, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-    // Show success toast
-    toast.success("تم إنشاء الإعلان بنجاح!");
+      // Reset fields
+      setTitle("");
+      setDetails("");
+      setSelectedYears([]);
+
+      // Show success toast
+      toast.success("تم إنشاء الإعلان بنجاح!");
+    } catch (error) {
+      console.error("Error creating post:", error);
+      if (error.response) {
+        toast.error(
+          `خطأ: ${error.response.data.message || "حدث خطأ أثناء الإنشاء."}`
+        );
+      } else {
+        toast.error("حدث خطأ أثناء إنشاء الإعلان.");
+      }
+    }
   };
 
   // Function to toggle selected years

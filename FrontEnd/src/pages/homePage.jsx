@@ -4,11 +4,14 @@ import axios from "axios";
 import "./../styles/HomePage.css";
 
 const HomePage = () => {
-
   const [videos, setVideos] = useState([]); // Array to hold video data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [announcements, setAnnouncements] = useState([]); // Array to hold announcements data
+  const [loadingVideos, setLoadingVideos] = useState(true); // Loading state for videos
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true); // Loading state for announcements
+  const [errorVideos, setErrorVideos] = useState(null); // Error state for videos
+  const [errorAnnouncements, setErrorAnnouncements] = useState(null); // Error state for announcements
   const navigate = useNavigate(); // For navigation to the details page
+
   // Fetch videos from API on page load
   useEffect(() => {
     const fetchVideos = async () => {
@@ -21,15 +24,37 @@ const HomePage = () => {
         });
 
         setVideos(response.data); // Set the video data
-        setError(null); // Clear any errors
+        setErrorVideos(null); // Clear any errors
       } catch (err) {
-        setError("حدث خطأ أثناء تحميل الفيديوهات."); // Handle errors
+        setErrorVideos("حدث خطأ أثناء تحميل الفيديوهات."); // Handle errors
       } finally {
-        setLoading(false); // Stop loading
+        setLoadingVideos(false); // Stop loading
+      }
+    };
+
+    const fetchAnnouncements = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken"); // Get the token
+        const response = await axios.get(
+          "http://localhost:8000/announcements",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, // Include the token
+            },
+          }
+        );
+
+        setAnnouncements(response.data); // Set the announcements data
+        setErrorAnnouncements(null); // Clear any errors
+      } catch (err) {
+        setErrorAnnouncements("حدث خطأ أثناء تحميل الإعلانات."); // Handle errors
+      } finally {
+        setLoadingAnnouncements(false); // Stop loading
       }
     };
 
     fetchVideos();
+    fetchAnnouncements();
   }, []);
 
   // Extract video ID from URL
@@ -44,16 +69,8 @@ const HomePage = () => {
   const handleVideoClick = (video) => {
     navigate(`/video-details/${video._id}`, {
       state: { video },
-    }); // التنقل إلى صفحة التفاصيل مع id الفيديو
+    }); // Navigate to video details page
   };
-
-  if (loading) {
-    return <p>جارٍ تحميل الفيديوهات...</p>; // Display loading state
-  }
-
-  if (error) {
-    return <p className="error-message">{error}</p>; // Display error message
-  }
 
   return (
     <div className="home-page">
@@ -63,6 +80,22 @@ const HomePage = () => {
           <span className="material-icons">campaign</span>
           إعلانات مهمة
         </h2>
+        {loadingAnnouncements ? (
+          <p>جارٍ تحميل الإعلانات...</p>
+        ) : errorAnnouncements ? (
+          <p className="error-message">{errorAnnouncements}</p>
+        ) : announcements.length > 0 ? (
+          <ul className="announcements-list">
+            {announcements.map((announcement) => (
+              <li key={announcement._id} className="announcement-item">
+                <h4>{announcement.title}</h4>
+                <p>{announcement.description}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>لا توجد إعلانات في الوقت الحالي.</p>
+        )}
       </section>
 
       {/* Educational Videos Section */}
@@ -71,32 +104,38 @@ const HomePage = () => {
           <span className="material-icons">book</span>
           فيديوهات تعليمية
         </h2>
-        <div className="videos-grid">
-          {videos.map((video) => {
-            const videoId = extractVideoId(video.lesson_link); // Extract video ID
-            const thumbnailUrl = videoId
-              ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-              : null;
+        {loadingVideos ? (
+          <p>جارٍ تحميل الفيديوهات...</p>
+        ) : errorVideos ? (
+          <p className="error-message">{errorVideos}</p>
+        ) : (
+          <div className="videos-grid">
+            {videos.map((video) => {
+              const videoId = extractVideoId(video.lesson_link); // Extract video ID
+              const thumbnailUrl = videoId
+                ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                : null;
 
-            return (
-              <div
-                className="video-container"
-                key={video._id}
-                onClick={() => handleVideoClick(video)} // On click, store the video URL and ID
-              >
-                {thumbnailUrl ? (
-                  <img
-                    src={thumbnailUrl}
-                    alt={video.title}
-                    className="video-thumbnail"
-                  />
-                ) : (
-                  <p>رابط الفيديو غير صالح</p>
-                )}
-              </div>
-            );
-          })}
-        </div>
+              return (
+                <div
+                  className="video-container"
+                  key={video._id}
+                  onClick={() => handleVideoClick(video)} // On click, store the video URL and ID
+                >
+                  {thumbnailUrl ? (
+                    <img
+                      src={thumbnailUrl}
+                      alt={video.title}
+                      className="video-thumbnail"
+                    />
+                  ) : (
+                    <p>رابط الفيديو غير صالح</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
         <p className="view-all-videos">
           <Link to="/courses" className="view-all-videos">
             مشاهدة كل الفيديوهات التعليمية

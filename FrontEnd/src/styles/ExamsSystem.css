@@ -249,3 +249,21 @@
 .show-result-button:hover {
   background-color: #0056b3;
 }
+
+.submitted-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+  color: #0d8c06;
+  font-weight: bold;
+  font-family: "cairo", sans-serif;
+}
+
+.submitted-message {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+  color: #000000;
+  font-weight: bold;
+  font-family: "cairo", sans-serif;
+}

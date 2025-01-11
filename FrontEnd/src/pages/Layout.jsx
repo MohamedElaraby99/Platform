@@ -8,18 +8,22 @@ const Layout = ({ children, role, onSignOut }) => {
 
   return (
     <div className="layout">
-      {/* Header */}
       <header className="header">
+        <div className="menu-icon">
+          <span className="material-icons"></span>
+        </div>
         <div className="logo-container" onClick={() => navigate("/home")}>
           <img
             className="logo"
             src={require("./../images/loginlogo.png")}
             alt="محمود توكل"
           />
-          <h1 className="flash"> منصة التوكل </h1>
+          <h1>
+            مــنص<span class="highlight-dot">ـة</span> الــتوك
+            <span class="highlight-dot">ـل</span>
+          </h1>
         </div>
         <div className="user-menu">
-          {/* Link to User Page */}
           <Link to="/user">
             <div
               className={`user-avatar ${
@@ -30,7 +34,6 @@ const Layout = ({ children, role, onSignOut }) => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="main-content">
         {/* Sidebar */}
         <aside className="sidebar">

@@ -19,20 +19,15 @@ body {
 
 /* Sidebar Styling */
 
-.flash {
-  color: #ffffff;
-  font-weight: 900;
-  display: inline-block;
-  animation: flashText 1s ease-in-out infinite;
-}
 
 .sidebar {
+  font-family: "Cairo", sans-serif;
   top: 0;
   margin-top: 100px;
   border-radius: 20px 0 0 20px;
   height: fit-content;
-  width: 117px;
-  background: #0d8acd;
+  width: 130px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
   color: white;
   display: flex;
   flex-direction: column;
@@ -80,14 +75,6 @@ body {
 
 .sidebar li svg {
   margin-left: 10px;
-}
-
-/* Sidebar Active Item */
-.sidebar li.active {
-  background: #e74c3c;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Sidebar Footer */
@@ -271,7 +258,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #0d8acd;
+  background: linear-gradient(90deg, #007bff, #0056b3);
   padding: 10px 20px;
   color: white;
   box-shadow: -3px 0 8px rgba(0, 0, 0, 0.2);
@@ -413,7 +400,7 @@ body {
 .sidebar li.active {
   background: #194a7a;
   color: white;
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -503,4 +490,33 @@ body {
     width: 35px;
     height: 35px;
   }
+}
+
+.header h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  background-color: #007BFF;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.highlight-dot {
+  color: #FFA500; /* لون النقاط الأصفر المائل للبرتقالي */
+}
+
+
+.header h1 {
+  font-family: "Cairo", sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  background-color: inherit;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.header h1 span {
+  color: #FFA500;
 }
