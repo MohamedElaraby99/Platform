@@ -1,25 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import "./../styles/exams.css";
 
 const ExamsPage = () => {
-  const [exams, setExams] = useState([]);
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [loading, setLoading] = useState(true); // حالة التحميل
-  const [error, setError] = useState(null); // حالة الخطأ
+  // بيانات ديمو محلية
+  const demoExams = [
+    {
+      id: 1,
+      name: "امتحان الرياضيات",
+      date: "",
+    },
+    {
+      id: 2,
+      name: "امتحان الفيزياء",
+      date: "",
+    },
+    {
+      id: 3,
+      name: "امتحان الكيمياء",
+      date: "",
+    },
+  ];
 
+  const [exams, setExams] = useState([]); // حالة الامتحانات
+  const [currentTime, setCurrentTime] = useState(new Date()); // الوقت الحالي
+  const [loading, setLoading] = useState(true); // حالة التحميل
+
+  // جلب البيانات من بيانات الديمو
   useEffect(() => {
-    // استدعاء API لجلب بيانات الامتحانات
+    // محاكاة التأخير لتحاكي الـ API
     const fetchExams = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/exams");
-        setExams(response.data); // تعيين البيانات المستلمة في الحالة
-        setLoading(false); // إنهاء حالة التحميل
-      } catch (err) {
-        setError("فشل في جلب بيانات الامتحانات. حاول مرة أخرى لاحقًا.");
-        setLoading(false); // إنهاء حالة التحميل حتى في حالة الخطأ
-      }
+      setLoading(true);
+      setTimeout(() => {
+        setExams(demoExams); // تعيين بيانات الديمو
+        setLoading(false); // إنهاء التحميل
+      }, 1000);
     };
 
     fetchExams();
@@ -46,13 +61,9 @@ const ExamsPage = () => {
     }
   });
 
-  // عرض حالة التحميل أو الخطأ
+  // عرض حالة التحميل
   if (loading) {
     return <div className="loading">جاري تحميل الامتحانات...</div>;
-  }
-
-  if (error) {
-    return <div className="error-message">{error}</div>;
   }
 
   return (

@@ -120,22 +120,22 @@ const Dashboard = () => {
 
       <div className="actions">
         <div className="quick-upload">
-          <h3>رفع سريع</h3>
+          <h3>الرفع </h3>
 
           <button className="video-btn" onClick={() => navigate("/add-video")}>
             <span className="fluent--video-28-filled"></span>
             <span className="invisible-char">هلا</span>
-            <span className="add-text"> اضافة فيديو جديد</span>
+            <span className="add-text"> رفع فيديو جديد</span>
           </button>
 
           <button className="pdf-btn" onClick={() => navigate("/add-pdf")}>
             <span className="bxs--file-pdf "></span>
             <span className="invisible-char">هلا</span>
-            <span className="add-text"> اضافة PDF جديد</span>
+            <span className="add-text"> رفع PDF جديد</span>
           </button>
         </div>
         <div className="quick-actions">
-          <h3>إجراءات سريعة</h3>
+          <h3>الإجراءات  </h3>
 
           <button className="add-btn" onClick={() => navigate("/add-user")}>
             <span className="mdi--user-add"></span>
