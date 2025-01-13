@@ -9,9 +9,6 @@ const Layout = ({ children, role, onSignOut }) => {
   return (
     <div className="layout">
       <header className="header">
-        <div className="menu-icon">
-          <span className="material-icons"></span>
-        </div>
         <div className="logo-container" onClick={() => navigate("/home")}>
           <img
             className="logo"

@@ -69,62 +69,76 @@ const LoginForm = ({ setRole }) => {
   };
 
   return (
-    <div className="login-page-container">
-      <div className="login-page">
-        {/* Left Section */}
-        <div className="left-side">
-        </div>
+    <div className="login-page-wrapper">
+      <div className="login-page-container">
+        <div className="login-page">
+          {/* Left Section */}
+          <div className="left-side-container">
+            <div className="left-side">
+              <img
+                className="left-side-image"
+                src={require("./../images/loginlogo.png")}
+                alt=""
+              />
+            </div>
+          </div>
 
-        {/* Right Section */}
-        <div className="right-side">
-          <div className="login-form-container">
-            <h2 className="login-title">تسجيل الدخول</h2>
-            <form onSubmit={handleLogin} className="login-form">
-              <div className="input-containerr">
-                <label htmlFor="userName">اسم المستخدم</label>
-                <input
-                  type="text"
-                  id="userName"
-                  value={userName}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="input-containerr">
-                <label htmlFor="password">كلمة المرور</label>
-                <div className="password-input-container">
+          {/* Right Section */}
+          <div className="right-side">
+            <div className="login-form-container">
+              <h2 className="login-title">تسجيل الدخول</h2>
+              <form onSubmit={handleLogin} className="login-form">
+                <div className="input-containerr">
+                  <label htmlFor="userName">اسم المستخدم</label>
                   <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    type="text"
+                    id="userName"
+                    value={userName}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
-                    className="password-input"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="toggle-password-buttonn"
-                  >
-                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                </div>
+                <div className="input-containerr">
+                  <label htmlFor="password">كلمة المرور</label>
+                  <div className="password-input-container">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="password-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="toggle-password-buttonn"
+                    >
+                      <FontAwesomeIcon
+                        icon={showPassword ? faEyeSlash : faEye}
+                      />
+                    </button>
+                  </div>
+                </div>
+                {error && <p className="error-message">{error}</p>}
+                <div className="optionss">
+                  <label className="remember-me">
+                    <input
+                      className="remember-me-checkbox"
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                    تذكرني
+                  </label>
+                </div>
+                <div className="login-button-container">
+                  <button type="submit" className="login-button">
+                    تسجيل الدخول
                   </button>
                 </div>
-              </div>
-              {error && <p className="error-message">{error}</p>}
-              <div className="optionss">
-                <label className="remember-me">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                  تذكرني
-                </label>
-              </div>
-              <button type="submit" className="login-button">
-                تسجيل الدخول
-              </button>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>

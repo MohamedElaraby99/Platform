@@ -5,7 +5,7 @@ import "./../styles/ResultComponent.css";
 const ResultComponent = ({ questionsArray, answers }) => {
   const navigate = useNavigate();
 
-  // Calculate the score
+  // حساب النتيجة
   const correctAnswersCount = questionsArray.reduce((count, question) => {
     if (answers[question._id] === question.correctAnswer) {
       return count + 1;
@@ -51,6 +51,11 @@ const ResultComponent = ({ questionsArray, answers }) => {
             <p className="result-correct-answer">
               <strong>الإجابة الصحيحة:</strong> {q.options[q.correctAnswer]}
             </p>
+            {answers[q._id] !== q.correctAnswer && q.explanation && (
+              <p className="result-explanation">
+                <strong>التعليل:</strong> {q.explanation}
+              </p>
+            )}
           </li>
         ))}
       </ul>
