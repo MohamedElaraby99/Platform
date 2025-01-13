@@ -5,7 +5,7 @@ const User = require("../models/User");
 
 const getExamsWithScores = async (req, res) => {
   try {
-    const { user_id, stage, role } = req; // Assuming role is available in the token
+    const { user_id, stage, role } = req;
     console.log({ user_id, stage, role });
 
     let exams;
@@ -113,8 +113,8 @@ const addExam = async (req, res) => {
     }
 
     // Validate questions
-    for (const question of questions) {
-      const { text, options, correctAnswer, why } = question;
+    for (const q of questions) {
+      const { question, options, correctAnswer, why } = q;
       if (!text) {
         return res.status(400).json({ message: "Question text is required" });
       }
@@ -183,9 +183,9 @@ const updateExam = async (req, res) => {
 
     // Validate questions if provided
     if (questions) {
-      for (const question of questions) {
-        const { text, options, correctAnswer } = question;
-        if (!text) {
+      for (const q of questions) {
+        const { question, options, correctAnswer } = q;
+        if (!question) {
           return res.status(400).json({ message: "Question text is required" });
         }
         if (!Array.isArray(options) || options.length < 2) {

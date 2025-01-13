@@ -10,7 +10,6 @@ const {
 } = require("../controllers/examController");
 const { verifyJWT, verifyAdmin } = require("../middlewares/verifyToken");
 
-router.use(verifyJWT); // Protect routes
 router.get("/", verifyJWT, getExamsWithScores);
 router.post("/", verifyJWT, verifyAdmin, addExam);
 router.put("/:id", verifyJWT, verifyAdmin, updateExam);

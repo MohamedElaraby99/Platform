@@ -124,7 +124,37 @@ const login = async (req, res) => {
   });
 };
 
+const refreshToken = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized" }); // No refresh token
+  const refreshToken = cookies.jwt;
+  jwt.verfy(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    async (err, decoded) => {
+      if (err) return res.status(403).json({ message: "Forbidden" }); // Invalid refresh token
+      const foundUser = await User.findById(decoded.userInfo.id).exec();
+      if (!foundUser) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      const accessToken = jsonWebToken.sign(
+        {
+          userInfo: {
+            id: foundUser._id,
+            role: foundUser.role,
+            stage: foundUser.stage,
+          },
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "1d" }
+      );
+      res.json({ accessToken });
+    }
+  );
+};
+
 module.exports = {
   register,
   login,
+  refreshToken,
 };
