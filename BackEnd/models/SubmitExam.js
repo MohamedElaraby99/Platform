@@ -10,6 +10,7 @@ const submissionSchema = new mongoose.Schema({
         ref: "Exam.questions",
       },
       selectedAnswer: { type: String, required: true },
+      isCorrect: { type: Boolean, required: true },
     },
   ],
   score: { type: Number, required: true },

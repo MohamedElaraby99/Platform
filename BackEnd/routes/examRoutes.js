@@ -5,7 +5,8 @@ const {
   submitExam,
   addExam,
   updateExam,
-  deleteExam
+  deleteExam,
+  getExamDataForAdmin
 } = require("../controllers/examController");
 const { verifyJWT, verifyAdmin } = require("../middlewares/verifyToken");
 
@@ -15,5 +16,6 @@ router.post("/", verifyJWT, verifyAdmin, addExam);
 router.put("/:id", verifyJWT, verifyAdmin, updateExam);
 router.delete("/:id", verifyJWT, verifyAdmin, deleteExam);
 router.post("/submit", verifyJWT, submitExam); // Submit an exam
+router.get("/submit/admin", verifyJWT, verifyAdmin, getExamDataForAdmin); // Submit an exam
 
 module.exports = router;

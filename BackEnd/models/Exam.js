@@ -4,6 +4,7 @@ const questionSchema = new mongoose.Schema({
   text: { type: String, required: true },
   options: [{ type: String, required: true }],
   correctAnswer: { type: String, required: true },
+  why: { type: String },
 });
 
 const examSchema = new mongoose.Schema(
