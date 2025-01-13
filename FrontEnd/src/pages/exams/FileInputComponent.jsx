@@ -83,9 +83,13 @@ const FileInputComponent = ({ onAddQuestions }) => {
         .map((t) => t.textContent.trim())
         .join(" ");
 
-      // Match questions with numbers (e.g., 31), optionally followed by an image placeholder.
+      console.log("Extracted texts:", texts); // تحقق من النصوص المستخرجة
+
+      // مطابقة الأسئلة
       const questionMatch = texts.match(/^(\d+)\)\s*(.*?)\s*(\[image\])?/i);
       if (questionMatch) {
+        console.log("Matched question:", questionMatch); // تحقق من مطابقة السؤال
+
         if (currentQuestion) {
           questions.push(currentQuestion);
         }
@@ -94,28 +98,28 @@ const FileInputComponent = ({ onAddQuestions }) => {
           question: questionMatch[2].trim(),
           options: [],
           correctAnswer: null,
-          image: null, // Placeholder for the associated image
+          image: null, // Placeholder للصورة المرتبطة
         };
 
-        // Check if there's an image placeholder in the question text
+        // إذا كان هناك صورة مرتبطة بالسؤال
         if (questionMatch[3]) {
           currentQuestion.image = images[imageIndex]?.data || null;
           imageIndex++;
         }
       } else if (/^[ا-ي]-/.test(texts)) {
-        // If it's an option
+        // إذا كان النص خيارًا للإجابة
         if (currentQuestion) {
           currentQuestion.options.push(texts.replace(/^[ا-ي]-/, "").trim());
         }
       } else if (texts.startsWith("الإجابة:")) {
-        // Match the correct answer
+        // مطابقة الإجابة الصحيحة
         if (currentQuestion) {
           const correctIndex =
             parseInt(texts.replace("الإجابة:", "").trim(), 10) - 1;
           currentQuestion.correctAnswer = correctIndex;
         }
       } else if (images[imageIndex]) {
-        // Fallback to associate the next image if it appears out of sequence
+        // إضافة صورة إذا ظهرت خارج السياق المتوقع
         if (currentQuestion && !currentQuestion.image) {
           currentQuestion.image = images[imageIndex]?.data || null;
           imageIndex++;
@@ -123,13 +127,14 @@ const FileInputComponent = ({ onAddQuestions }) => {
       }
     });
 
-    // Push the last question if it exists
+    // إضافة السؤال الأخير (إن وجد)
     if (currentQuestion) {
       questions.push(currentQuestion);
     }
 
     return questions;
   };
+
 
   return (
     <div>
@@ -142,36 +147,42 @@ const FileInputComponent = ({ onAddQuestions }) => {
         </div>
       )}
       {!loading && parsedQuestions.length > 0 && (
-        <div>
-          <h3>الأسئلة المستخرجة:</h3>
-          {parsedQuestions.map((q, index) => (
-            <details key={index}>
-              <summary>{q.question}</summary>
-              <ul>
-                {q.options.map((option, optIndex) => (
-                  <li
-                    key={optIndex}
-                    style={{
-                      color: q.correctAnswer === optIndex ? "green" : "black",
-                    }}
-                  >
-                    {option}
-                  </li>
-                ))}
-              </ul>
-              {q.image && (
-                <div>
-                  <img
-                    src={q.image}
-                    alt={`Question ${index + 1}`}
-                    style={{ maxWidth: "100%", height: "auto" }}
-                  />
-                </div>
-              )}
-            </details>
+  <div>
+    <h3>الأسئلة المستخرجة:</h3>
+    {parsedQuestions.map((q, index) => (
+      <details key={index}>
+        {/* عرض السؤال */}
+        <summary>
+          <strong>السؤال {index + 1}:</strong> {q.question || "السؤال غير متوفر"}
+        </summary>
+        {/* عرض الخيارات */}
+        <ul>
+          {q.options.map((option, optIndex) => (
+            <li
+              key={optIndex}
+              style={{
+                color: q.correctAnswer === optIndex ? "green" : "black",
+              }}
+            >
+              {option}
+            </li>
           ))}
-        </div>
-      )}
+        </ul>
+        {/* عرض الصورة إن وجدت */}
+        {q.image && (
+          <div>
+            <img
+              src={q.image}
+              alt={`Question ${index + 1}`}
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          </div>
+        )}
+      </details>
+    ))}
+  </div>
+)}
+
     </div>
   );
 };

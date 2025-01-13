@@ -270,3 +270,13 @@
     transform: rotate(360deg);
   }
 }
+
+.input-mode-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  gap: 10px;
+}

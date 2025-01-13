@@ -21,7 +21,7 @@ const AddPdf = () => {
     });
   };
 
-  const handleFileDrop = async (acceptedFiles) => {
+  const handleFileDrop = (acceptedFiles) => {
     if (acceptedFiles.length === 0) {
       setMessage("يرجى اختيار ملف PDF صالح");
       return;
@@ -49,19 +49,13 @@ const AddPdf = () => {
       return;
     }
 
-    // Simulate PDF data submission
-    console.log("PDF added:", {
-      name: pdfData.name,
-      fileName: pdfData.file.name,
-      stage: pdfData.stage,
-    });
-
     const formData = new FormData();
     formData.append("title", pdfData.name);
     formData.append("file", pdfData.file);
     formData.append("stage", pdfData.stage);
 
     const accessToken = localStorage.getItem("accessToken");
+
     try {
       // إرسال الطلب إلى الـ API
       const response = await axios.post(
@@ -74,7 +68,11 @@ const AddPdf = () => {
         }
       );
 
-      toast.success("تم إضافة المستخدم بنجاح!");
+      // عرض رسالة نجاح
+      setMessage("تم رفع الملف بنجاح!");
+      toast.success("تم رفع الملف بنجاح!");
+
+      // إعادة تعيين البيانات
       setPdfData({
         name: "",
         file: null,
@@ -82,21 +80,26 @@ const AddPdf = () => {
       });
       console.log("API Response:", response.data);
     } catch (error) {
-
       console.error("Error adding file:", error);
       toast.error(
         error.response?.data?.message || "حدث خطأ أثناء إضافة الملف!"
       );
     }
-
-    setMessage("تم إضافة ملف PDF بنجاح!");
   };
 
   return (
     <div className="add-pdf">
       <div className="add-pdf-container">
         <h2>إضافة ملف PDF جديد</h2>
-        {message && <p className="message">{message}</p>}
+        {message && (
+          <p
+            className={`message ${
+              message.includes("نجاح") ? "success" : "error"
+            }`}
+          >
+            {message}
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="add-pdf-form">
           <div className="form-group">
             <label htmlFor="name">اسم الملف:</label>
@@ -126,7 +129,7 @@ const AddPdf = () => {
                     backgroundColor: "#f9f9f9",
                   }}
                 >
-                  <input {...getInputProps()} accept=".pdf" />
+                  <input {...getInputProps()} />
                   {pdfData.file ? (
                     <p>تم اختيار الملف: {pdfData.file.name}</p>
                   ) : (
