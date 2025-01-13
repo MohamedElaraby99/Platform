@@ -6,10 +6,7 @@ const User = require("../models/User");
 const getExamsWithScores = async (req, res) => {
   try {
     const { user_id, stage, role } = req;
-    console.log({ user_id, stage, role });
-
     let exams;
-
     if (role === "admin") {
       // Admin can see all exams
       exams = await Exam.find();
@@ -60,6 +57,7 @@ const getExamsWithScores = async (req, res) => {
       return {
         id: exam._id,
         title: exam.title,
+        title: exam.type,
         description: exam.description,
         date: exam.date,
         duration: exam.duration,
@@ -80,7 +78,7 @@ const getExamsWithScores = async (req, res) => {
 
 const addExam = async (req, res) => {
   try {
-    const { title, description, date, duration, questions, stage, why } =
+    const { title, description, date, duration, questions, stage, why, type } =
       req.body;
     const currentTime = new Date();
     // Validate required fields
@@ -133,6 +131,9 @@ const addExam = async (req, res) => {
         });
       }
     }
+    if (type !== "امتحان" && type !== "تدريب") {
+      return res.status(400).json({ message: `Invalid type: ${type}` });
+    }
 
     // Create new exam document
     const newExam = new Exam({
@@ -143,6 +144,7 @@ const addExam = async (req, res) => {
       questions,
       stage,
       why,
+      type,
     });
 
     // Save to database
@@ -157,12 +159,12 @@ const addExam = async (req, res) => {
 
 const updateExam = async (req, res) => {
   const { id } = req.params; // Exam ID from URL parameters
-  const { title, description, date, duration, questions, stage, why } =
+  const { title, description, date, duration, questions, stage, why, type } =
     req.body;
 
   try {
     // Validate required fields
-    if (!title && !description && !date && !duration && !questions && !stage) {
+    if (!title && !description && !date && !duration && !questions && !stage && !type) {
       return res.status(400).json({ message: "No data provided for update" });
     }
 
@@ -213,6 +215,7 @@ const updateExam = async (req, res) => {
     if (questions) existingExam.questions = questions;
     if (stage) existingExam.stage = stage;
     if (why) existingExam.why = why;
+    if (type) existingExam.type = type;
 
     // Save updated exam
     const updatedExam = await existingExam.save();
@@ -425,6 +428,7 @@ const getExamDataForAdmin = async (req, res) => {
       return {
         examId: exam._id,
         title: exam.title,
+        exam: exam.type,
         description: exam.description,
         date: exam.date,
         duration: exam.duration,
