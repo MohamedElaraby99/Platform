@@ -1,58 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./../styles/AllPDFs.css";
 
-// Simulated list of PDF files
-const pdfFiles = [
-  {
-    id: 1,
-    name: "كتاب الرياضيات",
-    url: "/assets/محمد العربي .pdf",
-    grade: "أولى ثانوي",
-  },
-  {
-    id: 2,
-    name: "كتاب الفيزياء",
-    url: "/assets/محمد العربي .pdf",
-    grade: "ثاني ثانوي",
-  },
-  {
-    id: 3,
-    name: "كتاب اللغة العربية",
-    url: "/assets/محمد العربي .pdf",
-    grade: "ثالث ثانوي",
-  },
-  {
-    id: 4,
-    name: "كتاب التاريخ",
-    url: "/assets/محمد العربي .pdf",
-    grade: "ثاني ثانوي",
-  },
-];
-
 const AllPDFs = () => {
-  const [pdfs, setPdfs] = useState(pdfFiles); // Use the external data
+  const [pdfs, setPdfs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [editingPdf, setEditingPdf] = useState(null);
-  const [editData, setEditData] = useState({ name: "", url: "", grade: "" });
+  const [editData, setEditData] = useState({ title: "", file: "", stage: "" });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState("");
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  // Fetch files on component mount
+  useEffect(() => {
+    const fetchPdfs = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get("http://localhost:8000/files", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setPdfs(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError("حدث خطأ أثناء جلب الملفات.");
+        setLoading(false);
+      }
+    };
 
-  const handleDelete = (id) => {
+    fetchPdfs();
+  }, []);
+
+  // Handle delete operation
+  const handleDelete = async (_id) => {
     const confirmDelete = window.confirm("هل تريد حذف هذا الملف؟");
     if (confirmDelete) {
-      const updatedPdfs = pdfs.filter((pdf) => pdf.id !== id);
-      setPdfs(updatedPdfs);
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        await axios.delete(`http://localhost:8000/files/${_id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const updatedPdfs = pdfs.filter((pdf) => pdf._id !== _id);
+        setPdfs(updatedPdfs);
+        setMessage("تم حذف الملف بنجاح.");
+      } catch (error) {
+        console.error("حدث خطأ أثناء حذف الملف:", error);
+        alert("لم يتم حذف الملف. حاول مرة أخرى.");
+      }
     }
   };
 
-  const handleEdit = (id) => {
-    const pdfToEdit = pdfs.find((pdf) => pdf.id === id);
-    setEditingPdf(id);
+  // Handle edit start
+  const handleEdit = (_id) => {
+    const pdfToEdit = pdfs.find((pdf) => pdf._id === _id);
+
+    if (!pdfToEdit) {
+      console.error("PDF to edit not found.");
+      alert("الملف الذي تريد تعديله غير موجود.");
+      return;
+    }
+
+    console.log("Starting to edit PDF with ID:", _id);
+
+    setEditingPdf(_id);
     setEditData({ ...pdfToEdit });
+    setMessage("");
   };
 
+  // Handle input changes during editing
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditData({
@@ -61,29 +79,60 @@ const AllPDFs = () => {
     });
   };
 
-  const handleEditSave = () => {
-    const updatedPdfs = pdfs.map((pdf) =>
-      pdf.id === editingPdf ? { ...pdf, ...editData } : pdf
-    );
-    setPdfs(updatedPdfs);
-    setEditingPdf(null);
-  };
+  // Handle save operation for edited data
+  const handleEditSave = async () => {
+    if (!editingPdf) {
+      console.error("Editing PDF ID not found.");
+      alert("تعذر حفظ التعديلات لأن معرف الملف غير موجود.");
+      return;
+    }
 
-  const handleEditCancel = () => {
-    setEditingPdf(null);
-  };
+    console.log("Saving changes for PDF ID:", editingPdf);
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileUrl = URL.createObjectURL(file);
-      setEditData({ ...editData, url: fileUrl });
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+
+      const response = await axios.put(
+        `http://localhost:8000/files/${editingPdf}`,
+        {
+          title: editData.title,
+          stage: editData.stage,
+          file: editData.file,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      const updatedPdfs = pdfs.map((pdf) =>
+        pdf._id === editingPdf ? response.data : pdf
+      );
+      setPdfs(updatedPdfs);
+      setEditingPdf(null);
+      setEditData({ title: "", file: "", stage: "" });
+      setMessage("تم تعديل البيانات بنجاح!");
+
+      // Reload the page after successful save
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch (error) {
+      console.error("Failed to save changes:", error);
+      alert("لم يتم حفظ التعديلات. حاول مرة أخرى.");
     }
   };
 
-  const handleViewPdf = (url) => {
-    const newWindow = window.open("", "_blank", "fullscreen=yes");
+  // Cancel editing mode
+  const handleEditCancel = () => {
+    setEditingPdf(null);
+    setMessage("");
+  };
 
+  // Open a PDF in a new window
+  const handleViewPdf = (file) => {
+    const newWindow = window.open("", "_blank", "fullscreen=yes");
     if (newWindow) {
       newWindow.document.write(`
         <!DOCTYPE html>
@@ -110,7 +159,7 @@ const AllPDFs = () => {
             </style>
           </head>
           <body>
-            <iframe src="${url}#toolbar=0&navpanes=0&scrollbar=0"></iframe>
+            <iframe src="${file}#toolbar=0&navpanes=0&scrollbar=0"></iframe>
           </body>
         </html>
       `);
@@ -119,21 +168,26 @@ const AllPDFs = () => {
     }
   };
 
+  // Filter files based on search term
   const filteredPdfs = pdfs.filter(
     (pdf) =>
-      pdf.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pdf.grade.toLowerCase().includes(searchTerm.toLowerCase())
+      pdf.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pdf.stage.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (loading) return <p>جارٍ تحميل الملفات...</p>;
+  if (error) return <p className="error">{error}</p>;
 
   return (
     <div className="all-pdfs-container">
-      <h2>إدارة ملفات PDF</h2>
+      <h2>إدارة الملفات</h2>
+      {message && <p className="success-message">{message}</p>}
       <div className="search-container">
         <input
           type="text"
           placeholder="ابحث باسم الملف أو المرحلة الدراسية"
           value={searchTerm}
-          onChange={handleSearch}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
         />
       </div>
@@ -148,50 +202,40 @@ const AllPDFs = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredPdfs.map((pdf) => (
-              <tr key={pdf.id}>
-                {editingPdf === pdf.id ? (
+            {filteredPdfs.map((pdf, index) => (
+              <tr key={pdf._id || `pdf-${index}`}>
+                {editingPdf === pdf._id ? (
                   <>
                     <td>
                       <input
                         type="text"
-                        name="name"
-                        value={editData.name}
+                        name="title"
+                        value={editData.title}
                         onChange={handleEditChange}
                         className="edit-input"
                       />
                     </td>
                     <td>
                       <select
-                        name="grade"
-                        value={editData.grade}
+                        name="stage"
+                        value={editData.stage}
                         onChange={handleEditChange}
                         className="edit-select"
                       >
                         <option value="أولى ثانوي">أولى ثانوي</option>
-                        <option value="ثاني ثانوي">ثاني ثانوي</option>
-                        <option value="ثالث ثانوي">ثالث ثانوي</option>
+                        <option value="ثانية ثانوي">ثاني ثانوي</option>
+                        <option value="ثالثة ثانوي">ثالث ثانوي</option>
                       </select>
                     </td>
                     <td>
-                      {editData.url ? (
-                        <a
-                          href={editData.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="link-button"
-                        >
-                          عرض الملف
-                        </a>
-                      ) : (
-                        <span>لا يوجد ملف مرفوع</span>
-                      )}
-                      <input
-                        type="file"
-                        accept="application/pdf"
-                        onChange={handleFileUpload}
-                        className="file-upload"
-                      />
+                      <a
+                        href={editData.file}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-button"
+                      >
+                        عرض الملف
+                      </a>
                     </td>
                     <td>
                       <button onClick={handleEditSave} className="save-button">
@@ -207,11 +251,11 @@ const AllPDFs = () => {
                   </>
                 ) : (
                   <>
-                    <td>{pdf.name}</td>
-                    <td>{pdf.grade}</td>
+                    <td>{pdf.title}</td>
+                    <td>{pdf.stage}</td>
                     <td>
                       <button
-                        onClick={() => handleViewPdf(pdf.url)}
+                        onClick={() => handleViewPdf(pdf.file)}
                         className="view-button"
                       >
                         عرض الملف
@@ -219,13 +263,13 @@ const AllPDFs = () => {
                     </td>
                     <td className="actions-cell">
                       <button
-                        onClick={() => handleEdit(pdf.id)}
+                        onClick={() => handleEdit(pdf._id)}
                         className="edit-button"
                       >
                         تعديل
                       </button>
                       <button
-                        onClick={() => handleDelete(pdf.id)}
+                        onClick={() => handleDelete(pdf._id)}
                         className="delete-button"
                       >
                         حذف

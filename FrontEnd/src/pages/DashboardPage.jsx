@@ -17,6 +17,10 @@ const Dashboard = () => {
   // حالة لتخزين إجمالي عدد الإعلانات
   const [totalPosts, setTotalPosts] = useState(0);
 
+  const [totalFiles, setTotalFiles] = useState(0);
+
+  const [totalExams, setTotalExams] = useState(0);
+
   // دالة لجلب بيانات المستخدمين من الـ API
   useEffect(() => {
     const fetchUsers = async () => {
@@ -77,6 +81,43 @@ const Dashboard = () => {
     fetchPosts();
   }, []); // يتم تنفيذها مرة واحدة عند تحميل الصفحة
 
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get("http://localhost:8000/files", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setTotalFiles(response.data.length); // تخزين عدد الملفات
+      } catch (error) {
+        console.error("حدث خطأ أثناء جلب بيانات الملفات:", error);
+      }
+    };
+
+    fetchExams();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get("http://localhost:8000/exams", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setTotalExams(response.data.length); // تخزين عدد الملفات
+      } catch (error) {
+        console.error("حدث خطأ أثناء جلب بيانات الامتحانات:", error);
+      }
+    };
+
+    fetchFiles();
+  }, []);
+
   return (
     <div
       className={`dashboard ${
@@ -97,12 +138,12 @@ const Dashboard = () => {
           <p className="show-details">عرض</p>
         </div>
         <div className="stat-item" onClick={() => navigate("/all-pdfs")}>
-          <h2>0</h2>
+          <h2>{totalFiles}</h2>
           <p className="stat-title">إجمالي ملفات PDF</p>
           <p className="show-details">عرض</p>
         </div>
         <div className="stat-item" onClick={() => navigate("/all-exams")}>
-          <h2>0</h2>
+          <h2>{totalExams}</h2>
           <p className="stat-title">إجمالي الاختبارات</p>
           <p className="show-details">عرض</p>
         </div>
@@ -135,7 +176,7 @@ const Dashboard = () => {
           </button>
         </div>
         <div className="quick-actions">
-          <h3>الإجراءات  </h3>
+          <h3>الإجراءات </h3>
 
           <button className="add-btn" onClick={() => navigate("/add-user")}>
             <span className="mdi--user-add"></span>

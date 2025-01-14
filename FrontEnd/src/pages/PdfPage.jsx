@@ -1,33 +1,38 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./../styles/pdfs.css";
 
-// Simulated list of PDF files
-const pdfFiles = [
-  {
-    id: 1,
-    name: "كتاب الرياضيات",
-    url: "/assets/محمد العربي .pdf", // Ensure this path is correct and matches your hosted files
-  },
-  {
-    id: 2,
-    name: "كتاب الفيزياء",
-    url: "/assets/محمد العربي .pdf",
-  },
-  {
-    id: 3,
-    name: "كتاب اللغة العربية",
-    url: "/assets/محمد العربي .pdf",
-  },
-  {
-    id: 4,
-    name: "كتاب التاريخ",
-    url: "/assets/محمد العربي .pdf",
-  },
-];
-
 const PdfPage = () => {
+  const [pdfFiles, setPdfFiles] = useState([]); // حالة لتخزين ملفات PDF
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // جلب الملفات من API
+    const fetchPdfs = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken"); // تأكد من وجود التوكن
+        const response = await axios.get("http://localhost:8000/files", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // تضمين التوكن في الطلب
+          },
+        });
+        setPdfFiles(response.data); // تخزين الملفات
+        setLoading(false);
+      } catch (err) {
+        setError("حدث خطأ أثناء تحميل الملفات.");
+        setLoading(false);
+      }
+    };
+
+    fetchPdfs();
+  }, []);
+
+  console.log(pdfFiles);
+  
+
   const handleViewPdf = (url) => {
-    // Open a new fullscreen window
+    // فتح نافذة جديدة للعرض
     const newWindow = window.open("", "_blank", "fullscreen=yes");
 
     if (newWindow) {
@@ -57,27 +62,6 @@ const PdfPage = () => {
           </head>
           <body>
             <iframe src="${url}#toolbar=0&navpanes=0&scrollbar=0"></iframe>
-            <script>
-              // Disable right-click
-              document.addEventListener('contextmenu', (event) => event.preventDefault());
-              
-              // Disable PrintScreen and other keyboard shortcuts
-              document.addEventListener('keydown', (event) => {
-                if (event.key === 'PrintScreen') {
-                  alert('Screenshots are disabled!');
-                  navigator.clipboard.writeText('');
-                  event.preventDefault();
-                }
-                if (
-                  (event.ctrlKey && event.key === 's') ||  // Ctrl + S
-                  (event.ctrlKey && event.key === 'p') ||  // Ctrl + P
-                  event.key === 'F12' // F12 Developer Tools
-                ) {
-                  alert('This action is disabled!');
-                  event.preventDefault();
-                }
-              });
-            </script>
           </body>
         </html>
       `);
@@ -86,16 +70,19 @@ const PdfPage = () => {
     }
   };
 
+  if (loading) return <p>جارٍ تحميل الملفات...</p>;
+  if (error) return <p className="error">{error}</p>;
+
   return (
     <div className="pdf-page">
       <h2>المذكرات أو الملخصات</h2>
       <div className="pdf-container">
         {pdfFiles.map((pdf) => (
-          <div key={pdf.id} className="pdf-card">
-            <h3>{pdf.name}</h3>
+          <div key={pdf._id} className="pdf-card">
+            <h3>{pdf.title}</h3>
             <div className="pdf-actions">
               <button
-                onClick={() => handleViewPdf(pdf.url)}
+                onClick={() => handleViewPdf(pdf.file)}
                 className="pdf-button"
               >
                 عرض الملف
