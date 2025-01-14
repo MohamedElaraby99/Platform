@@ -4,7 +4,7 @@ import JSZip from "jszip";
 
 const FileInputComponent = ({ onAddQuestions }) => {
   const [parsedQuestions, setParsedQuestions] = useState([]);
-  const [loading, setLoading] = useState(false); // حالة لتحديد إذا كان الاستخراج قيد التنفيذ
+  const [loading, setLoading] = useState(false);
 
   const handleFileImport = async (e) => {
     const file = e.target.files[0];
@@ -16,17 +16,16 @@ const FileInputComponent = ({ onAddQuestions }) => {
         const arrayBuffer = event.target.result;
 
         try {
-          setLoading(true); // بدء العملية
+          setLoading(true);
           const zip = new JSZip();
           await zip.loadAsync(arrayBuffer);
 
-          // استخراج النصوص والصور من الملف
           const extractedData = await extractContent(zip);
           const questions = parseContentWithImages(extractedData);
 
           if (questions.length > 0) {
             setParsedQuestions(questions);
-            onAddQuestions(questions); // تمرير الأسئلة إلى المكون الأب
+            onAddQuestions(questions);
             toast.success("تم استخراج الأسئلة والصور بنجاح!", {
               position: "top-center",
             });
@@ -40,7 +39,7 @@ const FileInputComponent = ({ onAddQuestions }) => {
             position: "top-center",
           });
         } finally {
-          setLoading(false); // إنهاء العملية
+          setLoading(false);
         }
       };
 
@@ -61,7 +60,7 @@ const FileInputComponent = ({ onAddQuestions }) => {
         const base64 = await file.async("base64");
         return {
           name: file.name,
-          data: `data:image/png;base64,${base64}`, // افترض أن الصور بصيغة PNG
+          data: `data:image/png;base64,${base64}`,
         };
       })
     );
@@ -83,43 +82,28 @@ const FileInputComponent = ({ onAddQuestions }) => {
         .map((t) => t.textContent.trim())
         .join(" ");
 
-      console.log("Extracted texts:", texts); // تحقق من النصوص المستخرجة
-
-      // مطابقة الأسئلة
-      const questionMatch = texts.match(/^(\d+)\)\s*(.*?)\s*(\[image\])?/i);
+      const questionMatch = texts.match(/^(\d+)\)\s*(.*?)(?:\[image\])?$/i);
       if (questionMatch) {
-        console.log("Matched question:", questionMatch); // تحقق من مطابقة السؤال
-
-        if (currentQuestion) {
-          questions.push(currentQuestion);
-        }
+        if (currentQuestion) questions.push(currentQuestion);
 
         currentQuestion = {
           question: questionMatch[2].trim(),
           options: [],
           correctAnswer: null,
-          image: null, // Placeholder للصورة المرتبطة
+          image: questionMatch[3] ? images[imageIndex]?.data || null : null,
         };
 
-        // إذا كان هناك صورة مرتبطة بالسؤال
-        if (questionMatch[3]) {
-          currentQuestion.image = images[imageIndex]?.data || null;
-          imageIndex++;
-        }
-      } else if (/^[ا-ي]-/.test(texts)) {
-        // إذا كان النص خيارًا للإجابة
-        if (currentQuestion) {
-          currentQuestion.options.push(texts.replace(/^[ا-ي]-/, "").trim());
-        }
+        if (questionMatch[3]) imageIndex++;
+      } else if (/^[أ-ي]-/.test(texts)) {
+        if (currentQuestion)
+          currentQuestion.options.push(texts.replace(/^[أ-ي]-/, "").trim());
       } else if (texts.startsWith("الإجابة:")) {
-        // مطابقة الإجابة الصحيحة
         if (currentQuestion) {
           const correctIndex =
             parseInt(texts.replace("الإجابة:", "").trim(), 10) - 1;
           currentQuestion.correctAnswer = correctIndex;
         }
       } else if (images[imageIndex]) {
-        // إضافة صورة إذا ظهرت خارج السياق المتوقع
         if (currentQuestion && !currentQuestion.image) {
           currentQuestion.image = images[imageIndex]?.data || null;
           imageIndex++;
@@ -127,14 +111,10 @@ const FileInputComponent = ({ onAddQuestions }) => {
       }
     });
 
-    // إضافة السؤال الأخير (إن وجد)
-    if (currentQuestion) {
-      questions.push(currentQuestion);
-    }
+    if (currentQuestion) questions.push(currentQuestion);
 
     return questions;
   };
-
 
   return (
     <div>
@@ -147,42 +127,39 @@ const FileInputComponent = ({ onAddQuestions }) => {
         </div>
       )}
       {!loading && parsedQuestions.length > 0 && (
-  <div>
-    <h3>الأسئلة المستخرجة:</h3>
-    {parsedQuestions.map((q, index) => (
-      <details key={index}>
-        {/* عرض السؤال */}
-        <summary>
-          <strong>السؤال {index + 1}:</strong> {q.question || "السؤال غير متوفر"}
-        </summary>
-        {/* عرض الخيارات */}
-        <ul>
-          {q.options.map((option, optIndex) => (
-            <li
-              key={optIndex}
-              style={{
-                color: q.correctAnswer === optIndex ? "green" : "black",
-              }}
-            >
-              {option}
-            </li>
+        <div>
+          <h3>الأسئلة المستخرجة:</h3>
+          {parsedQuestions.map((q, index) => (
+            <details key={index}>
+              <summary>
+                <strong>السؤال {index + 1}:</strong>{" "}
+                {q.question || "السؤال غير متوفر"}
+              </summary>
+              <ul>
+                {q.options.map((option, optIndex) => (
+                  <li
+                    key={optIndex}
+                    style={{
+                      color: q.correctAnswer === optIndex ? "green" : "black",
+                    }}
+                  >
+                    {option}
+                  </li>
+                ))}
+              </ul>
+              {q.image && (
+                <div>
+                  <img
+                    src={q.image}
+                    alt={`Question ${index + 1}`}
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+              )}
+            </details>
           ))}
-        </ul>
-        {/* عرض الصورة إن وجدت */}
-        {q.image && (
-          <div>
-            <img
-              src={q.image}
-              alt={`Question ${index + 1}`}
-              style={{ maxWidth: "100%", height: "auto" }}
-            />
-          </div>
-        )}
-      </details>
-    ))}
-  </div>
-)}
-
+        </div>
+      )}
     </div>
   );
 };

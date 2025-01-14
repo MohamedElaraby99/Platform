@@ -1,16 +1,23 @@
-useEffect(() => {
-  const fetchPosts = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/announcements", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      setPosts(response.data);
-    } catch (error) {
-      toast.error("حدث خطأ أثناء تحميل الإعلانات.");
-    }
-  };
+// const handleViewStudents = async (examId) => {
+//   setLoadingStudents(true);
+//   try {
+//     const accessToken = localStorage.getItem("accessToken");
+//     const response = await axios.get(
+//       `http://localhost:8000/exams/${examId}/students`,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`,
+//         },
+//       }
+//     );
+//     setSelectedExamStudents(response.data);
+//   } catch (error) {
+//     console.error("حدث خطأ أثناء جلب بيانات الطلاب:", error);
+//     toast.error("تعذر جلب بيانات الطلاب. حاول مرة أخرى.");
+//   } finally {
+//     setLoadingStudents(false);
+//   }
+// };
 
-  fetchPosts();
-}, []);
+
+// onClick={() => handleViewStudents(exam.id)}

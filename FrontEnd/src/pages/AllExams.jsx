@@ -8,32 +8,37 @@ import Loader from "./Loader";
 const AllExams = () => {
   const [exams, setExams] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStage, setSelectedStage] = useState("");
-  const [selectedExamStudents, setSelectedExamStudents] = useState([]);
-  const [loadingStudents, setLoadingStudents] = useState(false);
+  const [selectedStage, setSelectedStage] = useState("أولى ثانوي"); // المرحلة الافتراضية
+  const [loading, setLoading] = useState(false);
 
+  // Fetch exams when selectedStage changes
   useEffect(() => {
     const fetchExams = async () => {
+      setLoading(true);
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get("http://localhost:8000/exams", {
+        const url = `http://localhost:8000/exams/?stage=${encodeURIComponent(
+          selectedStage
+        )}`;
+
+        const response = await axios.get(url, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-          params: {
-            stage: selectedStage,
-          },
         });
-        setExams(response.data);
-        
+
+        console.log("Exams fetched:", response.data); // تحقق من البيانات المستلمة
+        setExams(response.data); // Update exams state
       } catch (error) {
         console.error("حدث خطأ أثناء جلب الامتحانات:", error);
         toast.error("تعذر تحميل قائمة الامتحانات.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchExams();
-  }, [selectedStage]);
+  }, [selectedStage]); // يتم استدعاء التأثير عند تغيير المرحلة
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -62,32 +67,9 @@ const AllExams = () => {
     }
   };
 
-  const handleViewStudents = async (examId) => {
-    setLoadingStudents(true);
-    try {
-      const accessToken = localStorage.getItem("accessToken");
-      const response = await axios.get(
-        `http://localhost:8000/exams/${examId}/students`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      setSelectedExamStudents(response.data);
-    } catch (error) {
-      console.error("حدث خطأ أثناء جلب بيانات الطلاب:", error);
-      toast.error("تعذر جلب بيانات الطلاب. حاول مرة أخرى.");
-    } finally {
-      setLoadingStudents(false);
-    }
-  };
-
-  const handleCloseStudents = () => {
-    setSelectedExamStudents([]);
-  };
-
-  const filteredExams = exams.filter((exam) => exam.title.includes(searchTerm));
+  const filteredExams = exams.filter((exam) =>
+    exam.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="all-exams-container">
@@ -99,7 +81,7 @@ const AllExams = () => {
           onChange={handleStageChange}
           className="stage-dropdown"
         >
-          <option value="">اختر المرحلة الدراسية</option>
+          <option value="" disabled>اختر المرحلة الدراسية</option>
           <option value="أولى ثانوي">أولى ثانوي</option>
           <option value="ثانية ثانوي">ثانية ثانوي</option>
           <option value="ثالثة ثانوي">ثالثة ثانوي</option>
@@ -112,73 +94,52 @@ const AllExams = () => {
           className="search-input"
         />
       </div>
-      <div className="exams-table">
-        <table>
-          <thead>
-            <tr>
-              <th>اسم الامتحان</th>
-              <th>تاريخ الامتحان</th>
-              <th>وقت الامتحان</th>
-              <th>مدة الامتحان (دقائق)</th>
-              <th>حالة الامتحان</th>
-              <th>الإجراءات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredExams.map((exam) => (
-              <tr key={exam.id}>
-                <td>{exam.title}</td>
-                <td>{new Date(exam.date).toLocaleDateString()}</td>
-                <td>{new Date(exam.date).toLocaleTimeString()}</td>
-                <td>{exam.duration}</td>
-                <td>{exam.status}</td>
-                <td className="actionss">
-                  <button
-                    onClick={() => handleViewStudents(exam.id)}
-                    className="view-students-button"
-                    disabled={exam.status === "قادم"}
-                  >
-                    عرض نتائج الطلاب
-                  </button>
-                  <button
-                    onClick={() => handleDelete(exam.id)}
-                    className="delete-button"
-                  >
-                    حذف
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
-      {selectedExamStudents.length > 0 && (
-        <div className="students-container">
-          <h3>الطلاب الذين امتحنوا:</h3>
-          {loadingStudents ? (
-            <Loader />
-          ) : (
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="exams-table">
+          {filteredExams.length > 0 ? (
             <table>
               <thead>
                 <tr>
-                  <th>اسم الطالب</th>
-                  <th>الدرجة</th>
+                  <th>اسم الامتحان</th>
+                  <th>تاريخ الامتحان</th>
+                  <th>وقت الامتحان</th>
+                  <th>مدة الامتحان (دقائق)</th>
+                  <th>حالة الامتحان</th>
+                  <th>الإجراءات</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedExamStudents.map((student, index) => (
-                  <tr key={index}>
-                    <td>{student.name}</td>
-                    <td>{student.grade}</td>
+                {filteredExams.map((exam) => (
+                  <tr key={exam.id}>
+                    <td>{exam.title}</td>
+                    <td>{new Date(exam.date).toLocaleDateString()}</td>
+                    <td>{new Date(exam.date).toLocaleTimeString()}</td>
+                    <td>{exam.duration}</td>
+                    <td>{exam.status}</td>
+                    <td className="actionss">
+                      <button
+                        className="view-students-button"
+                        disabled={exam.status === "قادم"}
+                      >
+                        عرض نتائج الطلاب
+                      </button>
+                      <button
+                        onClick={() => handleDelete(exam.id)}
+                        className="delete-button"
+                      >
+                        حذف
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          ) : (
+            <p>لا توجد امتحانات لهذه المرحلة.</p>
           )}
-          <button onClick={handleCloseStudents} className="close-button">
-            إغلاق
-          </button>
         </div>
       )}
 

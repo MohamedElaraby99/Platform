@@ -26,6 +26,10 @@ const ExamsPage = () => {
 
         const data = await response.json();
         setExams(data);
+        console.log('data', data);
+        console.log("response", response);
+        
+        
         setLoading(false);
       } catch (err) {
         console.error(err);

@@ -5,11 +5,11 @@ import "react-toastify/dist/ReactToastify.css";
 import "./../../styles/dashboard/AddExam.css";
 import FileInputComponent from "./../../pages/exams/FileInputComponent";
 import ManualInputComponent from "./../../pages/exams/ManualInputComponent";
-import moment from "moment";  
+import moment from "moment";
 
 const CreateExamComponent = () => {
   const [questions, setQuestions] = useState([]);
-  const [inputMode, setInputMode] = useState("file"); // "manual" or "file"
+  const [inputMode, setInputMode] = useState("file");
   const [examDetails, setExamDetails] = useState({
     title: "",
     description: "",
@@ -17,9 +17,11 @@ const CreateExamComponent = () => {
     time: "",
     duration: "",
     stage: "",
+    type: "", // نوع الامتحان
   });
 
   const handleAddQuestions = (importedQuestions) => {
+    // تحديث الأسئلة بدون تعديل التعليل
     setQuestions([...questions, ...importedQuestions]);
   };
 
@@ -31,6 +33,12 @@ const CreateExamComponent = () => {
     });
   };
 
+  const handleQuestionChange = (index, field, value) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[index][field] = value;
+    setQuestions(updatedQuestions);
+  };
+
   const handleSubmit = async () => {
     if (
       !examDetails.title ||
@@ -38,6 +46,7 @@ const CreateExamComponent = () => {
       !examDetails.date ||
       !examDetails.duration ||
       !examDetails.stage ||
+      !examDetails.type || // التحقق من نوع الامتحان
       questions.length === 0
     ) {
       toast.error("يرجى ملء جميع الحقول وإضافة الأسئلة!");
@@ -49,10 +58,13 @@ const CreateExamComponent = () => {
       title: examDetails.title,
       description: examDetails.description,
       date: moment.utc(examDetails.date).format("YYYY-MM-DDTHH:mm:ss.SSZ"),
-      duration: parseInt(examDetails.duration, 10), // إرسال المدة كرقم
+      duration: parseInt(examDetails.duration, 10),
       questions,
       stage: examDetails.stage,
+      type: examDetails.type, // إرسال نوع الامتحان
     };
+
+    console.log("Exam Data Sent:", examData);
 
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -68,13 +80,13 @@ const CreateExamComponent = () => {
       );
       toast.success("تم إنشاء الامتحان بنجاح!");
 
-      // إعادة تعيين النموذج
       setExamDetails({
         title: "",
         description: "",
         date: "",
         duration: "",
         stage: "",
+        type: "",
       });
       setQuestions([]);
       console.log("Exam Created Successfully:", response.data);
@@ -88,7 +100,6 @@ const CreateExamComponent = () => {
     <div className="container">
       <h2 className="exam-title">إنشاء امتحان</h2>
 
-      {/* إدخال تفاصيل الامتحان */}
       <div className="exam-details">
         <label>
           عنوان الامتحان:
@@ -108,6 +119,18 @@ const CreateExamComponent = () => {
             onChange={handleInputChange}
             placeholder="أدخل وصف الامتحان"
           ></textarea>
+        </label>
+        <label>
+          نوع الامتحان:
+          <select
+            name="type"
+            value={examDetails.type}
+            onChange={handleInputChange}
+          >
+            <option value="">اختر نوع الامتحان</option>
+            <option value="امتحان">امتحان</option>
+            <option value="تدريب">تدريبات</option>
+          </select>
         </label>
         <label>
           تاريخ الامتحان:
@@ -143,7 +166,6 @@ const CreateExamComponent = () => {
         </label>
       </div>
 
-      {/* اختيار وضع الإدخال */}
       <div className="input-mode-selector">
         <label>
           <input
@@ -167,7 +189,6 @@ const CreateExamComponent = () => {
         </label>
       </div>
 
-      {/* عرض المكونات بناءً على وضع الإدخال */}
       {inputMode === "file" && (
         <FileInputComponent onAddQuestions={handleAddQuestions} />
       )}
@@ -175,7 +196,6 @@ const CreateExamComponent = () => {
         <ManualInputComponent onAddQuestions={handleAddQuestions} />
       )}
 
-      {/* عرض الأسئلة المضافة */}
       <div className="added-questions">
         <h3>الأسئلة المضافة</h3>
         {questions.length > 0 ? (
@@ -184,6 +204,13 @@ const CreateExamComponent = () => {
               <summary>
                 <strong>السؤال {index + 1}:</strong> {q.question}
               </summary>
+              <textarea
+                value={q.question}
+                onChange={(e) =>
+                  handleQuestionChange(index, "question", e.target.value)
+                }
+                placeholder="أدخل نص السؤال"
+              ></textarea>
               {q.image && (
                 <img
                   src={q.image}
@@ -191,16 +218,15 @@ const CreateExamComponent = () => {
                   className="question-image"
                 />
               )}
+              {q.why && (
+                <p>
+                  <strong>التعليل:</strong> {q.why}
+                </p>
+              )}
               <ul>
                 {q.options.map((option, optIndex) => (
-                  <li
-                    key={optIndex}
-                    style={{
-                      color: q.correctAnswer === optIndex ? "green" : "black",
-                    }}
-                  >
-                    <span>خيار {optIndex + 1}: </span>
-                    {option}
+                  <li key={optIndex}>
+                    خيار {optIndex + 1}: {option}
                   </li>
                 ))}
               </ul>
@@ -211,7 +237,6 @@ const CreateExamComponent = () => {
         )}
       </div>
 
-      {/* زر الإرسال */}
       <button onClick={handleSubmit} className="submit-button">
         إنشاء الامتحان
       </button>
