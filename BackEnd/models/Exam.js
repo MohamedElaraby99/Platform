@@ -1,3 +1,4 @@
+const e = require("express");
 const mongoose = require("mongoose");
 
 const questionSchema = new mongoose.Schema({
@@ -15,6 +16,11 @@ const examSchema = new mongoose.Schema(
     duration: { type: Number, required: true },
     questions: [questionSchema],
     stage: { type: String, required: true },
+    type: {
+      type: String,
+      default: "امتحان",
+      enum: ["امتحان", "تدريب"],
+    },
   },
   { timestamps: true }
 );

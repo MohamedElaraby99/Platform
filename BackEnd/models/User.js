@@ -1,3 +1,4 @@
+const e = require("express");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -12,6 +13,7 @@ const userSchema = new mongoose.Schema(
     },
     stage: {
       type: String,
+      enum: ["ثالثة ثانوي", "ثانية ثانوي", "أولى ثانوي", ""], // Example values
     },
     password: {
       type: String,
@@ -19,6 +21,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
+      enum: ["student", "admin"],
       required: true,
     },
   },
