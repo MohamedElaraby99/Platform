@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./../styles/AllUsers.css";
+import Loader from "./Loader";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -97,7 +98,7 @@ const AllUsers = () => {
   const students = filteredUsers.filter((user) => user.role === "student");
   const admins = filteredUsers.filter((user) => user.role === "admin");
 
-  if (loading) return <p>جارٍ تحميل البيانات...</p>;
+  if (loading) return <Loader />;
   if (error) return <p className="error-message">{error}</p>;
 
   return (

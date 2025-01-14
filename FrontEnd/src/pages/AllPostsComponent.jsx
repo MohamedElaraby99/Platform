@@ -3,6 +3,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./../styles/dashboard/posts.css";
+import Loader from "./Loader";
 
 const AllPostsComponent = () => {
   const [posts, setPosts] = useState([]);
@@ -208,7 +209,7 @@ const AllPostsComponent = () => {
 
       <div className="posts-container">
         {loading ? (
-          <p className="loading-message">جارٍ تحميل الإعلانات...</p>
+          <Loader />
         ) : (
           <ul className="posts-list">
             {filteredPosts.length > 0 ? (

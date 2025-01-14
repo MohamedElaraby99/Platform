@@ -29,6 +29,7 @@ import AllPdfs from "./pages/AllPDFs";
 import PostsComponent from "./pages/dashBoardsPages/PostsComponent";
 import AllPostsComponent from "./pages/AllPostsComponent";
 import ScrollToTop from "./components/ScrollTop";
+import About from "./pages/about";
 
 const App = () => {
   const [role, setRole] = useState(null);
@@ -84,7 +85,8 @@ const App = () => {
               <Route path="/exams" element={<ExamsPage />} />
               <Route path="/exams/details/:id" element={<ExamDetails />} />
               <Route path="/exams/start/:id" element={<ExamsSystem />} />
-              <Route path="/pdf" element={<PdfPage />} />
+                  <Route path="/pdf" element={<PdfPage />} />
+              <Route path="/about" element={<About />} />
               <Route
                 path="/user"
                 element={<UserPage onSignOut={handleSignOut} users={users} />}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./../styles/AllVideos.css";
+import Loader from "./Loader";
 
 const AllVideos = () => {
   const [videos, setVideos] = useState([]);
@@ -100,7 +101,7 @@ const AllVideos = () => {
   );
 
   if (loading) {
-    return <p>Loading videos...</p>;
+    return <Loader />;
   }
 
   if (error) {

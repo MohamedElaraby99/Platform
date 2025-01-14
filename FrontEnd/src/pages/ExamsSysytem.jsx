@@ -1,69 +1,91 @@
 import React, { useState } from "react";
-import ResultComponent from "./ResultComponent"; // استيراد مكون عرض النتيجة
+import { useLocation } from "react-router-dom";
+import ResultComponent from "./ResultComponent";
 import "react-toastify/dist/ReactToastify.css";
 import "./../styles/ExamsSystem.css";
 
 const ExamsSystem = () => {
-  const [questionsArray] = useState([
-    {
-      _id: 1,
-      questionText: "ما هو أكبر كوكب في النظام الشمسي؟",
-      options: ["الأرض", "المريخ", "المشتري", "زحل"],
-      correctAnswer: 2,
-      image:
-        "https://th.bing.com/th?id=OIP.6L7shpwxVAIr279rA0B1JQHaE7&w=306&h=204&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2",
-    },
-    {
-      _id: 2,
-      questionText: "من هو مؤسس شركة مايكروسوفت؟",
-      options: ["ستيف جوبز", "بيل جيتس", "مارك زوكربيرغ", "إيلون ماسك"],
-      correctAnswer: 1,
-      image:
-        "https://th.bing.com/th?id=OIP.6L7shpwxVAIr279rA0B1JQHaE7&w=306&h=204&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2",
-    },
-    {
-      _id: 3,
-      questionText: "ما هي عاصمة اليابان؟",
-      options: ["طوكيو", "سول", "بكين", "هونغ كونغ"],
-      correctAnswer: 0,
-      image: null,
-    },
-  ]);
-  const [answers, setAnswers] = useState({});
+  const location = useLocation();
+  const examData = location.state?.exam; // استقبال بيانات الامتحان الممررة عبر state
+
+  const [questionsArray] = useState(examData.questions || []); // الأسئلة الممررة
+  const [answers, setAnswers] = useState(examData.questions || []);
   const [submitted, setSubmitted] = useState(false);
   const [showResult, setShowResult] = useState(false); // حالة لعرض مكون النتيجة
+  const [submissionResult, setSubmissionResult] = useState(null); // لتخزين نتيجة الإرسال
 
   const handleAnswerChange = (questionId, optionIndex) => {
-    setAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionId]: optionIndex,
-    }));
-  };
-
-  const handleSubmit = () => {
-    questionsArray.forEach((q) => {
-      if (answers[q._id] === q.correctAnswer) {
-        // يمكن إجراء أي منطق إضافي هنا لاحقًا إذا لزم الأمر
+    const updatedAnswers = answers.map((answer) => {
+      if (questionId === answer?._id) {
+        return { ...answer, questionId, selectedAnswer: optionIndex };
       }
+      return answer;
     });
-
-    setSubmitted(true);
+    setAnswers(updatedAnswers);
   };
+
+  const handleSubmit = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken"); // الحصول على التوكن من التخزين المحلي
+      if (!accessToken) {
+        alert("لم يتم العثور على التوكن! يرجى تسجيل الدخول.");
+        return;
+      }
+
+      // بناء بيانات الطلب
+      const requestBody = {
+        exam_id: examData.id, // معرف الامتحان
+        answers: answers.map((q) => ({
+          questionId: q.questionId,
+          selectedAnswer:  q.selectedAnswer, // تأكد من أن الإجابة نصية
+        })),
+      };
+
+      console.log(examData);
+
+      // إرسال الطلب إلى API
+      const response = await fetch("http://localhost:8000/exams/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        throw new Error("فشل في إرسال الإجابات. يرجى المحاولة لاحقًا.");
+      }
+
+      const result = await response.json();
+      setSubmissionResult(result); // تخزين النتيجة
+      setSubmitted(true); // تحديث حالة التقديم
+    } catch (error) {
+      console.error("حدث خطأ أثناء إرسال الإجابات:", error);
+      alert("حدث خطأ أثناء إرسال الإجابات. يرجى المحاولة لاحقًا.");
+    }
+  };
+
+  console.log("answers:", answers);
 
   const handleShowResult = () => {
     setShowResult(true); // الانتقال إلى عرض النتيجة
   };
 
   if (showResult) {
-    // إذا كانت حالة عرض النتيجة مفعلة
     return (
-      <ResultComponent questionsArray={questionsArray} answers={answers} />
+      <ResultComponent
+        questionsArray={questionsArray}
+        answers={answers}
+        submissionResult={submissionResult}
+      />
     );
   }
 
   return (
     <div className="exam-system-container">
-      <h2 className="exam-system-title">الامتحان</h2>
+      <h2 className="exam-system-title">{examData.title}</h2>
+      <p>{examData.description}</p>
       {!submitted ? (
         <form className="exam-system-form">
           {questionsArray.map((q, index) => (
@@ -79,15 +101,16 @@ const ExamsSystem = () => {
               )}
 
               <h3 className="exam-question">
-                السؤال {index + 1}: {q.questionText}
+                السؤال {index + 1}: {q.text}
               </h3>
 
               <ul className="exam-options-list">
                 {q.options.map((option, optIndex) => {
-                  let optionClass = "exam-option";
-                  if (answers[q._id] === optIndex) {
+                  let optionClass = "exam-option";                  
+                  if (answers[index]?.selectedAnswer === optIndex) {                    
                     optionClass += " exam-option-selected";
                   }
+                  console.log("q", q);
 
                   return (
                     <li key={optIndex} className={optionClass}>
@@ -96,7 +119,7 @@ const ExamsSystem = () => {
                         id={`option-${q._id}-${optIndex}`}
                         name={`question-${q._id}`}
                         value={optIndex}
-                        checked={answers[q._id] === optIndex}
+                        checked={answers[index]?.selectedAnswer === optIndex}
                         onChange={() => handleAnswerChange(q._id, optIndex)}
                         className="exam-radio"
                       />
@@ -125,7 +148,7 @@ const ExamsSystem = () => {
         <div className="submitted-message">
           <p>
             <span className="submitted-text">تم تقديم الامتحان.</span> اضغط علي
-            زر عرض التفاصيل لمعرفة النتيجة . &#8595;
+            زر عرض التفاصيل لمعرفة النتيجة. &#8595;
           </p>
           <button
             type="button"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./../styles/pdfs.css";
+import Loader from "./Loader";
 
 const PdfPage = () => {
   const [pdfFiles, setPdfFiles] = useState([]); // حالة لتخزين ملفات PDF
@@ -70,7 +71,7 @@ const PdfPage = () => {
     }
   };
 
-  if (loading) return <p>جارٍ تحميل الملفات...</p>;
+  if (loading) return <Loader />;
   if (error) return <p className="error">{error}</p>;
 
   return (

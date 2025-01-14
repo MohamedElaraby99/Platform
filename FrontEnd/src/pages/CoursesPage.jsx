@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./../styles/courses.css";
+import Loader from "./Loader";
 
 const CoursesPage = () => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ const CoursesPage = () => {
   };
 
   if (loading) {
-    return <p>جارٍ تحميل الفيديوهات...</p>; // عرض حالة التحميل
+    return <Loader />; // عرض حالة التحميل
   }
 
   if (error) {

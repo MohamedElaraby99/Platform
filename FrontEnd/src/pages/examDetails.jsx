@@ -1,66 +1,43 @@
 import React from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import "./../styles/examDetails.css";
 
-const examsData = [
-  {
-    id: 1,
-    name: "امتحان الرياضيات",
-    date: "2025-01-10",
-    description: "امتحان يتناول أساسيات الرياضيات.",
-    status: "متاح",
-  },
-  {
-    id: 2,
-    name: "امتحان اللغة العربية",
-    date: "2025-01-15",
-    description: "اختبار في قواعد ومهارات اللغة العربية.",
-    status: "متاح",
-  },
-  {
-    id: 3,
-    name: "امتحان الفيزياء",
-    date: "2025-01-20",
-    description: "امتحان شامل في الفيزياء الحديثة.",
-    status: "متاح",
-  },
-  {
-    id: 4,
-    name: "امتحان التاريخ",
-    date: "2025-01-25",
-    description: "اختبار حول الأحداث التاريخية المهمة.",
-    status: "قادم",
-  },
-];
-
 const ExamDetails = () => {
-  const { id } = useParams(); // Get the exam ID from the URL
-  const navigate = useNavigate();
+  const { id } = useParams(); // استلام id من الرابط
+  const location = useLocation();
+  const navigate = useNavigate(); // لاستخدام التنقل
+  const exam = location.state?.exam; // البيانات الإضافية الممررة
 
-  const exam = examsData.find((exam) => exam.id === parseInt(id));
-
-  if (!exam) {
-    return <p>الامتحان غير موجود.</p>;
+  if (!id) {
+    return <p>معرف الامتحان غير موجود!</p>;
   }
 
+  const handleStartExam = () => {
+    if (exam) {
+      // التنقل إلى صفحة بدء الامتحان مع تمرير البيانات
+      navigate(`/exams/start/${id}`, { state: { exam } });
+    } else {
+      console.error("لا توجد بيانات الامتحان!");
+    }
+  };
+
   return (
-    <div className="exam-details">
-      <h2>{exam.name}</h2>
-      <p>التاريخ: {exam.date}</p>
-      <p>الوصف: {exam.description}</p>
-      <p className={`status ${exam.status}`}>الحالة: {exam.status}</p>
+    <div>
+      <h2>تفاصيل الامتحان</h2>
 
-      {/* عرض زر البدء إذا كان الامتحان متاحًا */}
-      {exam.status === "متاح" && (
-        <Link to={`/exams/start/${exam.id}`} className="start-exam-button">
-          ابدأ الامتحان
-        </Link>
+      {exam ? (
+        <div>
+          <p>اسم الامتحان: {exam.title}</p>
+          <p>الوصف: {exam.description}</p>
+          <p>عدد الأسئلة: {exam.questionsCount}</p>
+          <p>مدة الامتحان: {exam.duration} دقيقة</p>
+          <button className="start-exam-button" onClick={handleStartExam}>
+            بدء الامتحان
+          </button>
+        </div>
+      ) : (
+        <p>لا توجد بيانات إضافية للامتحان.</p>
       )}
-
-      {/* عرض زر العودة دائمًا */}
-      <button className="back-button" onClick={() => navigate(-1)}>
-        العودة إلى الامتحانات
-      </button>
     </div>
   );
 };

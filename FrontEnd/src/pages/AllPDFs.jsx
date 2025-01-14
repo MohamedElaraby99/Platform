@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./../styles/AllPDFs.css";
+import Loader from "./Loader";
 
 const AllPDFs = () => {
   const [pdfs, setPdfs] = useState([]);
@@ -175,7 +176,7 @@ const AllPDFs = () => {
       pdf.stage.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading) return <p>جارٍ تحميل الملفات...</p>;
+  if (loading) return <Loader />;
   if (error) return <p className="error">{error}</p>;
 
   return (

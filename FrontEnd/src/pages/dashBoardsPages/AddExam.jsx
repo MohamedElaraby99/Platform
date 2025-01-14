@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./../../styles/dashboard/AddExam.css";
 import FileInputComponent from "./../../pages/exams/FileInputComponent";
 import ManualInputComponent from "./../../pages/exams/ManualInputComponent";
+import moment from "moment";  
 
 const CreateExamComponent = () => {
   const [questions, setQuestions] = useState([]);
@@ -47,7 +48,7 @@ const CreateExamComponent = () => {
     const examData = {
       title: examDetails.title,
       description: examDetails.description,
-      date: examDetails.date,
+      date: moment.utc(examDetails.date).format("YYYY-MM-DDTHH:mm:ss.SSZ"),
       duration: parseInt(examDetails.duration, 10), // إرسال المدة كرقم
       questions,
       stage: examDetails.stage,

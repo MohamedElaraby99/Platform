@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./../styles/AllExams.css";
+import Loader from "./Loader";
 
 const AllExams = () => {
   const [exams, setExams] = useState([]);
@@ -24,6 +25,7 @@ const AllExams = () => {
           },
         });
         setExams(response.data);
+        
       } catch (error) {
         console.error("حدث خطأ أثناء جلب الامتحانات:", error);
         toast.error("تعذر تحميل قائمة الامتحانات.");
@@ -130,7 +132,7 @@ const AllExams = () => {
                 <td>{new Date(exam.date).toLocaleTimeString()}</td>
                 <td>{exam.duration}</td>
                 <td>{exam.status}</td>
-                <td className="actions">
+                <td className="actionss">
                   <button
                     onClick={() => handleViewStudents(exam.id)}
                     className="view-students-button"
@@ -155,7 +157,7 @@ const AllExams = () => {
         <div className="students-container">
           <h3>الطلاب الذين امتحنوا:</h3>
           {loadingStudents ? (
-            <p>جاري تحميل البيانات...</p>
+            <Loader />
           ) : (
             <table>
               <thead>

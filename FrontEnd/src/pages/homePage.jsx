@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./../styles/HomePage.css";
+import Loader from "./Loader";
 
 const HomePage = () => {
   const [videos, setVideos] = useState([]); // Array to hold video data
@@ -81,7 +82,7 @@ const HomePage = () => {
           إعلانات مهمة
         </h2>
         {loadingAnnouncements ? (
-          <p>جارٍ تحميل الإعلانات...</p>
+          <Loader />
         ) : errorAnnouncements ? (
           <p className="error-message">{errorAnnouncements}</p>
         ) : announcements.length > 0 ? (
@@ -105,7 +106,7 @@ const HomePage = () => {
           فيديوهات تعليمية
         </h2>
         {loadingVideos ? (
-          <p>جارٍ تحميل الفيديوهات...</p>
+          <Loader />
         ) : errorVideos ? (
           <p className="error-message">{errorVideos}</p>
         ) : (

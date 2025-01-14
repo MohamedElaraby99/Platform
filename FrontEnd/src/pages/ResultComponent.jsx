@@ -7,7 +7,9 @@ const ResultComponent = ({ questionsArray, answers }) => {
 
   // حساب النتيجة
   const correctAnswersCount = questionsArray.reduce((count, question) => {
-    if (answers[question._id] === question.correctAnswer) {
+    // تحويل الإجابة الصحيحة إلى رقم ومقارنة الاختيار مع الإجابة الصحيحة
+    const correctAnswerIndex = parseInt(question.correctAnswer, 10);
+    if (answers[question._id] === correctAnswerIndex) {
       return count + 1;
     }
     return count;
@@ -28,36 +30,41 @@ const ResultComponent = ({ questionsArray, answers }) => {
           <div className="circle">
             <div className="circle-inner">{percentage}%</div>
           </div>
-          <p>
-            أجبت {correctAnswersCount} من {totalQuestions} إجابة صحيحة
+          <p className="score-details">
+            أجبت <strong>{correctAnswersCount}</strong> من{" "}
+            <strong>{totalQuestions}</strong> إجابة صحيحة
           </p>
         </div>
       </div>
 
       <ul className="result-list">
-        {questionsArray.map((q, index) => (
-          <li key={q._id} className="result-item">
-            <p className="result-question">
-              <strong>السؤال {index + 1}:</strong> {q.questionText}
-            </p>
-            <p
-              className={`result-answer ${
-                answers[q._id] === q.correctAnswer ? "correct" : "wrong"
-              }`}
-            >
-              <strong>إجابتك:</strong>{" "}
-              {q.options[answers[q._id]] || "لم يتم الإجابة"}
-            </p>
-            <p className="result-correct-answer">
-              <strong>الإجابة الصحيحة:</strong> {q.options[q.correctAnswer]}
-            </p>
-            {answers[q._id] !== q.correctAnswer && q.explanation && (
-              <p className="result-explanation">
-                <strong>التعليل:</strong> {q.explanation}
+        {questionsArray.map((q, index) => {
+          const correctAnswerIndex = parseInt(q.correctAnswer, 10);
+          const isCorrect = answers[q._id] === correctAnswerIndex;
+
+          return (
+            <li key={q._id} className="result-item">
+              <p className="result-question">
+                <strong>السؤال {index + 1}:</strong> {q.text}
               </p>
-            )}
-          </li>
-        ))}
+              <p className={`result-answer ${isCorrect ? "correct" : "wrong"}`}>
+                <strong>إجابتك:</strong>{" "}
+                {q.options[answers[q._id]] || (
+                  <span className="not-answered">لم يتم الإجابة</span>
+                )}
+              </p>
+              <p className="result-correct-answer">
+                <strong>الإجابة الصحيحة:</strong>{" "}
+                {q.options[correctAnswerIndex]}
+              </p>
+              {!isCorrect && q.why && (
+                <p className="result-explanation">
+                  <strong>التعليل:</strong> {q.why}
+                </p>
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       <button onClick={handleBackToExams} className="back-to-exams-button">
