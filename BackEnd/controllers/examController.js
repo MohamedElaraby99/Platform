@@ -89,13 +89,15 @@ const addExam = async (req, res) => {
       return res.status(400).json({ message: "Exam description is required" });
     }
     if (!date) {
-      if (currentTime > new Date()) {
-        return res
-          .status(400)
-          .json({ message: "Exam date must be in the future" });
-      }
       return res.status(400).json({ message: "Exam date is required" });
     }
+
+    if (currentTime > new Date(date)) {
+      return res
+        .status(400)
+        .json({ message: "Exam date must be in the future" });
+    }
+
     if (!stage) {
       return res.status(400).json({ message: "Exam stage is required" });
     }
@@ -139,7 +141,7 @@ const addExam = async (req, res) => {
     const newExam = new Exam({
       title,
       description,
-      date: new Date(date), // Ensure the date is a valid Date object
+      date: date, // Ensure the date is a valid Date object
       duration,
       questions,
       stage,
@@ -164,7 +166,15 @@ const updateExam = async (req, res) => {
 
   try {
     // Validate required fields
-    if (!title && !description && !date && !duration && !questions && !stage && !type) {
+    if (
+      !title &&
+      !description &&
+      !date &&
+      !duration &&
+      !questions &&
+      !stage &&
+      !type
+    ) {
       return res.status(400).json({ message: "No data provided for update" });
     }
 
