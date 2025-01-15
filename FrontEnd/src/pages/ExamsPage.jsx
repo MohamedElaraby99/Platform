@@ -5,9 +5,10 @@ import Loader from "./Loader";
 
 const ExamsPage = () => {
   const [exams, setExams] = useState([]);
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [filteredExams, setFilteredExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedTitle, setSelectedTitle] = useState("all"); // اسم الامتحان المختار
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -26,10 +27,7 @@ const ExamsPage = () => {
 
         const data = await response.json();
         setExams(data);
-        console.log('data', data);
-        console.log("response", response);
-        
-        
+        setFilteredExams(data); // عرض جميع الامتحانات عند البداية
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -41,25 +39,53 @@ const ExamsPage = () => {
     fetchExams();
   }, []);
 
+  // تصفية الامتحانات بناءً على اسم الامتحان (title)
   useEffect(() => {
-    setCurrentTime(new Date());
-  }, []);
-
-
+    if (selectedTitle === "all") {
+      setFilteredExams(exams); // عرض جميع الامتحانات إذا تم اختيار "الكل"
+    } else {
+      setFilteredExams(
+        exams.filter((exam) =>
+          exam.title.toLowerCase().includes(selectedTitle.toLowerCase())
+        )
+      ); // تصفية حسب الاسم
+    }
+  }, [selectedTitle, exams]);
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
-  if (exams.length === 0)
+  if (filteredExams.length === 0)
     return <div className="no-exams">لا يوجد امتحانات حالياً</div>;
 
   return (
     <div className="exams-page">
       <h2>الامتحانات</h2>
+
+      {/* قائمة منسدلة لاختيار اسم الامتحان */}
+      <div className="filter-container">
+        <label htmlFor="exam-title">تصفية حسب اسم الامتحان:</label>
+        <select
+          id="exam-title"
+          value={selectedTitle}
+          onChange={(e) => setSelectedTitle(e.target.value)}
+        >
+          <option value="all">الكل</option>
+          {exams.map((exam) => (
+            <option key={exam._id} value={exam.title}>
+              {exam.title}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="exams-container">
-        {exams.map((exam) => (
+        {filteredExams.map((exam) => (
           <div key={exam._id} className="exam-card">
             <h3>{exam.title}</h3>
             <p>التاريخ: {new Date(exam.date).toLocaleString()}</p>
+            <p>
+              النوع: <span>{exam.type === "exam" ? "امتحان" : "تدريب"}</span>
+            </p>
             <p>
               الحالة:
               <span className={`status ${exam.status}`}>{exam.status}</span>

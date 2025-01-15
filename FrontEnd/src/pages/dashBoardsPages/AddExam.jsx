@@ -124,10 +124,11 @@ const CreateExamComponent = () => {
           نوع الامتحان:
           <select
             name="type"
+            id="type"
             value={examDetails.type}
             onChange={handleInputChange}
           >
-            <option value="">اختر نوع الامتحان</option>
+            <option value="" disabled>اختر نوع الامتحان</option>
             <option value="امتحان">امتحان</option>
             <option value="تدريب">تدريبات</option>
           </select>
@@ -158,7 +159,7 @@ const CreateExamComponent = () => {
             value={examDetails.stage}
             onChange={handleInputChange}
           >
-            <option value="">اختر المرحلة الدراسية</option>
+            <option value="" disabled>اختر المرحلة الدراسية</option>
             <option value="أولى ثانوي">أولى ثانوي</option>
             <option value="ثانية ثانوي">ثانية ثانوي</option>
             <option value="ثالثة ثانوي">ثالثة ثانوي</option>

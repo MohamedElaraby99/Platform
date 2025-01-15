@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import JSZip from "jszip";
-import mammoth from "mammoth";
 import { renderAsync } from "docx-preview";
 
 const FileInputComponent = ({ onAddQuestions }) => {
