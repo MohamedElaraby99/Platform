@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { renderAsync } from "docx-preview";
+import mammoth from "mammoth";
+import Loader from "./../../pages/Loader.jsx"; // Importing the Loader component
 
 const FileInputComponent = ({ onAddQuestions }) => {
   const [parsedQuestions, setParsedQuestions] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // State for loader control
 
   const handleFileImport = async (e) => {
     const file = e.target.files[0];
@@ -16,102 +17,94 @@ const FileInputComponent = ({ onAddQuestions }) => {
         const arrayBuffer = event.target.result;
 
         try {
-          setLoading(true);
+          setLoading(true); // Show loader
 
-          // استخراج الصور والنصوص باستخدام docx-preview
-          const content = await extractContentWithDocxPreview(arrayBuffer);
-          const { texts, images } = content;
+          // Convert .docx to HTML using mammoth.js
+          const htmlContent = await extractContentFromDocxToHTML(arrayBuffer);
+          console.log("Extracted HTML:", htmlContent);
 
-          // ربط النصوص والصور
-          const questions = parseQuestionsWithImages(texts, images);
+          // Parse HTML to extract questions and images
+          const questions = parseHtmlToQuestions(htmlContent);
 
           if (questions.length > 0) {
             setParsedQuestions(questions);
             onAddQuestions(questions);
-            toast.success("تم استخراج الأسئلة والصور وربطها بنجاح!", {
+            toast.success("Questions and images extracted successfully!", {
               position: "top-center",
             });
           } else {
-            toast.error("لم يتم العثور على أسئلة أو صور في الملف.", {
+            toast.warn("No questions or images found in the file.", {
               position: "top-center",
             });
           }
         } catch (error) {
           console.error(error);
-          toast.error("حدث خطأ أثناء قراءة الملف. تأكد من صحة الملف.", {
+          toast.error("An error occurred while processing the file.", {
             position: "top-center",
           });
         } finally {
-          setLoading(false);
+          setLoading(false); // Hide loader
         }
       };
 
       reader.readAsArrayBuffer(file);
     } else {
-      toast.error("الرجاء اختيار ملف Word بصيغة .docx", {
+      toast.error("Please upload a valid .docx file.", {
         position: "top-center",
       });
     }
   };
 
-  const extractContentWithDocxPreview = async (arrayBuffer) => {
-    const container = document.createElement("div");
-    await renderAsync(arrayBuffer, container);
-
-    const paragraphs = Array.from(container.querySelectorAll("p"));
-    const images = Array.from(container.querySelectorAll("img")).map((img) => ({
-      src: img.src,
-      alt: img.alt || "",
-    }));
-
-    const texts = paragraphs.map((p) => p.textContent.trim()).filter((t) => t);
-
-    return { texts, images };
+  const extractContentFromDocxToHTML = async (arrayBuffer) => {
+    const result = await mammoth.convertToHtml({ arrayBuffer });
+    const htmlContent = result.value; // HTML content from the .docx file
+    return htmlContent;
   };
 
-  const parseQuestionsWithImages = (texts, images) => {
-    const questions = [];
-    let currentQuestion = null;
-    let currentImageIndex = 0;
+  const parseHtmlToQuestions = (htmlContent) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, "text/html");
 
-    texts.forEach((text) => {
-      // التعرف على السؤال
+    const questions = [];
+    const paragraphs = doc.querySelectorAll("p");
+
+    let currentQuestion = null;
+
+    paragraphs.forEach((p) => {
+      const text = p.textContent.trim();
       const questionMatch = text.match(/^\d+[)-]?\s*(.*)$/);
+      const image = p.querySelector("img");
+
       if (questionMatch) {
-        if (currentQuestion) {
-          questions.push(currentQuestion);
-        }
+        // Start a new question
+        if (currentQuestion) questions.push(currentQuestion);
         currentQuestion = {
           question: questionMatch[1].trim(),
           options: [],
           correctAnswer: null,
           image: null,
         };
-      } else if (/^[أ-ي]-|^[أ-ي]\)|^[أ-ي]\s|^•/.test(text)) {
-        // استخراج الخيارات
+      } else if (/^[أ-ي]-|^[1-9]\./.test(text)) {
+        // Add options
         if (currentQuestion) {
           currentQuestion.options.push(
-            text.replace(/^[أ-ي]\s*[-)]?\s*|^•\s*/, "").trim()
+            text.replace(/^[أ-ي]-|^[1-9]\./, "").trim()
           );
         }
       } else if (text.startsWith("الإجابة:")) {
-        // استخراج الإجابة الصحيحة
+        // Add correct answer
         if (currentQuestion) {
-          const correctIndex =
-            parseInt(text.replace("الإجابة:", "").trim(), 10) - 1;
-          currentQuestion.correctAnswer = correctIndex;
+          currentQuestion.correctAnswer = text.replace("الإجابة:", "").trim();
         }
       }
 
-      // ربط الصور بالسؤال
-      if (images[currentImageIndex]) {
-        if (currentQuestion && !currentQuestion.image) {
-          currentQuestion.image = images[currentImageIndex].src;
-          currentImageIndex++;
-        }
+      // Link images to the question
+      if (image && currentQuestion) {
+        currentQuestion.image = image.src;
       }
     });
 
+    // Push the last question
     if (currentQuestion) questions.push(currentQuestion);
 
     return questions;
@@ -119,22 +112,17 @@ const FileInputComponent = ({ onAddQuestions }) => {
 
   return (
     <div>
-      <h3>تحميل ملف أسئلة</h3>
+      <h3>Upload Questions File</h3>
       <input type="file" accept=".docx" onChange={handleFileImport} />
-      {loading && (
-        <div className="loader-container">
-          <div className="loader"></div>
-          <p>جاري استخراج الأسئلة والصور وربطها...</p>
-        </div>
-      )}
+      {loading && <Loader />} {/* Show loader while loading */}
       {!loading && parsedQuestions.length > 0 && (
         <div>
-          <h3>الأسئلة المستخرجة:</h3>
+          <h3>Extracted Questions:</h3>
           {parsedQuestions.map((q, index) => (
             <details key={index}>
               <summary>
-                <strong>السؤال {index + 1}:</strong>{" "}
-                {q.question || "السؤال غير متوفر"}
+                <strong>Question {index + 1}:</strong>{" "}
+                {q.question || "No question text available"}
               </summary>
               <ul>
                 {q.options.map((option, optIndex) => (
@@ -150,6 +138,9 @@ const FileInputComponent = ({ onAddQuestions }) => {
               </ul>
               {q.image && (
                 <div>
+                  <p>
+                    <strong>Image:</strong>
+                  </p>
                   <img
                     src={q.image}
                     alt={`Question ${index + 1}`}
