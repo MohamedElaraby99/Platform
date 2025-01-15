@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import JSZip from "jszip";
+import mammoth from "mammoth";
+import { renderAsync } from "docx-preview";
 
 const FileInputComponent = ({ onAddQuestions }) => {
   const [parsedQuestions, setParsedQuestions] = useState([]);
@@ -17,24 +19,27 @@ const FileInputComponent = ({ onAddQuestions }) => {
 
         try {
           setLoading(true);
-          const zip = new JSZip();
-          await zip.loadAsync(arrayBuffer);
 
-          const extractedData = await extractContent(zip);
-          const questions = parseContentWithImages(extractedData);
+          // استخراج الصور والنصوص باستخدام docx-preview
+          const content = await extractContentWithDocxPreview(arrayBuffer);
+          const { texts, images } = content;
+
+          // ربط النصوص والصور
+          const questions = parseQuestionsWithImages(texts, images);
 
           if (questions.length > 0) {
             setParsedQuestions(questions);
             onAddQuestions(questions);
-            toast.success("تم استخراج الأسئلة والصور بنجاح!", {
+            toast.success("تم استخراج الأسئلة والصور وربطها بنجاح!", {
               position: "top-center",
             });
           } else {
-            toast.error("لم يتم العثور على أسئلة في الملف.", {
+            toast.error("لم يتم العثور على أسئلة أو صور في الملف.", {
               position: "top-center",
             });
           }
         } catch (error) {
+          console.error(error);
           toast.error("حدث خطأ أثناء قراءة الملف. تأكد من صحة الملف.", {
             position: "top-center",
           });
@@ -51,62 +56,60 @@ const FileInputComponent = ({ onAddQuestions }) => {
     }
   };
 
-  const extractContent = async (zip) => {
-    const text = await zip.file("word/document.xml").async("string");
-    const mediaFiles = zip.file(/word\/media\/.*/);
+  const extractContentWithDocxPreview = async (arrayBuffer) => {
+    const container = document.createElement("div");
+    await renderAsync(arrayBuffer, container);
 
-    const images = await Promise.all(
-      mediaFiles.map(async (file) => {
-        const base64 = await file.async("base64");
-        return {
-          name: file.name,
-          data: `data:image/png;base64,${base64}`,
-        };
-      })
-    );
+    const paragraphs = Array.from(container.querySelectorAll("p"));
+    const images = Array.from(container.querySelectorAll("img")).map((img) => ({
+      src: img.src,
+      alt: img.alt || "",
+    }));
 
-    return { text, images };
+    const texts = paragraphs.map((p) => p.textContent.trim()).filter((t) => t);
+
+    return { texts, images };
   };
 
-  const parseContentWithImages = ({ text, images }) => {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(text, "application/xml");
-    const paragraphs = Array.from(xmlDoc.getElementsByTagName("w:p"));
-
+  const parseQuestionsWithImages = (texts, images) => {
     const questions = [];
     let currentQuestion = null;
-    let imageIndex = 0;
+    let currentImageIndex = 0;
 
-    paragraphs.forEach((p) => {
-      const texts = Array.from(p.getElementsByTagName("w:t"))
-        .map((t) => t.textContent.trim())
-        .join(" ");
-
-      const questionMatch = texts.match(/^(\d+)\)\s*(.*?)(?:\[image\])?$/i);
+    texts.forEach((text) => {
+      // التعرف على السؤال
+      const questionMatch = text.match(/^\d+[)-]?\s*(.*)$/);
       if (questionMatch) {
-        if (currentQuestion) questions.push(currentQuestion);
-
+        if (currentQuestion) {
+          questions.push(currentQuestion);
+        }
         currentQuestion = {
-          question: questionMatch[2].trim(),
+          question: questionMatch[1].trim(),
           options: [],
           correctAnswer: null,
-          image: questionMatch[3] ? images[imageIndex]?.data || null : null,
+          image: null,
         };
-
-        if (questionMatch[3]) imageIndex++;
-      } else if (/^[أ-ي]-/.test(texts)) {
-        if (currentQuestion)
-          currentQuestion.options.push(texts.replace(/^[أ-ي]-/, "").trim());
-      } else if (texts.startsWith("الإجابة:")) {
+      } else if (/^[أ-ي]-|^[أ-ي]\)|^[أ-ي]\s|^•/.test(text)) {
+        // استخراج الخيارات
+        if (currentQuestion) {
+          currentQuestion.options.push(
+            text.replace(/^[أ-ي]\s*[-)]?\s*|^•\s*/, "").trim()
+          );
+        }
+      } else if (text.startsWith("الإجابة:")) {
+        // استخراج الإجابة الصحيحة
         if (currentQuestion) {
           const correctIndex =
-            parseInt(texts.replace("الإجابة:", "").trim(), 10) - 1;
+            parseInt(text.replace("الإجابة:", "").trim(), 10) - 1;
           currentQuestion.correctAnswer = correctIndex;
         }
-      } else if (images[imageIndex]) {
+      }
+
+      // ربط الصور بالسؤال
+      if (images[currentImageIndex]) {
         if (currentQuestion && !currentQuestion.image) {
-          currentQuestion.image = images[imageIndex]?.data || null;
-          imageIndex++;
+          currentQuestion.image = images[currentImageIndex].src;
+          currentImageIndex++;
         }
       }
     });
@@ -123,7 +126,7 @@ const FileInputComponent = ({ onAddQuestions }) => {
       {loading && (
         <div className="loader-container">
           <div className="loader"></div>
-          <p>جاري استخراج الأسئلة والصور...</p>
+          <p>جاري استخراج الأسئلة والصور وربطها...</p>
         </div>
       )}
       {!loading && parsedQuestions.length > 0 && (
