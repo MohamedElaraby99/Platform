@@ -57,7 +57,7 @@ const getExamsWithScores = async (req, res) => {
       return {
         id: exam._id,
         title: exam.title,
-        title: exam.type,
+        type: exam.type,
         description: exam.description,
         date: exam.date,
         duration: exam.duration,
