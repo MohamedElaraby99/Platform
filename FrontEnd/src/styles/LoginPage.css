@@ -104,7 +104,7 @@
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
-  color: #000000;
+  color: #ffffff;
   text-align: center;
 }
 
@@ -119,7 +119,7 @@
   display: block;
   font-weight: bold;
   margin-bottom: 0.5rem;
-  color: #000000;
+  color: #ffffff;
 }
 
 .input-containerr input {
@@ -203,14 +203,14 @@
   display: flex;
   align-items: center;
   font-size: 0.9rem;
-  color: #000000;
+  color: #ffffff;
   gap: 0.5rem;
   cursor: pointer;
 }
 
 .remember-me input {
   margin: 0;
-  accent-color: #0e70b6; /* Modern browsers support */
+  accent-color: #052a45; /* Modern browsers support */
 }
 
 /* Login button */

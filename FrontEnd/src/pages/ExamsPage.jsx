@@ -26,8 +26,8 @@ const ExamsPage = () => {
         }
 
         const data = await response.json();
+        console.log("Fetched data:", data); // Debug API data
         setExams(data);
-         console.log("data", data);
         setFilteredExams(data); // Show all exams initially
         setLoading(false);
       } catch (err) {
@@ -40,16 +40,20 @@ const ExamsPage = () => {
     fetchExams();
   }, []);
 
-  // Filter exams by title and type
+  // Filter exams by type
   useEffect(() => {
     let filtered = exams;
 
     if (selectedType !== "all") {
-      filtered = filtered.filter((exam) => exam.type === selectedType);
+      filtered = filtered.filter(
+        (exam) =>
+          exam.type && exam.type.toLowerCase() === selectedType.toLowerCase()
+      );
     }
 
+    console.log("Filtered exams by type:", filtered); // Debug filtered exams
     setFilteredExams(filtered);
-  }, [ selectedType, exams]);
+  }, [selectedType, exams]);
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
@@ -62,17 +66,15 @@ const ExamsPage = () => {
 
       {/* Filters */}
       <div className="filter-container">
-
-        {/* Filter by Type */}
         <label htmlFor="exam-type">تصفية حسب النوع:</label>
         <select
           id="exam-type"
           value={selectedType}
           onChange={(e) => setSelectedType(e.target.value)}
         >
-          <option value="all">الكل</option>
-          <option value="exam">امتحان</option>
-          <option value="training">تدريب</option>
+          <option value="all" disabled>الكل</option>
+          <option value="امتحان">امتحان</option>
+          <option value="تدريب">تدريب</option>
         </select>
       </div>
 
@@ -82,7 +84,7 @@ const ExamsPage = () => {
             <h3>{exam.title}</h3>
             <p>التاريخ: {new Date(exam.date).toLocaleString()}</p>
             <p>
-              النوع: <span>{exam.type === "exam" ? "امتحان" : "تدريب"}</span>
+              النوع: <span>{exam.type}</span>
             </p>
             <p>
               الحالة:
