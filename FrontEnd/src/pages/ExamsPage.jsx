@@ -8,7 +8,7 @@ const ExamsPage = () => {
   const [filteredExams, setFilteredExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedTitle, setSelectedTitle] = useState("all"); // اسم الامتحان المختار
+  const [selectedType, setSelectedType] = useState("all"); // Filter by type
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -27,7 +27,8 @@ const ExamsPage = () => {
 
         const data = await response.json();
         setExams(data);
-        setFilteredExams(data); // عرض جميع الامتحانات عند البداية
+         console.log("data", data);
+        setFilteredExams(data); // Show all exams initially
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -39,18 +40,16 @@ const ExamsPage = () => {
     fetchExams();
   }, []);
 
-  // تصفية الامتحانات بناءً على اسم الامتحان (title)
+  // Filter exams by title and type
   useEffect(() => {
-    if (selectedTitle === "all") {
-      setFilteredExams(exams); // عرض جميع الامتحانات إذا تم اختيار "الكل"
-    } else {
-      setFilteredExams(
-        exams.filter((exam) =>
-          exam.title.toLowerCase().includes(selectedTitle.toLowerCase())
-        )
-      ); // تصفية حسب الاسم
+    let filtered = exams;
+
+    if (selectedType !== "all") {
+      filtered = filtered.filter((exam) => exam.type === selectedType);
     }
-  }, [selectedTitle, exams]);
+
+    setFilteredExams(filtered);
+  }, [ selectedType, exams]);
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
@@ -61,20 +60,19 @@ const ExamsPage = () => {
     <div className="exams-page">
       <h2>الامتحانات</h2>
 
-      {/* قائمة منسدلة لاختيار اسم الامتحان */}
+      {/* Filters */}
       <div className="filter-container">
-        <label htmlFor="exam-title">تصفية حسب اسم الامتحان:</label>
+
+        {/* Filter by Type */}
+        <label htmlFor="exam-type">تصفية حسب النوع:</label>
         <select
-          id="exam-title"
-          value={selectedTitle}
-          onChange={(e) => setSelectedTitle(e.target.value)}
+          id="exam-type"
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value)}
         >
           <option value="all">الكل</option>
-          {exams.map((exam) => (
-            <option key={exam._id} value={exam.title}>
-              {exam.title}
-            </option>
-          ))}
+          <option value="exam">امتحان</option>
+          <option value="training">تدريب</option>
         </select>
       </div>
 
