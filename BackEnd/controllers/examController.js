@@ -351,11 +351,11 @@ const getExamDataForAdmin = async (req, res) => {
 
     // Fetch all students in the given stage
     const students = await User.find({ stage }).lean();
-    if (students.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No students found for this stage" });
-    }
+    // if (students.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "No students found for this stage" });
+    // }
 
     // Fetch all submissions for exams in the given stage
     const examIds = exams.map((exam) => exam._id);
