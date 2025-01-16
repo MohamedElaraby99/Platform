@@ -205,13 +205,13 @@ const CreateExamComponent = () => {
               <summary>
                 <strong>السؤال {index + 1}:</strong> {q.question}
               </summary>
-              <textarea
+              <label
                 value={q.question}
                 onChange={(e) =>
                   handleQuestionChange(index, "question", e.target.value)
                 }
                 placeholder="أدخل نص السؤال"
-              ></textarea>
+              ></label>
               {q.image && (
                 <img
                   src={q.image}

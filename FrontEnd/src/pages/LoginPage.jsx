@@ -77,7 +77,7 @@ const LoginForm = ({ setRole }) => {
             <div className="left-side">
               <img
                 className="left-side-image"
-                src={require("./../images/loginlogo.png")}
+                src={require("./../images/logo.png")}
                 alt=""
               />
             </div>

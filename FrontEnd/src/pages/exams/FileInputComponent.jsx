@@ -29,17 +29,17 @@ const FileInputComponent = ({ onAddQuestions }) => {
           if (questions.length > 0) {
             setParsedQuestions(questions);
             onAddQuestions(questions);
-            toast.success("Questions and images extracted successfully!", {
+            toast.success("تم استرجاع المحتوى بنجاح!", {
               position: "top-center",
             });
           } else {
-            toast.warn("No questions or images found in the file.", {
+            toast.warn("ليس هناك اسئلة في الملف.", {
               position: "top-center",
             });
           }
         } catch (error) {
           console.error(error);
-          toast.error("An error occurred while processing the file.", {
+          toast.error("حدث خطأ في استرجاع المحتوى.", {
             position: "top-center",
           });
         } finally {
@@ -49,7 +49,7 @@ const FileInputComponent = ({ onAddQuestions }) => {
 
       reader.readAsArrayBuffer(file);
     } else {
-      toast.error("Please upload a valid .docx file.", {
+      toast.error("الرجاء رفع ملف .docx فقط.", {
         position: "top-center",
       });
     }
@@ -112,17 +112,17 @@ const FileInputComponent = ({ onAddQuestions }) => {
 
   return (
     <div>
-      <h3>Upload Questions File</h3>
+      <h3>استخراج الاسئلة من ملف Word</h3>
       <input type="file" accept=".docx" onChange={handleFileImport} />
       {loading && <Loader />} {/* Show loader while loading */}
       {!loading && parsedQuestions.length > 0 && (
         <div>
-          <h3>Extracted Questions:</h3>
+          <h3>قائمة الاسئلة:</h3>
           {parsedQuestions.map((q, index) => (
             <details key={index}>
               <summary>
-                <strong>Question {index + 1}:</strong>{" "}
-                {q.question || "No question text available"}
+                <strong>السؤال {index + 1}:</strong>{" "}
+                {q.question || "ليس هناك نص لهذا السؤال"}
               </summary>
               <ul>
                 {q.options.map((option, optIndex) => (
@@ -139,12 +139,12 @@ const FileInputComponent = ({ onAddQuestions }) => {
               {q.image && (
                 <div>
                   <p>
-                    <strong>Image:</strong>
+                    <strong>الصورة:</strong>
                   </p>
                   <img
                     src={q.image}
-                    alt={`Question ${index + 1}`}
-                    style={{ maxWidth: "100%", height: "auto" }}
+                    alt={`الصورة ${index + 1}`}
+                    style={{ maxWidth: "30%", height: "auto" }}
                   />
                 </div>
               )}

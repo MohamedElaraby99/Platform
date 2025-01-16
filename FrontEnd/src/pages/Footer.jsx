@@ -25,7 +25,7 @@ const Footer = () => {
         {/* Center Logo and Tagline */}
         <div className="footer-section footer-center">
           <img
-            src={require("./../images/loginlogo.png")}
+            src={require("./../images/footer.png")}
             alt="Platform Logo"
             className="footer-logo"
           />

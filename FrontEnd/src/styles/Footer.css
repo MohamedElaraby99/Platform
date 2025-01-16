@@ -61,8 +61,9 @@
 }
 
 .footer-logo {
-  max-width: 150px;
-  max-height: 150px;
+  margin-top: 10px;
+  max-width: 450px;
+  max-height: 175px;
   margin-bottom: 0;
 }
 
@@ -117,19 +118,6 @@
   margin: 0;
   font-size: 0.9rem;
 }
-
-/* .developer-link {
-  color: #ffd700;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 0.9rem;
-  transition: color 0.3s ease;
-}
-
-.developer-link:hover {
-  color: #fff;
-  text-decoration: underline;
-} */
 
 /* Responsive Design */
 @media (max-width: 768px) {

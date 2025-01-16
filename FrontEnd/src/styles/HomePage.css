@@ -134,20 +134,6 @@
   z-index: 2;
 }
 
-.fullscreen-button {
-  position: absolute;
-  bottom: 5px;
-  right: 0px;
-  padding: 5px 7px;
-  background-color: #0d8acd;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  z-index: 3;
-}
-
 .fullscreen-button:hover {
   background-color: #16a085;
 }

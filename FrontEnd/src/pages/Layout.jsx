@@ -12,7 +12,7 @@ const Layout = ({ children, role, onSignOut }) => {
         <div className="logo-container" onClick={() => navigate("/home")}>
           <img
             className="logo"
-            src={require("./../images/loginlogo.png")}
+            src={require("./../images/logo.png")}
             alt="محمود توكل"
           />
           <h1>
