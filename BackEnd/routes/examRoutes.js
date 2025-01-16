@@ -15,6 +15,6 @@ router.post("/", verifyJWT, verifyAdmin, addExam);
 router.put("/:id", verifyJWT, verifyAdmin, updateExam);
 router.delete("/:id", verifyJWT, verifyAdmin, deleteExam);
 router.post("/submit", verifyJWT, submitExam); // Submit an exam
-router.get("/submit", verifyJWT, verifyAdmin, getExamDataForAdmin); // Submit an exam
+router.get("/submit", verifyJWT, verifyAdmin, getExamDataForAdmin); 
 
 module.exports = router;
