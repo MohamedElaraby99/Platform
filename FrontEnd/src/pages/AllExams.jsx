@@ -11,7 +11,7 @@ const AllExams = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStage, setSelectedStage] = useState("أولى ثانوي");
   const [loading, setLoading] = useState(false);
-  const [selectedExam, setSelectedExam] = useState(null); // الامتحان المختار لعرض الـ submissions
+  const [selectedExam, setSelectedExam] = useState(null);
 
   // جلب البيانات من الـ API
   useEffect(() => {

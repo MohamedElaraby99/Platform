@@ -1,25 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./../styles/Layout.css";
 
 const Layout = ({ children, role, onSignOut }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <div className="layout">
       <header className="header">
+        <div className="burger-menu" onClick={toggleSidebar}>
+          <img
+            className="burger-icon"
+            src={require("./..//images/menu-bar.png")}
+            alt="Menu"
+          />
+        </div>
         <div className="logo-container" onClick={() => navigate("/home")}>
           <img
             className="logo"
-            src={require("./../images/logo.png")}
+            src={require("./../images/0d231dfe-f53b-42fb-aa49-90b4d32966af.png")}
             alt="محمود توكل"
           />
           <h1>
-            مــنص<span class="highlight-dot">ـة</span> الــتوك
-            <span class="highlight-dot">ـل</span>
+            مــنص<span className="highlight-dot">ـة</span> الــتوك
+            <span className="highlight-dot">ـل</span>
           </h1>
         </div>
+
         <div className="user-menu">
           <Link to="/user">
             <div
@@ -33,7 +46,7 @@ const Layout = ({ children, role, onSignOut }) => {
 
       <main className="main-content">
         {/* Sidebar */}
-        <aside className="sidebar">
+        <aside className={`sidebar ${isSidebarOpen ? "open" : "closed"}`}>
           <ul>
             <li className={location.pathname === "/home" ? "active" : ""}>
               <Link to="/home">
