@@ -374,14 +374,25 @@ body {
 
   .sidebar.open {
     right: 0;
+    background: linear-gradient(90deg, #007bff, #0056b3);
     display: block;
-    transition: right 0.3s ease;
-    -webkit-transition: right 0.3s ease;
-    -moz-transition: right 0.3s ease;
-    -ms-transition: right 0.3s ease;
-    -o-transition: right 0.3s ease;
+    transition: right 0.9s ease;
+    -webkit-transition: right 0.9s ease;
+    -moz-transition: right 0.9s ease;
+    -ms-transition: right 0.9s ease;
+    -o-transition: right 0.9s ease;
     z-index: 1000;
-  }
+    border-radius: 0 0 0 40px;
+    -webkit-border-radius: 0 0 0 40px;
+    -moz-border-radius: 0 0 0 40px;
+    -ms-border-radius: 0 0 0 40px;
+    -o-border-radius: 0 0 0 40px;
+}
+
+.video-container {
+  max-width: fit-content;
+  margin-bottom: 50px;
+}
 
   .sidebar.closed {
     right: 0;
@@ -406,11 +417,16 @@ body {
     padding: 10px;
     color: white;
     box-shadow: -3px 0 8px rgba(0, 0, 0, 0.2);
-    border-radius: 0 0 40px 40px;
-    -webkit-border-radius: 0 0 40px 40px;
-    -moz-border-radius: 0 0 40px 40px;
-    -ms-border-radius: 0 0 40px 40px;
-    -o-border-radius: 0 0 40px 40px;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    -o-border-radius: 0;
+  }
+
+  .logo {
+    width: 90px;
+    height: 75px;
   }
 
   .header h1 {

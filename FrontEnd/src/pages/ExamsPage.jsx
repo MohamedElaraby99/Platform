@@ -104,7 +104,7 @@ const ExamsPage = () => {
                 غير متاح حاليًا
               </button>
             )}
-            {exam.status === "منتهي" && (
+            {exam.status === "انتهى" && (
               <Link
                 to={`/exams/details/${exam._id}`}
                 className="exam-button"

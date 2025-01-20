@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import "./ManualInputComponent.css";
 
 const ManualInputComponent = ({ onAddQuestions }) => {
   const [question, setQuestion] = useState("");
   const [why, setWhy] = useState(""); // حقل التعليل الجديد
   const [options, setOptions] = useState(["", "", "", ""]);
   const [correctAnswer, setCorrectAnswer] = useState(null);
+  const [image, setImage] = useState(null); // لحفظ الصورة المرفوعة
 
   const handleAddQuestion = () => {
     if (!question.trim()) {
@@ -33,6 +35,7 @@ const ManualInputComponent = ({ onAddQuestions }) => {
       why, // إضافة التعليل إلى السؤال
       options,
       correctAnswer,
+      image, // إضافة الصورة إلى البيانات
     };
 
     onAddQuestions([newQuestion]);
@@ -40,32 +43,65 @@ const ManualInputComponent = ({ onAddQuestions }) => {
     setWhy(""); // إعادة تعيين التعليل بعد إضافة السؤال
     setOptions(["", "", "", ""]);
     setCorrectAnswer(null);
+    setImage(null); // إعادة تعيين الصورة
     toast.success("تم إضافة السؤال بنجاح!");
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImage(reader.result); // حفظ الصورة بصيغة base64
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
-    <div>
+    <div className="manual-input-container">
       <h3>إضافة سؤال يدوي</h3>
       <label>
         نص السؤال:
-        <textarea
+        <input
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="أدخل نص السؤال"
-        ></textarea>
+        ></input>
       </label>
       <label>
         التعليل:
-        <textarea
+        <input
           value={why}
           onChange={(e) => setWhy(e.target.value)}
           placeholder="أدخل التعليل لهذا السؤال"
-        ></textarea>
+        ></input>
+      </label>
+      <label>
+        إضافة صورة:
+        <input type="file" onChange={handleImageChange} accept="image/*" />
+        {image && (
+          <div style={{ marginTop: "10px" }}>
+            <img
+              src={image}
+              alt="معاينة الصورة"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "150px",
+                borderRadius: "8px",
+              }}
+            />
+          </div>
+        )}
       </label>
       <label>
         الخيارات:
         {options.map((option, index) => (
-          <div key={index} className="option-container" >
+          <div
+            key={index}
+            className="option-container"
+            style={{ display: "flex", alignItems: "center", gap: "10px" }}
+          >
             <input
               type="text"
               value={option}
@@ -80,7 +116,6 @@ const ManualInputComponent = ({ onAddQuestions }) => {
             <button
               onClick={() => setCorrectAnswer(index)}
               style={{
-                marginLeft: "10px",
                 backgroundColor: correctAnswer === index ? "green" : "gray",
                 color: "white",
                 border: "none",
@@ -93,7 +128,9 @@ const ManualInputComponent = ({ onAddQuestions }) => {
           </div>
         ))}
       </label>
-      <button onClick={handleAddQuestion}>إضافة السؤال</button>
+      <button onClick={handleAddQuestion} style={{ marginTop: "20px" }}>
+        إضافة السؤال
+      </button>
     </div>
   );
 };

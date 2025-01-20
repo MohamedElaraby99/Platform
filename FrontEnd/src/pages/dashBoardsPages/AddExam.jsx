@@ -100,7 +100,7 @@ const CreateExamComponent = () => {
     <div className="container">
       <h2 className="exam-title">إنشاء امتحان</h2>
 
-      <div className="exam-details">
+      <div className="exam-detailss">
         <label>
           عنوان الامتحان:
           <input
@@ -111,14 +111,15 @@ const CreateExamComponent = () => {
             placeholder="أدخل عنوان الامتحان"
           />
         </label>
-        <label>
+        <label >
           وصف الامتحان:
-          <textarea
+          <input
+            className="description"
             name="description"
             value={examDetails.description}
             onChange={handleInputChange}
             placeholder="أدخل وصف الامتحان"
-          ></textarea>
+          ></input>
         </label>
         <label>
           نوع الامتحان:

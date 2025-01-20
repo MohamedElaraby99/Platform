@@ -30,10 +30,27 @@ const ExamDetails = () => {
           <p>اسم الامتحان: {exam.title}</p>
           <p>الوصف: {exam.description}</p>
           <p>عدد الأسئلة: {exam.questionsCount}</p>
-          <p>مدة الامتحان: {exam.duration} دقيقة</p>
-          <button className="start-exam-button" onClick={handleStartExam}>
-            بدء الامتحان
-          </button>
+          {exam.status === "انتهى" ? (
+            <>
+              <p>الحالة: انتهى</p>
+              <p>
+                النتيجة: {exam.result}
+              </p>
+              {/* إخفاء المدة إذا كان الامتحان منتهيًا */}
+            </>
+          ) : (
+            <>
+              <p>الحالة: {exam.status}</p>
+              <p>مدة الامتحان: {exam.duration} دقيقة</p>
+              {exam.status === "متاح" ? (
+                <button className="start-exam-button" onClick={handleStartExam}>
+                  بدء الامتحان
+                </button>
+              ) : (
+                <p style={{ color: "red" }}>الامتحان غير متاح حاليًا.</p>
+              )}
+            </>
+          )}
         </div>
       ) : (
         <p>لا توجد بيانات إضافية للامتحان.</p>
