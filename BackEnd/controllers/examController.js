@@ -96,6 +96,9 @@ const addExam = async (req, res) => {
 
     const examDate = moment.tz(date, "Africa/Cairo");
     const currentTime = moment.tz("Africa/Cairo");
+    console.log("examDate", examDate);
+    console.log("currentTime", examDate);
+    
 
     if (currentTime > examDate) {
       return res
