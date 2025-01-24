@@ -6,6 +6,7 @@ const questionSchema = new mongoose.Schema({
   options: [{ type: String, required: true }],
   correctAnswer: { type: String, required: true },
   why: { type: String },
+  image: { type: String },
 });
 
 const examSchema = new mongoose.Schema(

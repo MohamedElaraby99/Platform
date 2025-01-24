@@ -92,11 +92,11 @@ const addExam = async (req, res) => {
       return res.status(400).json({ message: "Exam date is required" });
     }
 
-    if (currentTime > new Date(date)) {
-      return res
-        .status(400)
-        .json({ message: "Exam date must be in the future" });
-    }
+    // if (currentTime > new Date(date)) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "Exam date must be in the future" });
+    // }
 
     if (!stage) {
       return res.status(400).json({ message: "Exam stage is required" });
@@ -147,6 +147,7 @@ const addExam = async (req, res) => {
       stage,
       why,
       type,
+      image
     });
 
     // Save to database
@@ -309,8 +310,8 @@ const submitExam = async (req, res) => {
     let score = 0;
     const detailedAnswers = answers.map((answer) => {
       const question = exam.questions.id(answer.questionId);
-      console.log("question", question);
 
+      // Check if the answer is correct
       const isCorrect = question.correctAnswer === `${answer.selectedAnswer}`;
       if (isCorrect) score++;
       return {
@@ -428,6 +429,7 @@ const getExamDataForAdmin = async (req, res) => {
             question: question || "Question not found",
             selectedAnswer: answer.selectedAnswer,
             correctAnswer: question?.correctAnswer,
+            image: question?.image,
             why: question?.why,
             isCorrect:
               question?.correctAnswer === answer.selectedAnswer || false,
