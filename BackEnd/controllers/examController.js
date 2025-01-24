@@ -114,7 +114,7 @@ const addExam = async (req, res) => {
 
     // Validate questions
     for (const q of questions) {
-      const { question, options, correctAnswer, why } = q;
+      const { question, options, correctAnswer } = q;
       if (!question) {
         return res.status(400).json({ message: "Question text is required" });
       }
@@ -147,7 +147,6 @@ const addExam = async (req, res) => {
       stage,
       why,
       type,
-      image
     });
 
     // Save to database
