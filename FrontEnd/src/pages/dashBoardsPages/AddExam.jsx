@@ -111,7 +111,7 @@ const CreateExamComponent = () => {
             placeholder="أدخل عنوان الامتحان"
           />
         </label>
-        <label >
+        <label>
           وصف الامتحان:
           <input
             className="description"
@@ -129,7 +129,9 @@ const CreateExamComponent = () => {
             value={examDetails.type}
             onChange={handleInputChange}
           >
-            <option value="" disabled>اختر نوع الامتحان</option>
+            <option value="" disabled>
+              اختر نوع الامتحان
+            </option>
             <option value="امتحان">امتحان</option>
             <option value="تدريب">تدريبات</option>
           </select>
@@ -160,7 +162,9 @@ const CreateExamComponent = () => {
             value={examDetails.stage}
             onChange={handleInputChange}
           >
-            <option value="" disabled>اختر المرحلة الدراسية</option>
+            <option value="" disabled>
+              اختر المرحلة الدراسية
+            </option>
             <option value="أولى ثانوي">أولى ثانوي</option>
             <option value="ثانية ثانوي">ثانية ثانوي</option>
             <option value="ثالثة ثانوي">ثالثة ثانوي</option>
@@ -206,13 +210,6 @@ const CreateExamComponent = () => {
               <summary>
                 <strong>السؤال {index + 1}:</strong> {q.question}
               </summary>
-              <label
-                value={q.question}
-                onChange={(e) =>
-                  handleQuestionChange(index, "question", e.target.value)
-                }
-                placeholder="أدخل نص السؤال"
-              ></label>
               {q.image && (
                 <img
                   src={q.image}
@@ -220,15 +217,15 @@ const CreateExamComponent = () => {
                   className="question-image"
                 />
               )}
-              {q.why && (
-                <p>
-                  <strong>التعليل:</strong> {q.why}
-                </p>
-              )}
-              <ul>
+              <ul className="options-list">
                 {q.options.map((option, optIndex) => (
-                  <li key={optIndex}>
-                    خيار {optIndex + 1}: {option}
+                  <li
+                    key={optIndex}
+                    className={`option-item ${
+                      q.correctAnswer === optIndex ? "correct-answer" : ""
+                    }`}
+                  >
+                    {option}
                   </li>
                 ))}
               </ul>

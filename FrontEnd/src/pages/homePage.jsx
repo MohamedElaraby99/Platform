@@ -150,6 +150,11 @@ const HomePage = () => {
           <span className="material-icons">edit</span>
           الامتحانات القادمة
         </h2>
+        <p className="view-all-videos">
+          <Link to="/exams" className="view-all-videos">
+            مشاهدة كل الامتحانات والتدريبات
+          </Link>
+        </p>
       </section>
 
       {/* PDF Downloads Section */}
@@ -158,6 +163,11 @@ const HomePage = () => {
           <span className="material-icons">picture_as_pdf</span>
           ملفات PDF للتنزيل
         </h2>
+        <p className="view-all-videos">
+          <Link to="/pdf" className="view-all-videos">
+            مشاهدة كل الملفات PDF
+          </Link>
+        </p>
       </section>
     </div>
   );

@@ -1,9 +1,3 @@
-/* Exam Details */
-.exam-details {
-  padding: 20px;
-  text-align: center;
-}
-
 .exam-details h2 {
   font-size: 24px;
   color: #333;
@@ -12,7 +6,6 @@
 
 .exam-details p {
   font-size: 16px;
-  color: #555;
   margin: 5px 0;
 }
 
@@ -30,15 +23,6 @@
 
 .back-button:hover {
   background-color: #0056b3;
-}
-
-.exam-details {
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  max-width: 600px;
-  margin: 20px auto;
-  background-color: #f9f9f9;
 }
 
 .exam-details h2 {
@@ -70,7 +54,7 @@
   display: inline-block;
   margin-top: 15px;
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #02356b;
   color: #fff;
   text-decoration: none;
   border-radius: 5px;
@@ -95,4 +79,20 @@
 
 .back-button:hover {
   background-color: #aaa;
+}
+
+.exam-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-weight: 700;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-width: 400px;
+  color: #fff;
+  margin: 20px auto;
+  background-color: #007bff;
 }

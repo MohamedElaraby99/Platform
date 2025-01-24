@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import mammoth from "mammoth";
-import Loader from "./../../pages/Loader.jsx"; // Importing the Loader component
+import Loader from "./../../pages/Loader.jsx";
+import "./FileInputComponent.css"; // Importing a separate CSS file
 
 const FileInputComponent = ({ onAddQuestions }) => {
   const [parsedQuestions, setParsedQuestions] = useState([]);
-  const [loading, setLoading] = useState(false); // State for loader control
+  const [loading, setLoading] = useState(false);
 
   const handleFileImport = async (e) => {
     const file = e.target.files[0];
@@ -17,13 +18,10 @@ const FileInputComponent = ({ onAddQuestions }) => {
         const arrayBuffer = event.target.result;
 
         try {
-          setLoading(true); // Show loader
+          setLoading(true);
 
-          // Convert .docx to HTML using mammoth.js
           const htmlContent = await extractContentFromDocxToHTML(arrayBuffer);
-          console.log("Extracted HTML:", htmlContent);
 
-          // Parse HTML to extract questions and images
           const questions = parseHtmlToQuestions(htmlContent);
 
           if (questions.length > 0) {
@@ -43,7 +41,7 @@ const FileInputComponent = ({ onAddQuestions }) => {
             position: "top-center",
           });
         } finally {
-          setLoading(false); // Hide loader
+          setLoading(false);
         }
       };
 
@@ -57,8 +55,7 @@ const FileInputComponent = ({ onAddQuestions }) => {
 
   const extractContentFromDocxToHTML = async (arrayBuffer) => {
     const result = await mammoth.convertToHtml({ arrayBuffer });
-    const htmlContent = result.value; // HTML content from the .docx file
-    return htmlContent;
+    return result.value;
   };
 
   const parseHtmlToQuestions = (htmlContent) => {
@@ -76,7 +73,6 @@ const FileInputComponent = ({ onAddQuestions }) => {
       const image = p.querySelector("img");
 
       if (questionMatch) {
-        // Start a new question
         if (currentQuestion) questions.push(currentQuestion);
         currentQuestion = {
           question: questionMatch[1].trim(),
@@ -85,66 +81,80 @@ const FileInputComponent = ({ onAddQuestions }) => {
           image: null,
         };
       } else if (/^[أ-ي]-|^[1-9]\./.test(text)) {
-        // Add options
         if (currentQuestion) {
           currentQuestion.options.push(
             text.replace(/^[أ-ي]-|^[1-9]\./, "").trim()
           );
         }
       } else if (text.startsWith("الإجابة:")) {
-        // Add correct answer
         if (currentQuestion) {
           currentQuestion.correctAnswer = text.replace("الإجابة:", "").trim();
         }
       }
 
-      // Link images to the question
       if (image && currentQuestion) {
         currentQuestion.image = image.src;
       }
     });
 
-    // Push the last question
     if (currentQuestion) questions.push(currentQuestion);
 
     return questions;
   };
 
+  const handleSetCorrectAnswer = (questionIndex, optionIndex) => {
+    setParsedQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions];
+      updatedQuestions[questionIndex].correctAnswer = optionIndex;
+      return updatedQuestions;
+    });
+  };
+
   return (
-    <div>
+    <div className="file-input-container">
       <h3>استخراج الاسئلة من ملف Word</h3>
-      <input type="file" accept=".docx" onChange={handleFileImport} />
-      {loading && <Loader />} {/* Show loader while loading */}
+      <input
+        type="file"
+        accept=".docx"
+        onChange={handleFileImport}
+        className="file-input"
+      />
+      {loading && <Loader />}
       {!loading && parsedQuestions.length > 0 && (
-        <div>
+        <div className="questions-container">
           <h3>قائمة الاسئلة:</h3>
           {parsedQuestions.map((q, index) => (
-            <details key={index}>
+            <details key={index} className="question-item">
               <summary>
                 <strong>السؤال {index + 1}:</strong>{" "}
                 {q.question || "ليس هناك نص لهذا السؤال"}
               </summary>
-              <ul>
+              <ul className="options-list">
                 {q.options.map((option, optIndex) => (
-                  <li
-                    key={optIndex}
-                    style={{
-                      color: q.correctAnswer === optIndex ? "green" : "black",
-                    }}
-                  >
-                    {option}
+                  <li key={optIndex} className="option-item">
+                    <span>{option}</span>
+                    <button
+                      onClick={() => handleSetCorrectAnswer(index, optIndex)}
+                      className={`selectt-answer-button ${
+                        q.correctAnswer === optIndex ? "selected" : ""
+                      }`}
+                    >
+                      {q.correctAnswer === optIndex
+                        ? "تم اختياره"
+                        : "اختيار الإجابة"}
+                    </button>
                   </li>
                 ))}
               </ul>
               {q.image && (
-                <div>
+                <div className="question-image">
                   <p>
                     <strong>الصورة:</strong>
                   </p>
                   <img
                     src={q.image}
                     alt={`الصورة ${index + 1}`}
-                    style={{ maxWidth: "30%", height: "auto" }}
+                    className="question-image"
                   />
                 </div>
               )}
