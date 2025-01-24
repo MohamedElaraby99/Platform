@@ -4,7 +4,6 @@ const Submission = require("../models/SubmitExam");
 const User = require("../models/User");
 const moment = require("moment-timezone");
 
-
 const getExamsWithScores = async (req, res) => {
   try {
     const { user_id, stage, role } = req;
@@ -184,13 +183,17 @@ const updateExam = async (req, res) => {
       return res.status(400).json({ message: "No data provided for update" });
     }
 
-    if (date) {
-      const currentTime = new Date();
-      if (currentTime > new Date(date)) {
-        return res
-          .status(400)
-          .json({ message: "Exam date must be in the future" });
-      }
+    if (!date) {
+      return res.status(400).json({ message: "Exam date is required" });
+    }
+
+    const examDate = moment.tz(date, "Africa/Cairo");
+    const currentTime = moment.tz("Africa/Cairo");
+
+    if (currentTime > examDate) {
+      return res
+        .status(400)
+        .json({ message: "Exam date must be in the future" });
     }
 
     // Fetch the existing exam
@@ -226,7 +229,7 @@ const updateExam = async (req, res) => {
     // Update exam fields
     if (title) existingExam.title = title;
     if (description) existingExam.description = description;
-    if (date) existingExam.date = new Date(date);
+    if (date) existingExam.date = examDate;
     if (duration) existingExam.duration = duration;
     if (questions) existingExam.questions = questions;
     if (stage) existingExam.stage = stage;
@@ -279,7 +282,7 @@ const submitExam = async (req, res) => {
       return res.status(404).json({ message: "Exam not found" });
     }
 
-    const currentTime = new Date();
+    const currentTime = moment.tz("Africa/Cairo");
     const examEndTime = new Date(exam.date.getTime() + exam.duration * 60000);
 
     // Check if the submission is within the allowed duration
