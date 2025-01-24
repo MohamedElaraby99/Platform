@@ -47,12 +47,14 @@ const getExamsWithScores = async (req, res) => {
 
       // Calculate user score and attendance
       const userScore =
-        status === "متاح" || status === "انتهى"
-          ? userSubmission?.score || null
-          : null;
+        status === "متاح" || status === "انتهى" ? userSubmission?.score : null;
 
       const attendance =
-        status === "انتهى" && !userSubmission ? "لم يحضر" : null;
+        status === "انتهى" && !userSubmission
+          ? "لم يحضر"
+          : userSubmission
+          ? "حضر"
+          : null;
 
       return {
         id: exam._id,
@@ -419,6 +421,7 @@ const getExamDataForAdmin = async (req, res) => {
           stage: submission.user_id.stage,
         },
         score: submission.score,
+        status: "حضر", // "Did not attend"
         submittedAt: submission.submittedAt,
         answers: submission.answers.map((answer) => {
           const question = exam.questions.find(
