@@ -84,7 +84,7 @@ const CoursesPage = () => {
                   className="video-thumbnail"
                 />
                 <div className="video-info">
-                  <h1 className="video-title">{video.title}</h1>
+                  <h1 className="video-titlee">{video.title}</h1>
                 </div>
               </div>
             );

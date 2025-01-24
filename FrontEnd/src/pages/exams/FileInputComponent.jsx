@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import mammoth from "mammoth";
 import Loader from "./../../pages/Loader.jsx";
-import "./FileInputComponent.css"; // Importing a separate CSS file
+import "./FileInputComponent.css";
 
 const FileInputComponent = ({ onAddQuestions }) => {
   const [parsedQuestions, setParsedQuestions] = useState([]);
@@ -21,7 +21,6 @@ const FileInputComponent = ({ onAddQuestions }) => {
           setLoading(true);
 
           const htmlContent = await extractContentFromDocxToHTML(arrayBuffer);
-
           const questions = parseHtmlToQuestions(htmlContent);
 
           if (questions.length > 0) {
@@ -31,13 +30,13 @@ const FileInputComponent = ({ onAddQuestions }) => {
               position: "top-center",
             });
           } else {
-            toast.warn("ليس هناك اسئلة في الملف.", {
+            toast.warn("ليس هناك أسئلة في الملف.", {
               position: "top-center",
             });
           }
         } catch (error) {
           console.error(error);
-          toast.error("حدث خطأ في استرجاع المحتوى.", {
+          toast.error("حدث خطأ في استرجاع المحتوى.", {
             position: "top-center",
           });
         } finally {
@@ -110,9 +109,31 @@ const FileInputComponent = ({ onAddQuestions }) => {
     });
   };
 
+  const handleDeleteQuestion = (index) => {
+    setParsedQuestions((prevQuestions) => {
+      const updatedQuestions = prevQuestions.filter((_, i) => i !== index);
+      return updatedQuestions;
+    });
+  };
+
+  const handleReplaceImage = (index, event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setParsedQuestions((prevQuestions) => {
+          const updatedQuestions = [...prevQuestions];
+          updatedQuestions[index].image = e.target.result;
+          return updatedQuestions;
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="file-input-container">
-      <h3>استخراج الاسئلة من ملف Word</h3>
+      <h3>استخراج الأسئلة من ملف Word</h3>
       <input
         type="file"
         accept=".docx"
@@ -122,13 +143,34 @@ const FileInputComponent = ({ onAddQuestions }) => {
       {loading && <Loader />}
       {!loading && parsedQuestions.length > 0 && (
         <div className="questions-container">
-          <h3>قائمة الاسئلة:</h3>
+          <h3>قائمة الأسئلة:</h3>
           {parsedQuestions.map((q, index) => (
             <details key={index} className="question-item">
               <summary>
-                <strong>السؤال {index + 1}:</strong>{" "}
-                {q.question || "ليس هناك نص لهذا السؤال"}
+                <strong>السؤال {index + 1}:</strong>{" "}
+                {q.question || "ليس هناك نص لهذا السؤال"}
               </summary>
+              {q.image && (
+                <div className="question-image">
+                  <p>
+                    <strong>الصورة:</strong>
+                  </p>
+                  <img
+                    src={q.image}
+                    alt={`الصورة ${index + 1}`}
+                    className="question-image"
+                  />
+                  <label>
+                    استبدال الصورة:
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleReplaceImage(index, e)}
+                      className="replace-image-input"
+                    />
+                  </label>
+                </div>
+              )}
               <ul className="options-list">
                 {q.options.map((option, optIndex) => (
                   <li key={optIndex} className="option-item">
@@ -146,18 +188,12 @@ const FileInputComponent = ({ onAddQuestions }) => {
                   </li>
                 ))}
               </ul>
-              {q.image && (
-                <div className="question-image">
-                  <p>
-                    <strong>الصورة:</strong>
-                  </p>
-                  <img
-                    src={q.image}
-                    alt={`الصورة ${index + 1}`}
-                    className="question-image"
-                  />
-                </div>
-              )}
+              <button
+                onClick={() => handleDeleteQuestion(index)}
+                className="delette-button"
+              >
+                حذف السؤال
+              </button>
             </details>
           ))}
         </div>
