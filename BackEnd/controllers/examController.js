@@ -2,6 +2,8 @@ const { stat } = require("fs");
 const Exam = require("../models/Exam");
 const Submission = require("../models/SubmitExam");
 const User = require("../models/User");
+const moment = require("moment-timezone");
+
 
 const getExamsWithScores = async (req, res) => {
   try {
@@ -82,7 +84,6 @@ const addExam = async (req, res) => {
   try {
     const { title, description, date, duration, questions, stage, why, type } =
       req.body;
-    const currentTime = new Date();
     // Validate required fields
     if (!title) {
       return res.status(400).json({ message: "Exam title is required" });
@@ -94,11 +95,14 @@ const addExam = async (req, res) => {
       return res.status(400).json({ message: "Exam date is required" });
     }
 
-    // if (currentTime > new Date(date)) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Exam date must be in the future" });
-    // }
+    const examDate = moment.tz(date, "Africa/Cairo");
+    const currentTime = moment.tz("Africa/Cairo");
+
+    if (currentTime > examDate) {
+      return res
+        .status(400)
+        .json({ message: "Exam date must be in the future" });
+    }
 
     if (!stage) {
       return res.status(400).json({ message: "Exam stage is required" });
@@ -143,7 +147,7 @@ const addExam = async (req, res) => {
     const newExam = new Exam({
       title,
       description,
-      date: date, // Ensure the date is a valid Date object
+      date: examDate, // Ensure the date is a valid Date object
       duration,
       questions,
       stage,
