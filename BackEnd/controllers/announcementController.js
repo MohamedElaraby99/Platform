@@ -4,21 +4,15 @@ const mongoose = require("mongoose");
 const getAnnouncements = async (req, res) => {
   try {
     const { role, stage } = req;
-    console.log(role, stage);
+
     let announcements;
-    // Map stage keys to human-readable names
-    const stageMapping = {
-      stage_one: "أولى ثانوي",
-      stage_two: "ثانية ثانوي",
-      stage_three: "ثالثة ثانوي",
-    };
 
     if (role === "admin") {
       announcements = await Announcement.find();
     } else if (stage) {
       // Map the incoming `stage` string to the corresponding object key
       const stageKeyMap = {
-        "أولي ثانوي": "stage_one",
+        "أولى ثانوي": "stage_one",
         "ثانية ثانوي": "stage_two",
         "ثالثة ثانوي": "stage_three",
       };
