@@ -294,3 +294,21 @@
   margin-bottom: 10px;
   gap: 10px;
 }
+
+.submit-exam-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.submit-exam-button:hover { 
+  background-color: #0056b3;
+}

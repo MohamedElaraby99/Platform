@@ -23,10 +23,10 @@ const ExamDetails = () => {
 
   return (
     <div>
-      <h2>تفاصيل الامتحان</h2>
+      <h2 className="exam-detailss">تفاصيل الامتحان</h2>
 
       {exam ? (
-        <div>
+        <div className="exam-detailss">
           <p>اسم الامتحان: {exam.title}</p>
           <p>الوصف: {exam.description}</p>
           <p>عدد الأسئلة: {exam.questionsCount}</p>

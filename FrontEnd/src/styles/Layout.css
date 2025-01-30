@@ -35,7 +35,6 @@ body {
   color: #ffa500;
 }
 
-
 /* Sidebar Styling */
 
 .burger-menu {
@@ -127,12 +126,19 @@ body {
   color: #1abc9c; /* Icon color */
 }
 
-.sidebar ul li.active a i {
-  color: #e74c3c; /* Active icon color */
-}
+
 
 .sidebar ul li.active a {
   font-weight: bold;
+  background-color: #002255;
+  padding: 10px;
+  border-radius: 5px;
+  color: #ffffff;
+  transform: scale(-5px);
+  -webkit-transform: scale(-5px);
+  -moz-transform: scale(-5px);
+  -ms-transform: scale(-5px);
+  -o-transform: scale(-5px);
 }
 
 .sidebar ul li a:hover {
@@ -173,7 +179,7 @@ body {
   background-repeat: no-repeat;
   margin-left: 15px;
   background-size: 100% 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M5 3h6a3 3 0 0 1 3 3v4h-1V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-4h1v4a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3m3 9h11.25L16 8.75l.66-.75l4.5 4.5l-4.5 4.5l-.66-.75L19.25 13H8z'/%3E%3C/svg%3E")
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M5 3h6a3 3 0 0 1 3 3v4h-1V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-4h1v4a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3m3 9h11.25L16 8.75l.66-.75l4.5 4.5l-4.5 4.5l-.66-.75L19.25 13H8z'/%3E%3C/svg%3E");
 }
 
 .user-avatar.active {
@@ -392,6 +398,9 @@ body {
   }
 
   .sidebar.open {
+    margin-top: 80px;
+    position: fixed;
+
     right: 0;
     background: linear-gradient(90deg, #007bff, #0056b3);
     display: block;
@@ -406,12 +415,12 @@ body {
     -moz-border-radius: 0 0 0 40px;
     -ms-border-radius: 0 0 0 40px;
     -o-border-radius: 0 0 0 40px;
-}
+  }
 
-.video-container {
-  max-width: fit-content;
-  margin-bottom: 50px;
-}
+  .video-container {
+    max-width: fit-content;
+    margin-bottom: 50px;
+  }
 
   .sidebar.closed {
     right: 0;
@@ -454,7 +463,6 @@ body {
 }
 
 @media (max-width: 480px) {
-
   .header {
     display: flex;
     gap: 20px;
@@ -472,7 +480,7 @@ body {
     -o-border-radius: 0;
   }
 
- .burger-menu {
+  .burger-menu {
     display: block;
     cursor: pointer;
     right: 0;
@@ -504,12 +512,12 @@ body {
     -moz-border-radius: 0 0 0 40px;
     -ms-border-radius: 0 0 0 40px;
     -o-border-radius: 0 0 0 40px;
-}
+  }
 
-.video-container {
-  max-width: fit-content;
-  margin-bottom: 50px;
-}
+  .video-container {
+    max-width: fit-content;
+    margin-bottom: 50px;
+  }
 
   .sidebar.closed {
     right: 0;

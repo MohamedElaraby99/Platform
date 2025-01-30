@@ -7,7 +7,7 @@ import FileInputComponent from "./../../pages/exams/FileInputComponent";
 import ManualInputComponent from "./../../pages/exams/ManualInputComponent";
 import moment from "moment";
 
-const CreateExamComponent = () => {
+const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
   const [questions, setQuestions] = useState([]);
   const [inputMode, setInputMode] = useState("file");
   const [examDetails, setExamDetails] = useState({
@@ -17,12 +17,18 @@ const CreateExamComponent = () => {
     time: "",
     duration: "",
     stage: "",
-    type: "", // نوع الامتحان
+    type: "",
   });
 
   const handleAddQuestions = (importedQuestions) => {
-    // تحديث الأسئلة بدون تعديل التعليل
     setQuestions([...questions, ...importedQuestions]);
+  };
+
+  // دالة لحذف الأسئلة القادمة من `FileInputComponent`
+  const handleDeleteQuestionFromFile = (index) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.filter((_, i) => i !== index)
+    );
   };
 
   const handleInputChange = (e) => {
@@ -33,12 +39,6 @@ const CreateExamComponent = () => {
     });
   };
 
-  const handleQuestionChange = (index, field, value) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions[index][field] = value;
-    setQuestions(updatedQuestions);
-  };
-
   const handleSubmit = async () => {
     if (
       !examDetails.title ||
@@ -46,14 +46,13 @@ const CreateExamComponent = () => {
       !examDetails.date ||
       !examDetails.duration ||
       !examDetails.stage ||
-      !examDetails.type || // التحقق من نوع الامتحان
+      !examDetails.type ||
       questions.length === 0
     ) {
       toast.error("يرجى ملء جميع الحقول وإضافة الأسئلة!");
       return;
     }
 
-    // تنسيق بيانات الامتحان للإرسال
     const examData = {
       title: examDetails.title,
       description: examDetails.description,
@@ -61,7 +60,7 @@ const CreateExamComponent = () => {
       duration: parseInt(examDetails.duration, 10),
       questions,
       stage: examDetails.stage,
-      type: examDetails.type, // إرسال نوع الامتحان
+      type: examDetails.type,
     };
 
     console.log("Exam Data Sent:", examData);
@@ -119,7 +118,7 @@ const CreateExamComponent = () => {
             value={examDetails.description}
             onChange={handleInputChange}
             placeholder="أدخل وصف الامتحان"
-          ></input>
+          />
         </label>
         <label>
           نوع الامتحان:
@@ -196,7 +195,10 @@ const CreateExamComponent = () => {
       </div>
 
       {inputMode === "file" && (
-        <FileInputComponent onAddQuestions={handleAddQuestions} />
+        <FileInputComponent
+          onAddQuestions={handleAddQuestions}
+          onDeleteQuestion={handleDeleteQuestionFromFile}
+        />
       )}
       {inputMode === "manual" && (
         <ManualInputComponent onAddQuestions={handleAddQuestions} />
