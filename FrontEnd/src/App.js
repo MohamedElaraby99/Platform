@@ -5,7 +5,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import axios from "axios"; // مكتبة لجلب البيانات من API
 import LoginForm from "./pages/LoginPage";
 import HomePage from "./pages/homePage";
 import CoursesPage from "./pages/CoursesPage";
@@ -30,6 +29,7 @@ import PostsComponent from "./pages/dashBoardsPages/PostsComponent";
 import AllPostsComponent from "./pages/AllPostsComponent";
 import ScrollToTop from "./components/ScrollTop";
 import About from "./pages/about";
+import ResultComponent from "./pages/ResultComponent";
 
 const App = () => {
   const [role, setRole] = useState(null);
@@ -67,11 +67,12 @@ const App = () => {
               <Route path="/exams" element={<ExamsPage />} />
               <Route path="/exams/details/:id" element={<ExamDetails />} />
               <Route path="/exams/start/:id" element={<ExamsSystem />} />
-                  <Route path="/pdf" element={<PdfPage />} />
+              <Route path="/exams/end/:id" element={<ResultComponent />} />
+              <Route path="/pdf" element={<PdfPage />} />
               <Route path="/about" element={<About />} />
               <Route
                 path="/user"
-                element={<UserPage onSignOut={handleSignOut}/>}
+                element={<UserPage onSignOut={handleSignOut} />}
               />
               <Route path="/add-user" element={<AddUser />} />
               <Route path="/add-video" element={<AddVideo />} />
@@ -84,10 +85,7 @@ const App = () => {
               <Route path="/all-pdfs" element={<AllPdfs />} />
               <Route path="/all-posts" element={<AllPostsComponent />} />
               {role === "admin" && (
-                <Route
-                  path="/dashboard"
-                  element={<DashboardPage />}
-                />
+                <Route path="/dashboard" element={<DashboardPage />} />
               )}
               <Route path="*" element={<Navigate to="/home" />} />
             </Routes>

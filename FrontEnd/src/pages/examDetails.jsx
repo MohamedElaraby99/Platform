@@ -4,6 +4,7 @@ import "./../styles/examDetails.css";
 
 const ExamDetails = () => {
   const { id } = useParams(); // استلام id من الرابط
+  console.log("Exam ID:", id);
   const location = useLocation();
   const navigate = useNavigate(); // لاستخدام التنقل
   const exam = location.state?.exam; // البيانات الإضافية الممررة
@@ -34,7 +35,7 @@ const ExamDetails = () => {
             <>
               <p>الحالة: انتهى</p>
               <p>
-                النتيجة: {exam.result}
+                النتيجة: {exam.score}
               </p>
               {/* إخفاء المدة إذا كان الامتحان منتهيًا */}
             </>

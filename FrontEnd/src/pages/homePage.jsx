@@ -46,6 +46,8 @@ const HomePage = () => {
         );
 
         setAnnouncements(response.data); // Set the announcements data
+        console.log(response.data);
+        
         setErrorAnnouncements(null); // Clear any errors
       } catch (err) {
         setErrorAnnouncements("حدث خطأ أثناء تحميل الإعلانات."); // Handle errors
@@ -111,12 +113,11 @@ const HomePage = () => {
           <p className="error-message">{errorVideos}</p>
         ) : (
           <div className="videos-grid">
-            {videos.map((video) => {
-              const videoId = extractVideoId(video.lesson_link); // Extract video ID
+            {videos?.slice(0, 5)?.map((video) => {
+              const videoId = extractVideoId(video.lesson_link);
               const thumbnailUrl = videoId
                 ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
                 : null;
-
               return (
                 <div
                   className="video-container"
