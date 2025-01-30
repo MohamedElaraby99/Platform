@@ -34,29 +34,11 @@ import About from "./pages/about";
 const App = () => {
   const [role, setRole] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [users, setUsers] = useState([]); // حالة لتخزين بيانات المستخدمين
 
   useEffect(() => {
     const savedRole = localStorage.getItem("role");
     setRole(savedRole);
     setIsInitialized(true);
-
-    // جلب بيانات المستخدمين من API
-    const fetchUsers = async () => {
-      try {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get("http://localhost:8000/users", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        setUsers(response.data); // تخزين البيانات في حالة المستخدمين
-      } catch (error) {
-        console.error("حدث خطأ أثناء جلب بيانات المستخدمين:", error);
-      }
-    };
-
-    fetchUsers();
   }, []);
 
   const handleSignOut = () => {
@@ -89,14 +71,14 @@ const App = () => {
               <Route path="/about" element={<About />} />
               <Route
                 path="/user"
-                element={<UserPage onSignOut={handleSignOut} users={users} />}
+                element={<UserPage onSignOut={handleSignOut}/>}
               />
               <Route path="/add-user" element={<AddUser />} />
               <Route path="/add-video" element={<AddVideo />} />
               <Route path="/add-pdf" element={<AddPdf />} />
               <Route path="/add-exam" element={<CreateExam />} />
               <Route path="/add-post" element={<PostsComponent />} />
-              <Route path="/all-users" element={<AllUsers users={users} />} />
+              <Route path="/all-users" element={<AllUsers />} />
               <Route path="/all-exams" element={<AllExams />} />
               <Route path="/all-videos" element={<AllVideos />} />
               <Route path="/all-pdfs" element={<AllPdfs />} />
@@ -104,7 +86,7 @@ const App = () => {
               {role === "admin" && (
                 <Route
                   path="/dashboard"
-                  element={<DashboardPage users={users} />}
+                  element={<DashboardPage />}
                 />
               )}
               <Route path="*" element={<Navigate to="/home" />} />

@@ -12,12 +12,14 @@ const Layout = ({ children, role, onSignOut }) => {
   };
 
   return (
-    <div className="layout">
+    <div className={`layout ${isSidebarOpen ? "menu-open" : ""}`}>
       <header className="header">
         <div className="burger-menu" onClick={toggleSidebar}>
           <img
             className="burger-icon"
-            src={require("./..//images/menu-bar.png")}
+            src={require(`./../images/${
+              isSidebarOpen ? "close-icon.png" : "menu-bar.png"
+            }`)}
             alt="Menu"
           />
         </div>
@@ -44,6 +46,9 @@ const Layout = ({ children, role, onSignOut }) => {
         </div>
       </header>
 
+      {/* ✅ إضافة الـ Overlay عند فتح القائمة الجانبية */}
+      {isSidebarOpen && <div className="overlay" onClick={toggleSidebar}></div>}
+
       <main className="main-content">
         {/* Sidebar */}
         <aside className={`sidebar ${isSidebarOpen ? "open" : "closed"}`}>
@@ -55,10 +60,7 @@ const Layout = ({ children, role, onSignOut }) => {
             </li>
             <li
               className={
-                location.pathname === "/courses" ||
-                location.pathname === "/video-details"
-                  ? "active"
-                  : ""
+                location.pathname.startsWith("/courses") ? "active" : ""
               }
             >
               <Link to="/courses">
@@ -81,14 +83,7 @@ const Layout = ({ children, role, onSignOut }) => {
             {role === "admin" && (
               <li
                 className={
-                  location.pathname.startsWith("/dashboard") ||
-                  location.pathname.startsWith("/add-") ||
-                  location.pathname.startsWith("/edit-") ||
-                  location.pathname.startsWith("/all-") ||
-                  location.pathname.startsWith("/delete-") ||
-                  location.pathname.startsWith("/show-")
-                    ? "active"
-                    : ""
+                  location.pathname.startsWith("/dashboard") ? "active" : ""
                 }
               >
                 <Link to="/dashboard">
@@ -99,7 +94,6 @@ const Layout = ({ children, role, onSignOut }) => {
           </ul>
         </aside>
 
-        {/* Page Content */}
         <div className="page-content">{children}</div>
       </main>
     </div>

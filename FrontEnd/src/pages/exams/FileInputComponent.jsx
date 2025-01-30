@@ -4,7 +4,7 @@ import mammoth from "mammoth";
 import Loader from "./../../pages/Loader.jsx";
 import "./FileInputComponent.css";
 
-const FileInputComponent = ({ onAddQuestions }) => {
+const FileInputComponent = ({ onAddQuestions , onDeleteQuestion  }) => {
   const [parsedQuestions, setParsedQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -114,6 +114,9 @@ const FileInputComponent = ({ onAddQuestions }) => {
       const updatedQuestions = prevQuestions.filter((_, i) => i !== index);
       return updatedQuestions;
     });
+
+    // إبلاغ `CreateExamComponent` لحذف السؤال من القائمة الرئيسية
+    onDeleteQuestion(index);
   };
 
   const handleReplaceImage = (index, event) => {
