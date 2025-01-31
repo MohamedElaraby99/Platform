@@ -94,7 +94,7 @@ const LoginForm = ({ setRole }) => {
               <h2 className="login-title">تسجيل الدخول</h2>
               <form onSubmit={handleLogin} className="login-form">
                 <div className="input-containerr">
-                  <label htmlFor="userName">اسم المستخدم dcec</label>
+                  <label htmlFor="userName">اسم المستخدم</label>
                   <input
                     type="text"
                     id="userName"
