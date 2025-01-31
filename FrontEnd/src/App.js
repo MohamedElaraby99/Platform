@@ -35,6 +35,48 @@ const App = () => {
   const [role, setRole] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // إضافة وظائف منع أدوات المطور
+  useEffect(() => {
+    // منع النقر الأيمن
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+      return false;
+    };
+
+    // منع اختصارات لوحة المفاتيح
+    const handleKeyDown = (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && e.key === "I") || // Ctrl+Shift+I
+        (e.ctrlKey && e.shiftKey && e.key === "J") || // Ctrl+Shift+J
+        (e.ctrlKey && e.key === "U") // Ctrl+U
+      ) {
+        e.preventDefault();
+        alert("غير مسموح بفتح أدوات المطور!");
+      }
+    };
+
+    // اكتشاف فتح الأدوات
+    const checkDevTools = () => {
+      const widthThreshold = window.outerWidth - window.innerWidth > 160;
+      const heightThreshold = window.outerHeight - window.innerHeight > 160;
+      if (widthThreshold || heightThreshold) {
+        window.location.href = "/blocked";
+      }
+    };
+
+
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("keydown", handleKeyDown);
+    const devToolsCheckInterval = setInterval(checkDevTools, 1000);
+
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("keydown", handleKeyDown);
+      clearInterval(devToolsCheckInterval);
+    };
+  }, []);
+
   useEffect(() => {
     const savedRole = localStorage.getItem("role");
     setRole(savedRole);
@@ -42,9 +84,9 @@ const App = () => {
   }, []);
 
   const handleSignOut = () => {
-    localStorage.removeItem("role"); // حذف الدور
-    localStorage.removeItem("accessToken"); // حذف التوكن
-    setRole(null); // إعادة تعيين الدور
+    localStorage.removeItem("role");
+    localStorage.removeItem("accessToken");
+    setRole(null);
   };
 
   return (
@@ -52,15 +94,20 @@ const App = () => {
       <ScrollToTop />
       <div style={{ direction: "rtl" }}>
         {!isInitialized ? (
-          <p>Loading...</p> // عرض رسالة تحميل أثناء التهيئة
+          <p>Loading...</p>
         ) : !role ? (
           <Routes>
             <Route path="/login" element={<LoginForm setRole={setRole} />} />
+            <Route
+              path="/blocked"
+              element={<div>غير مسموح بفتح أدوات المطور!</div>}
+            />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         ) : (
           <Layout role={role} onSignOut={handleSignOut}>
             <Routes>
+              {/* ... جميع المسارات الموجودة مسبقًا ... */}
               <Route path="/home" element={<HomePage />} />
               <Route path="/courses" element={<CoursesPage />} />
               <Route path="/video-details/:id" element={<VideoDetailsPage />} />
@@ -87,6 +134,10 @@ const App = () => {
               {role === "admin" && (
                 <Route path="/dashboard" element={<DashboardPage />} />
               )}
+              <Route
+                path="/blocked"
+                element={<div>غير مسموح بفتح أدوات المطور!</div>}
+              />
               <Route path="*" element={<Navigate to="/home" />} />
             </Routes>
             <Footer />

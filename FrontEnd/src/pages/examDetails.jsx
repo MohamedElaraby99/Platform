@@ -4,7 +4,7 @@ import "./../styles/examDetails.css";
 
 const ExamDetails = () => {
   const { id } = useParams(); // استلام id من الرابط
-  console.log("Exam ID:", id);
+ 
   const location = useLocation();
   const navigate = useNavigate(); // لاستخدام التنقل
   const exam = location.state?.exam; // البيانات الإضافية الممررة
@@ -34,18 +34,17 @@ const ExamDetails = () => {
           {exam.status === "انتهى" ? (
             <>
               <p>الحالة: انتهى</p>
-              <p>
-                النتيجة: {exam.score}
-              </p>
+              <p>النتيجة: {exam.userScore}</p>
               {/* إخفاء المدة إذا كان الامتحان منتهيًا */}
             </>
           ) : (
             <>
               <p>الحالة: {exam.status}</p>
               <p>مدة الامتحان: {exam.duration} دقيقة</p>
+              {exam?.userScore >= 0 && <p>النتيجة: {exam.userScore}</p>}
               {exam.status === "متاح" ? (
-                <button className="start-exam-button" onClick={handleStartExam}>
-                  بدء الامتحان
+                exam?.attendance !== "حضر" && <button className="start-exam-button" onClick={handleStartExam}>
+                   بدء الامتحان
                 </button>
               ) : (
                 <p style={{ color: "red" }}>الامتحان غير متاح حاليًا.</p>

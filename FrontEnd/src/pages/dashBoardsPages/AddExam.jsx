@@ -56,14 +56,14 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
     const examData = {
       title: examDetails.title,
       description: examDetails.description,
-      date: moment.utc(examDetails.date).format("YYYY-MM-DDTHH:mm:ss.SSZ"),
+      date: moment(examDetails.date).format("YYYY-MM-DDTHH:mm"),
       duration: parseInt(examDetails.duration, 10),
       questions,
       stage: examDetails.stage,
       type: examDetails.type,
     };
 
-    console.log("Exam Data Sent:", examData);
+  
 
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -88,7 +88,7 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
         type: "",
       });
       setQuestions([]);
-      console.log("Exam Created Successfully:", response.data);
+    
     } catch (error) {
       console.error("حدث خطأ أثناء إنشاء الامتحان:", error);
       toast.error("حدث خطأ أثناء إنشاء الامتحان. حاول مرة أخرى.");

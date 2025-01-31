@@ -6,10 +6,10 @@ import "./../styles/ExamsSystem.css";
 
 const ExamsSystem = () => {
   const location = useLocation();
-  const examData = location.state?.exam; // استقبال بيانات الامتحان الممررة عبر state
+  const examData = location.state?.exam;
 
-  const [questionsArray] = useState(examData.questions || []); // الأسئلة الممررة
-  const [answers, setAnswers] = useState(examData.questions || []);
+  const [questionsArray] = useState(examData?.questions || []); // الأسئلة الممررة
+  const [answers, setAnswers] = useState(examData?.questions || []);
   const [submitted, setSubmitted] = useState(false);
   const [showResult, setShowResult] = useState(false); // حالة لعرض مكون النتيجة
   const [submissionResult, setSubmissionResult] = useState(null); // لتخزين نتيجة الإرسال
@@ -41,7 +41,7 @@ const ExamsSystem = () => {
         })),
       };
 
-      console.log(examData);
+    
 
       // إرسال الطلب إلى API
       const response = await fetch("http://localhost:8000/exams/submit", {
@@ -66,7 +66,7 @@ const ExamsSystem = () => {
     }
   };
 
-  console.log("answers:", answers);
+
 
   const handleShowResult = () => {
     setShowResult(true); // الانتقال إلى عرض النتيجة
@@ -110,7 +110,7 @@ const ExamsSystem = () => {
                   if (answers[index]?.selectedAnswer === optIndex) {                    
                     optionClass += " exam-option-selected";
                   }
-                  console.log("q", q);
+              
 
                   return (
                     <li key={optIndex} className={optionClass}>

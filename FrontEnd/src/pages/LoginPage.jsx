@@ -36,13 +36,13 @@ const LoginForm = ({ setRole }) => {
       });
 
       const { role, accessToken } = response.data;
-      console.log(response);
+     
 
       // Set role and token in localStorage
       setRole(role);
       localStorage.setItem("role", role);
       localStorage.setItem("accessToken", accessToken);
-      console.log(localStorage.getItem("accessToken"));
+     
 
       // If "Remember Me" is checked, save username and password
       if (rememberMe) {
@@ -86,6 +86,11 @@ const LoginForm = ({ setRole }) => {
           {/* Right Section */}
           <div className="right-side">
             <div className="login-form-container">
+              <img
+                className="leftt-side-image"
+                src={require("./../images/logo.png")}
+                alt=""
+              />
               <h2 className="login-title">تسجيل الدخول</h2>
               <form onSubmit={handleLogin} className="login-form">
                 <div className="input-containerr">

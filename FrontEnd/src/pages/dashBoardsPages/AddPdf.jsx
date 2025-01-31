@@ -78,7 +78,7 @@ const AddPdf = () => {
         file: null,
         stage: "",
       });
-      console.log("API Response:", response.data);
+    
     } catch (error) {
       console.error("Error adding file:", error);
       toast.error(

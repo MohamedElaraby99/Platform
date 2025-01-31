@@ -64,7 +64,7 @@ const AllPDFs = () => {
       return;
     }
 
-    console.log("Starting to edit PDF with ID:", _id);
+  
 
     setEditingPdf(_id);
     setEditData({ ...pdfToEdit });
@@ -88,7 +88,7 @@ const AllPDFs = () => {
       return;
     }
 
-    console.log("Saving changes for PDF ID:", editingPdf);
+  
 
     try {
       const accessToken = localStorage.getItem("accessToken");

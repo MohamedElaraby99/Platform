@@ -46,7 +46,7 @@ const HomePage = () => {
         );
 
         setAnnouncements(response.data); // Set the announcements data
-        console.log(response.data);
+      
         
         setErrorAnnouncements(null); // Clear any errors
       } catch (err) {
