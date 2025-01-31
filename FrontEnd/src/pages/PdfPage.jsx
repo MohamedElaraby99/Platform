@@ -29,7 +29,7 @@ const PdfPage = () => {
     fetchPdfs();
   }, []);
 
-  console.log(pdfFiles);
+ 
   
 
   const handleViewPdf = (url) => {

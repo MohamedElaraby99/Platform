@@ -2,8 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./../styles/ResultComponent.css";
 
-const ResultComponent = ({ questionsArray, answers }) => {
+const ResultComponent = ({ questionsArray, answers, submissionResult }) => {
   const navigate = useNavigate();
+ 
 
   // حساب النتيجة
   const correctAnswersCount = questionsArray.reduce((count, question) => {
@@ -16,7 +17,10 @@ const ResultComponent = ({ questionsArray, answers }) => {
   }, 0);
 
   const totalQuestions = questionsArray.length;
-  const percentage = ((correctAnswersCount / totalQuestions) * 100).toFixed(0);
+  const percentage = (
+    (+submissionResult?.score / totalQuestions) *
+    100
+  ).toFixed(0);
 
   const handleBackToExams = () => {
     navigate("/exams");
@@ -31,7 +35,7 @@ const ResultComponent = ({ questionsArray, answers }) => {
             <div className="circle-inner">{percentage}%</div>
           </div>
           <p className="score-details">
-            أجبت <strong>{correctAnswersCount}</strong> من{" "}
+            أجبت <strong>{submissionResult?.score}</strong> من{" "}
             <strong>{totalQuestions}</strong> إجابة صحيحة
           </p>
         </div>
@@ -39,24 +43,32 @@ const ResultComponent = ({ questionsArray, answers }) => {
 
       <ul className="result-list">
         {questionsArray.map((q, index) => {
-          const correctAnswerIndex = parseInt(q.correctAnswer, 10);
-          const isCorrect = answers[q._id] === correctAnswerIndex;
+          const selectedAnswer =
+            answers[index]?.options[answers[index]?.selectedAnswer];
+          const correctAnswerIndex = +q.correctAnswer;
+          const isCorrect =
+            +answers[index]?.selectedAnswer === +correctAnswerIndex;
+
+      
+         
 
           return (
             <li key={q._id} className="result-item">
               <p className="result-question">
-                <strong>السؤال {index + 1}:</strong> {q.text}
+                <strong>السؤال {index + 1}:</strong> {q.question}
               </p>
               <p className={`result-answer ${isCorrect ? "correct" : "wrong"}`}>
-                <strong>إجابتك:</strong>{" "}
-                {q.options[answers[q._id]] || (
+                <strong>إجابتك:</strong>
+                {selectedAnswer || (
                   <span className="not-answered">لم يتم الإجابة</span>
                 )}
               </p>
-              <p className="result-correct-answer">
-                <strong>الإجابة الصحيحة:</strong>{" "}
-                {q.options[correctAnswerIndex]}
-              </p>
+              {!isCorrect && (
+                <p className="result-correct-answer">
+                  <strong>الإجابة الصحيحة:</strong>
+                  {q.options[correctAnswerIndex]}
+                </p>
+              )}
               {!isCorrect && q.why && (
                 <p className="result-explanation">
                   <strong>التعليل:</strong> {q.why}

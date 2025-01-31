@@ -46,6 +46,7 @@ const HomePage = () => {
         );
 
         setAnnouncements(response.data); // Set the announcements data
+
         setErrorAnnouncements(null); // Clear any errors
       } catch (err) {
         setErrorAnnouncements("حدث خطأ أثناء تحميل الإعلانات."); // Handle errors
@@ -111,12 +112,11 @@ const HomePage = () => {
           <p className="error-message">{errorVideos}</p>
         ) : (
           <div className="videos-grid">
-            {videos.map((video) => {
-              const videoId = extractVideoId(video.lesson_link); // Extract video ID
+            {videos?.slice(0, 5)?.map((video) => {
+              const videoId = extractVideoId(video.lesson_link);
               const thumbnailUrl = videoId
                 ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
                 : null;
-
               return (
                 <div
                   className="video-container"
@@ -140,32 +140,6 @@ const HomePage = () => {
         <p className="view-all-videos">
           <Link to="/courses" className="view-all-videos">
             مشاهدة كل الفيديوهات التعليمية
-          </Link>
-        </p>
-      </section>
-
-      {/* Upcoming Exams Section */}
-      <section className="section exams-section">
-        <h2>
-          <span className="material-icons">edit</span>
-          الامتحانات القادمة
-        </h2>
-        <p className="view-all-videos">
-          <Link to="/exams" className="view-all-videos">
-            مشاهدة كل الامتحانات والتدريبات
-          </Link>
-        </p>
-      </section>
-
-      {/* PDF Downloads Section */}
-      <section className="section pdf-section">
-        <h2>
-          <span className="material-icons">picture_as_pdf</span>
-          ملفات PDF للتنزيل
-        </h2>
-        <p className="view-all-videos">
-          <Link to="/pdf" className="view-all-videos">
-            مشاهدة كل الملفات PDF
           </Link>
         </p>
       </section>

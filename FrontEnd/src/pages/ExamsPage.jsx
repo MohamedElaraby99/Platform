@@ -26,7 +26,7 @@ const ExamsPage = () => {
         }
 
         const data = await response.json();
-        console.log("Fetched data:", data); // Debug API data
+     
         setExams(data);
         setFilteredExams(data); // Show all exams initially
         setLoading(false);
@@ -51,9 +51,11 @@ const ExamsPage = () => {
       );
     }
 
-    console.log("Filtered exams by type:", filtered); // Debug filtered exams
+  
     setFilteredExams(filtered);
   }, [selectedType, exams]);
+
+
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
@@ -79,8 +81,8 @@ const ExamsPage = () => {
       </div>
 
       <div className="exams-container">
-        {filteredExams.map((exam) => (
-          <div key={exam._id} className="exam-card">
+        {filteredExams.map((exam) => {
+          return <div key={exam._id} className="exam-card">
             <h3>{exam.title}</h3>
             <p>التاريخ: {new Date(exam.date).toLocaleString()}</p>
             <p>
@@ -92,7 +94,7 @@ const ExamsPage = () => {
             </p>
             {exam.status === "متاح" && (
               <Link
-                to={`/exams/details/${exam._id}`}
+                to={`/exams/details/${exam?.id}`}
                 className="exam-button"
                 state={{ exam }}
               >
@@ -106,7 +108,7 @@ const ExamsPage = () => {
             )}
             {exam.status === "انتهى" && (
               <Link
-                to={`/exams/details/${exam._id}`}
+                to={`/exams/details/${exam?.id}`}
                 className="exam-button"
                 state={{ exam }}
               >
@@ -114,7 +116,7 @@ const ExamsPage = () => {
               </Link>
             )}
           </div>
-        ))}
+        })}
       </div>
     </div>
   );

@@ -72,7 +72,7 @@ const AddUser = () => {
         stage: "",
       });
 
-      console.log("API Response:", response.data);
+  
     } catch (error) {
       // معالجة الأخطاء
       console.error("Error adding user:", error);

@@ -90,11 +90,7 @@ const AllPostsComponent = () => {
     const accessToken = localStorage.getItem("accessToken");
 
     try {
-      console.log("Updating post:", editingPost._id, {
-        title: editTitle,
-        description: editContent,
-        stage: editStages,
-      });
+      
 
       // Update the announcement on the server
       const response = await axios.put(
