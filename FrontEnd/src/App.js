@@ -35,47 +35,47 @@ const App = () => {
   const [role, setRole] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // إضافة وظائف منع أدوات المطور
-  useEffect(() => {
-    // منع النقر الأيمن
-    const handleContextMenu = (e) => {
-      e.preventDefault();
-      return false;
-    };
+  // // إضافة وظائف منع أدوات المطور
+  // useEffect(() => {
+  //   // منع النقر الأيمن
+  //   const handleContextMenu = (e) => {
+  //     e.preventDefault();
+  //     return false;
+  //   };
 
-    // منع اختصارات لوحة المفاتيح
-    const handleKeyDown = (e) => {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && e.key === "I") || // Ctrl+Shift+I
-        (e.ctrlKey && e.shiftKey && e.key === "J") || // Ctrl+Shift+J
-        (e.ctrlKey && e.key === "U") // Ctrl+U
-      ) {
-        e.preventDefault();
-        alert("غير مسموح بفتح أدوات المطور!");
-      }
-    };
+  //   // منع اختصارات لوحة المفاتيح
+  //   const handleKeyDown = (e) => {
+  //     if (
+  //       e.key === "F12" ||
+  //       (e.ctrlKey && e.shiftKey && e.key === "I") || // Ctrl+Shift+I
+  //       (e.ctrlKey && e.shiftKey && e.key === "J") || // Ctrl+Shift+J
+  //       (e.ctrlKey && e.key === "U") // Ctrl+U
+  //     ) {
+  //       e.preventDefault();
+  //       alert("غير مسموح بفتح أدوات المطور!");
+  //     }
+  //   };
 
-    // اكتشاف فتح الأدوات
-    const checkDevTools = () => {
-      const widthThreshold = window.outerWidth - window.innerWidth > 160;
-      const heightThreshold = window.outerHeight - window.innerHeight > 160;
-      if (widthThreshold || heightThreshold) {
-        window.location.href = "/blocked";
-      }
-    };
+  //   // اكتشاف فتح الأدوات
+  //   const checkDevTools = () => {
+  //     const widthThreshold = window.outerWidth - window.innerWidth > 160;
+  //     const heightThreshold = window.outerHeight - window.innerHeight > 160;
+  //     if (widthThreshold || heightThreshold) {
+  //       window.location.href = "/blocked";
+  //     }
+  //   };
 
 
-    document.addEventListener("contextmenu", handleContextMenu);
-    document.addEventListener("keydown", handleKeyDown);
-    const devToolsCheckInterval = setInterval(checkDevTools, 1000);
+  //   document.addEventListener("contextmenu", handleContextMenu);
+  //   document.addEventListener("keydown", handleKeyDown);
+  //   const devToolsCheckInterval = setInterval(checkDevTools, 1000);
 
-    return () => {
-      document.removeEventListener("contextmenu", handleContextMenu);
-      document.removeEventListener("keydown", handleKeyDown);
-      clearInterval(devToolsCheckInterval);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("contextmenu", handleContextMenu);
+  //     document.removeEventListener("keydown", handleKeyDown);
+  //     clearInterval(devToolsCheckInterval);
+  //   };
+  // }, []);
 
   useEffect(() => {
     const savedRole = localStorage.getItem("role");
