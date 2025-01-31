@@ -44,7 +44,7 @@ const ExamsSystem = () => {
       console.log(examData);
 
       // إرسال الطلب إلى API
-      const response = await fetch("http://localhost:8000/exams/submit", {
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/exams/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

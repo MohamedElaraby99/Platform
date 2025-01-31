@@ -26,7 +26,7 @@ const Dashboard = () => {
     const fetchUsers = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة من Local Storage
-        const response = await axios.get("http://localhost:8000/users", {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users`, {
           headers: {
             Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
           },
@@ -45,7 +45,7 @@ const Dashboard = () => {
     const fetchLessons = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة من Local Storage
-        const response = await axios.get("http://localhost:8000/lessons", {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons`, {
           headers: {
             Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
           },
@@ -65,7 +65,7 @@ const Dashboard = () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة من Local Storage
         const response = await axios.get(
-          "http://localhost:8000/announcements",
+          `${process.env.REACT_APP_BASE_URL}/announcements`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
@@ -85,7 +85,7 @@ const Dashboard = () => {
     const fetchExams = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get("http://localhost:8000/files", {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/files`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -104,7 +104,7 @@ const Dashboard = () => {
     const fetchFiles = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get("http://localhost:8000/exams", {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/exams`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

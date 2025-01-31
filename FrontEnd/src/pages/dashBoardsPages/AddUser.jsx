@@ -56,7 +56,7 @@ const AddUser = () => {
     try {
       // إرسال الطلب إلى الـ API
       const response = await axios.post(
-        "http://localhost:8000/auth/register",
+        `${process.env.REACT_APP_BASE_URL}/auth/register`,
         requestData
       );
 

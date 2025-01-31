@@ -19,7 +19,7 @@ const AllVideos = () => {
           throw new Error("Access token is missing.");
         }
 
-        const response = await axios.get("http://localhost:8000/lessons", {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -46,7 +46,7 @@ const AllVideos = () => {
     if (confirmDelete) {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        await axios.delete(`http://localhost:8000/lessons/${id}`, {
+        await axios.delete(`${process.env.REACT_APP_BASE_URL}/lessons/${id}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -67,7 +67,7 @@ const AllVideos = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://localhost:8000/lessons/${editingVideo._id}`,
+        `${process.env.REACT_APP_BASE_URL}/lessons/${editingVideo._id}`,
         editingVideo,
         {
           headers: {

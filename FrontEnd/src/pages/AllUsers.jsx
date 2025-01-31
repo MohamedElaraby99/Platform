@@ -23,7 +23,7 @@ const AllUsers = () => {
     const fetchUsers = async () => {
       const accessToken = localStorage.getItem("accessToken");
       try {
-        const response = await axios.get("http://localhost:8000/users", {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUsers(response.data);
@@ -61,7 +61,7 @@ const AllUsers = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://localhost:8000/users/${editingUser._id}`,
+        `${process.env.REACT_APP_BASE_URL}/users/${editingUser._id}`,
         editData,
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -81,7 +81,7 @@ const AllUsers = () => {
     if (window.confirm("هل أنت متأكد من حذف هذا المستخدم؟")) {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        await axios.delete(`http://localhost:8000/users/${id}`, {
+        await axios.delete(`${process.env.REACT_APP_BASE_URL}/users/${id}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUsers(users.filter((user) => user._id !== id));

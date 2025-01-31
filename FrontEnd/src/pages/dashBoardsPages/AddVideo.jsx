@@ -49,7 +49,7 @@ const AddVideo = () => {
       setMessage("");
 
       const accessToken = localStorage.getItem("accessToken"); // جلب التوكن من LocalStorage
-      await axios.post("http://localhost:8000/lessons", requestData, {
+      await axios.post(`${process.env.REACT_APP_BASE_URL}/lessons`, requestData, {
         headers: {
           Authorization: `Bearer ${accessToken}`, // تضمين التوكن في الرؤوس
         },

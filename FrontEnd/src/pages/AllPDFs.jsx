@@ -17,7 +17,7 @@ const AllPDFs = () => {
     const fetchPdfs = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get("http://localhost:8000/files", {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/files`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -39,7 +39,7 @@ const AllPDFs = () => {
     if (confirmDelete) {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        await axios.delete(`http://localhost:8000/files/${_id}`, {
+        await axios.delete(`${process.env.REACT_APP_BASE_URL}/files/${_id}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -94,7 +94,7 @@ const AllPDFs = () => {
       const accessToken = localStorage.getItem("accessToken");
 
       const response = await axios.put(
-        `http://localhost:8000/files/${editingPdf}`,
+        `${process.env.REACT_APP_BASE_URL}/files/${editingPdf}`,
         {
           title: editData.title,
           stage: editData.stage,

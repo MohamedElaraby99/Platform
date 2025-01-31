@@ -17,7 +17,7 @@ const CoursesPage = () => {
     const fetchVideos = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة
-        const response = await axios.get("http://localhost:8000/lessons", {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons`, {
           headers: {
             Authorization: `Bearer ${accessToken}`, // تضمين التوكن
           },

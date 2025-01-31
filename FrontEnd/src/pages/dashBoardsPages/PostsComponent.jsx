@@ -37,7 +37,7 @@ const CreatePostComponent = () => {
 
     try {
       // Send POST request to API
-      await axios.post("http://localhost:8000/announcements", newPost, {
+      await axios.post(`${process.env.REACT_APP_BASE_URL}/announcements`, newPost, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",

@@ -15,7 +15,7 @@ const ExamsPage = () => {
       try {
         setLoading(true);
         const accessToken = localStorage.getItem("accessToken");
-        const response = await fetch("http://localhost:8000/exams", {
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/exams`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

@@ -32,7 +32,7 @@ const AllPostsComponent = () => {
 
       try {
         const response = await axios.get(
-          "http://localhost:8000/announcements",
+          `${process.env.REACT_APP_BASE_URL}/announcements`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -98,7 +98,7 @@ const AllPostsComponent = () => {
 
       // Update the announcement on the server
       const response = await axios.put(
-        `http://localhost:8000/announcements/${editingPost._id}`,
+        `${process.env.REACT_APP_BASE_URL}/announcements/${editingPost._id}`,
         {
           title: editTitle,
           description: editContent,
@@ -162,7 +162,7 @@ const AllPostsComponent = () => {
 
       try {
         // Delete the announcement from the server
-        await axios.delete(`http://localhost:8000/announcements/${id}`, {
+        await axios.delete(`${process.env.REACT_APP_BASE_URL}/announcements/${id}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

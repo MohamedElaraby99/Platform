@@ -18,7 +18,7 @@ const HomePage = () => {
     const fetchVideos = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // Get the token
-        const response = await axios.get("http://localhost:8000/lessons", {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons`, {
           headers: {
             Authorization: `Bearer ${accessToken}`, // Include the token
           },
@@ -37,7 +37,7 @@ const HomePage = () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // Get the token
         const response = await axios.get(
-          "http://localhost:8000/announcements",
+          `${process.env.REACT_APP_BASE_URL}/announcements`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`, // Include the token

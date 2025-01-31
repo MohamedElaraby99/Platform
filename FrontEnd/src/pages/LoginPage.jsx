@@ -30,7 +30,7 @@ const LoginForm = ({ setRole }) => {
     e.preventDefault();
     try {
       // Make the API request to the login endpoint
-      const response = await axios.post("http://localhost:8000/auth/login", {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/login`, {
         username: userName,
         password: password,
       });

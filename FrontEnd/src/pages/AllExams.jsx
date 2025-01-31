@@ -19,7 +19,7 @@ const AllExams = () => {
       setLoading(true);
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const url = `http://localhost:8000/exams/submit/?stage=${encodeURIComponent(
+        const url = `${process.env.REACT_APP_BASE_URL}/exams/submit/?stage=${encodeURIComponent(
           selectedStage
         )}`;
         const response = await axios.get(url, {
@@ -62,7 +62,7 @@ const AllExams = () => {
     if (confirmDelete) {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        await axios.delete(`http://localhost:8000/exams/${id}`, {
+        await axios.delete(`${process.env.REACT_APP_BASE_URL}/exams/${id}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setExams(exams.filter((exam) => exam.examId !== id));

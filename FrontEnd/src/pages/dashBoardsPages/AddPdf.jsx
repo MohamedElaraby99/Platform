@@ -59,7 +59,7 @@ const AddPdf = () => {
     try {
       // إرسال الطلب إلى الـ API
       const response = await axios.post(
-        "http://localhost:8000/files",
+        `${process.env.REACT_APP_BASE_URL}/files`,
         formData,
         {
           headers: {

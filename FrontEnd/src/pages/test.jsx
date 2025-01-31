@@ -3,7 +3,7 @@
 //   try {
 //     const accessToken = localStorage.getItem("accessToken");
 //     const response = await axios.get(
-//       `http://localhost:8000/exams/${examId}/students`,
+//       `${process.env.REACT_APP_BASE_URL}/exams/${examId}/students`,
 //       {
 //         headers: {
 //           Authorization: `Bearer ${accessToken}`,

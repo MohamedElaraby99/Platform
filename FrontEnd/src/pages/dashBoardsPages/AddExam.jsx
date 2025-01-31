@@ -68,7 +68,7 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.post(
-        "http://localhost:8000/exams",
+        `${process.env.REACT_APP_BASE_URL}/exams`,
         examData,
         {
           headers: {

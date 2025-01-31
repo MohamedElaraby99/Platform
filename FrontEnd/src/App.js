@@ -47,6 +47,8 @@ const App = () => {
     setRole(null); // إعادة تعيين الدور
   };
 
+  console.log("Base URL:", `${process.env.REACT_APP_BASE_URL}`);
+
   return (
     <Router>
       <ScrollToTop />
@@ -67,11 +69,11 @@ const App = () => {
               <Route path="/exams" element={<ExamsPage />} />
               <Route path="/exams/details/:id" element={<ExamDetails />} />
               <Route path="/exams/start/:id" element={<ExamsSystem />} />
-                  <Route path="/pdf" element={<PdfPage />} />
+              <Route path="/pdf" element={<PdfPage />} />
               <Route path="/about" element={<About />} />
               <Route
                 path="/user"
-                element={<UserPage onSignOut={handleSignOut}/>}
+                element={<UserPage onSignOut={handleSignOut} />}
               />
               <Route path="/add-user" element={<AddUser />} />
               <Route path="/add-video" element={<AddVideo />} />
@@ -84,10 +86,7 @@ const App = () => {
               <Route path="/all-pdfs" element={<AllPdfs />} />
               <Route path="/all-posts" element={<AllPostsComponent />} />
               {role === "admin" && (
-                <Route
-                  path="/dashboard"
-                  element={<DashboardPage />}
-                />
+                <Route path="/dashboard" element={<DashboardPage />} />
               )}
               <Route path="*" element={<Navigate to="/home" />} />
             </Routes>
