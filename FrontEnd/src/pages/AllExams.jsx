@@ -21,7 +21,7 @@ const AllExams = () => {
         const accessToken = localStorage.getItem("accessToken");
         const url = `${
           process.env.REACT_APP_BASE_URL
-        }/exams/submit/?stage=${encodeURIComponent(selectedStage)}`;
+        }/exams/submit/?stage=${selectedStage}`;
 
         const response = await axios.get(url, {
           headers: { Authorization: `Bearer ${accessToken}` },
