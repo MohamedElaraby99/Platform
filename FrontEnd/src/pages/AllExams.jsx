@@ -19,11 +19,13 @@ const AllExams = () => {
       setLoading(true);
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const url = `${process.env.REACT_APP_BASE_URL}/exams/submit/?stage=${encodeURIComponent(
-          selectedStage
-        )}`;
+        const url = `${
+          process.env.REACT_APP_BASE_URL
+        }/exams/submit/?stage=${encodeURIComponent(selectedStage)}`;
+
         const response = await axios.get(url, {
           headers: { Authorization: `Bearer ${accessToken}` },
+          role: "admin",
         });
         setExams(response.data || []);
         setFilteredExams(response.data || []);
@@ -37,7 +39,6 @@ const AllExams = () => {
     fetchExams();
   }, [selectedStage]);
 
-  // فلترة الامتحانات بناءً على البحث
   useEffect(() => {
     const filtered = exams.filter((exam) =>
       exam.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -64,6 +65,7 @@ const AllExams = () => {
         const accessToken = localStorage.getItem("accessToken");
         await axios.delete(`${process.env.REACT_APP_BASE_URL}/exams/${id}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
+          role: "admin",
         });
         setExams(exams.filter((exam) => exam.examId !== id));
         toast.success("تم حذف الامتحان بنجاح!");
@@ -73,7 +75,6 @@ const AllExams = () => {
       }
     }
   };
-
 
   return (
     <div className="all-exams-container">
@@ -85,9 +86,7 @@ const AllExams = () => {
           onChange={handleStageChange}
           className="stage-dropdown"
         >
-          <option value="">
-            اختر المرحلة الدراسية
-          </option>
+          <option value="" disabled>اختر المرحلة الدراسية</option>
           <option value="أولى ثانوي">أولى ثانوي</option>
           <option value="ثانية ثانوي">ثانية ثانوي</option>
           <option value="ثالثة ثانوي">ثالثة ثانوي</option>
@@ -111,8 +110,8 @@ const AllExams = () => {
                 <tr>
                   <th>اسم الامتحان</th>
                   <th>تاريخ الامتحان</th>
-                    <th>وقت الامتحان</th>
-                    <th>نوع الامتحان </th>
+                  <th>وقت الامتحان</th>
+                  <th>نوع الامتحان </th>
                   <th>مدة الامتحان (دقائق)</th>
                   <th>حالة الامتحان</th>
                   <th>الإجراءات</th>

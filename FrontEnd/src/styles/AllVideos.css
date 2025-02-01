@@ -166,3 +166,20 @@
   align-items: center;
   gap: 10px;
 }
+
+
+@media screen and (max-width: 768px) {
+  .videos-table th,
+  .videos-table td {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+
+  .all-videos-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .all-videos-container {
+    padding: 10px;
+  }
+}
