@@ -160,7 +160,7 @@
   transform: scale(0.95);
 }
 
-.actions:active {
+.actionss:active {
   display: flex;
   justify-content: center;
   align-items: center;

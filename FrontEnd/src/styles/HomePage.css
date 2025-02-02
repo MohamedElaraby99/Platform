@@ -13,6 +13,22 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.announcement-title {
+  font-family: "Cairo", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+  color: #a51600;
+}
+
+.announcement-description {
+  font-family: "Cairo", sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  color: #000000;
+}
+
 .view-all-videos {
   text-align: center;
   color: #0b8eba;
@@ -71,7 +87,6 @@
   margin-top: 0.5rem;
 }
 
-
 /* Videos Section */
 .videos-grid {
   display: grid;
@@ -107,7 +122,8 @@
   height: 0;
   padding-bottom: 56.25%;
   /*Aspectratio16:;
-  9*/background-color: #000;
+  9*/
+  background-color: #000;
   border-radius: 20px;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
@@ -128,7 +144,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 30%; 
+  height: 30%;
   background: rgba(0, 0, 0, 0);
   pointer-events: all;
   z-index: 2;
@@ -137,7 +153,6 @@
 .fullscreen-button:hover {
   background-color: #16a085;
 }
-
 
 /* Upcoming Exams Section */
 .exam-list {
