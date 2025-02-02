@@ -353,8 +353,9 @@ const getExamDataForAdmin = async (req, res) => {
     }
 
     // Fetch all exams for the given stage
-    const exams = await Exam.find({ stage }).lean();
-
+    const exams = await Exam.find({ stage }).lean();	
+console.log(exams)
+console.log(exams.length)
     if (exams.length === 0) {
       return res.status(200).json({ message: "No exams found for this stage" });
     }
