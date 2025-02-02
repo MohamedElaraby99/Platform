@@ -13,12 +13,18 @@ const PdfPage = () => {
     const fetchPdfs = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // تأكد من وجود التوكن
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/files`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // تضمين التوكن في الطلب
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/files`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, // تضمين التوكن في الطلب
+            },
+          }
+        );
         setPdfFiles(response.data); // تخزين الملفات
+        console.log(response.data[0]?.file.split("/uploads/")[1]);
+        console.log(response.data);
+
         setLoading(false);
       } catch (err) {
         setError("حدث خطأ أثناء تحميل الملفات.");
@@ -28,9 +34,6 @@ const PdfPage = () => {
 
     fetchPdfs();
   }, []);
-
- 
-  
 
   const handleViewPdf = (url) => {
     // فتح نافذة جديدة للعرض
@@ -83,7 +86,11 @@ const PdfPage = () => {
             <h3>{pdf.title}</h3>
             <div className="pdf-actions">
               <button
-                onClick={() => handleViewPdf(pdf.file)}
+                onClick={() =>
+                  handleViewPdf(
+                    process.env.REACT_APP_PDF + pdf.file.split("/uploads/")[1]
+                  )
+                }
                 className="pdf-button"
               >
                 عرض الملف

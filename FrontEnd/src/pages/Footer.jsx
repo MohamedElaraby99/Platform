@@ -75,7 +75,7 @@ const Footer = () => {
               />
             </a>
             <a
-              href="https://www.youtube.com"
+              href="https://www.youtube.com/@%D8%A7%D9%84%D8%AA%D9%88%D9%83%D9%84-90"
               target="_blank"
               rel="noopener noreferrer"
               className="social-link"

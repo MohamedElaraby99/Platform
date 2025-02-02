@@ -224,3 +224,35 @@
 .view-students-button:hover {
   background-color: #2980b9;
 }
+
+@media screen and (max-width: 768px) {
+  .exams-table th,
+  .exams-table td {
+    font-size: 0.8rem;
+  }
+
+  .modal-content {
+    width: 80%;
+  }
+
+  .exams-table {
+    font-size: 0.8rem;
+  }
+}
+
+@media  screen and (max-width: 480px) {
+  .exams-table th,
+  .exams-table td {
+    font-size: 0.6rem;
+  }
+
+  .modal-content {
+    width: 80%;
+  }
+
+  .exams-table {
+    font-size: 0.6rem;
+  }
+
+  
+}

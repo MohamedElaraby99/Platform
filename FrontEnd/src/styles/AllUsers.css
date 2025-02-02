@@ -158,6 +158,24 @@ select.edit-select:focus {
   }
 }
 
+@media (max-width: 480px) {
+  table th,
+  table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  button {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  .search-container input,
+  .search-container select {
+    font-size: 12px;
+  }
+}
+
 .cancel-button {
   background-color: #f44336;
   color: white;
