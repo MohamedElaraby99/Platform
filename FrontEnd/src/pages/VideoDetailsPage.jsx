@@ -11,6 +11,8 @@ const VideoDetailsPage = () => {
   const [quality, setQuality] = useState("auto");
   const [volume, setVolume] = useState(50);
   const [isRotated, setIsRotated] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
   const videoContainerRef = useRef(null);
   const playerRef = useRef(null);
 
@@ -26,17 +28,38 @@ const VideoDetailsPage = () => {
 
   useEffect(() => {
     if (window.YT && window.YT.Player) {
-      playerRef.current = new window.YT.Player("youtube-player");
+      playerRef.current = new window.YT.Player("youtube-player", {
+        events: {
+          onReady: onPlayerReady,
+          onStateChange: onPlayerStateChange,
+        },
+      });
     } else {
       const tag = document.createElement("script");
       tag.src = "https://www.youtube.com/iframe_api";
       document.body.appendChild(tag);
 
       window.onYouTubeIframeAPIReady = () => {
-        playerRef.current = new window.YT.Player("youtube-player");
+        playerRef.current = new window.YT.Player("youtube-player", {
+          events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+          },
+        });
       };
     }
   }, []);
+
+  const onPlayerReady = (event) => {
+    setDuration(event.target.getDuration());
+    setInterval(() => {
+      setProgress(event.target.getCurrentTime());
+    }, 1000);
+  };
+
+  const onPlayerStateChange = (event) => {
+    setIsPlaying(event.data === window.YT.PlayerState.PLAYING);
+  };
 
   const handleFullscreenToggle = () => {
     const container = videoContainerRef.current;
@@ -87,6 +110,20 @@ const VideoDetailsPage = () => {
     }
   };
 
+  const handleTimelineChange = (event) => {
+    const newTime = event.target.value;
+    setProgress(newTime);
+    if (playerRef.current) {
+      playerRef.current.seekTo(newTime, true);
+    }
+  };
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
   if (!video) {
     return <p>لا يوجد فيديو لعرضه.</p>;
   }
@@ -113,8 +150,20 @@ const VideoDetailsPage = () => {
               className={`video-player ${isFullscreen ? "fullscreen" : ""}`}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             ></iframe>
+            <div className="video-con">
+              <div className="timeline-container">
+              <span>{formatTime(progress)}</span>
+              <input
+                type="range"
+                className="timeline-slider"
+                min="0"
+                max={duration}
+                value={progress}
+                onChange={handleTimelineChange}
+              />
+              <span>{formatTime(duration)}</span>
+            </div>
 
-            {/* ✅ شريط التحكم أسفل الفيديو */}
             <div className="video-controls">
               <button className="control-button" onClick={handlePlayPause}>
                 {isPlaying ? "⏸️ إيقاف" : "▶️ تشغيل"}
@@ -150,7 +199,6 @@ const VideoDetailsPage = () => {
                 {isFullscreen ? "🔲 تصغير" : "⛶ تكبير"}
               </button>
 
-              {/* ✅ زر قلب الشاشة يظهر فقط على الموبايل أو التابلت */}
               <button
                 className="control-button rotate-button"
                 onClick={handleRotateScreen}
@@ -158,6 +206,8 @@ const VideoDetailsPage = () => {
                 🔄 قلب الشاشة
               </button>
             </div>
+            </div>
+            
           </div>
 
           <div className="video-description-container">

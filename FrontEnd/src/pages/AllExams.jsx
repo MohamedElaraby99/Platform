@@ -19,9 +19,7 @@ const AllExams = () => {
       setLoading(true);
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const url = `${
-          process.env.REACT_APP_BASE_URL
-        }/exams/submit/?stage=${selectedStage}`;
+        const url = `${process.env.REACT_APP_BASE_URL}/exams/submit/?stage=${selectedStage}`;
 
         const response = await axios.get(url, {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -45,6 +43,10 @@ const AllExams = () => {
     );
     setFilteredExams(filtered);
   }, [searchTerm, exams]);
+
+  useEffect(() => {
+    setSelectedExam(null); // إغلاق جدول النتائج عند تغيير المرحلة
+  }, [selectedStage]);
 
   const handleSearch = (e) => setSearchTerm(e.target.value);
 
@@ -86,7 +88,9 @@ const AllExams = () => {
           onChange={handleStageChange}
           className="stage-dropdown"
         >
-          <option value="" disabled>اختر المرحلة الدراسية</option>
+          <option value="" disabled>
+            اختر المرحلة الدراسية
+          </option>
           <option value="أولى ثانوي">أولى ثانوي</option>
           <option value="ثانية ثانوي">ثانية ثانوي</option>
           <option value="ثالثة ثانوي">ثالثة ثانوي</option>
