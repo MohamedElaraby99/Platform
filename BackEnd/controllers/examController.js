@@ -357,7 +357,7 @@ const getExamDataForAdmin = async (req, res) => {
 console.log(exams)
 console.log(exams.length)
     if (exams.length === 0) {
-      return res.status(200).json({ exams });
+      return res.status(200).json([]);
     }
 
     // Fetch all students in the given stage
