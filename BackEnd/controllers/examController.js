@@ -353,9 +353,9 @@ const getExamDataForAdmin = async (req, res) => {
     }
 
     // Fetch all exams for the given stage
-    const exams = await Exam.find({ stage }).lean();	
-console.log(exams)
-console.log(exams.length)
+    const exams = await Exam.find({ stage }).lean();
+    console.log(exams);
+    console.log(exams.length);
     if (exams.length === 0) {
       return res.status(200).json([]);
     }
@@ -363,11 +363,6 @@ console.log(exams.length)
     // Fetch all students in the given stage
     const students = await User.find({ stage }).lean();
 
-    if (students?.length === 0) {
-      return res
-        .status(200)
-        .json({ message: "No students found for this stage" });
-    }
     // if (students.length === 0) {
     //   return res
     //     .status(404)
