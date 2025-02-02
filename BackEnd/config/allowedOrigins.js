@@ -1,3 +1,3 @@
-const allowedOrigins = ["https://tawakol.live"];
+const allowedOrigins = ["https://tawakol.live", "http://localhost:3000"];
 
 module.exports = allowedOrigins;

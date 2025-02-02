@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./../styles/Layout.css";
 
@@ -7,9 +7,40 @@ const Layout = ({ children, role, onSignOut }) => {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const toggleSidebar = useCallback(() => {
+    setIsSidebarOpen((prevState) => !prevState);
+  }, []);
+
+  // إدارة حالة التمرير
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
+  }, [isSidebarOpen]);
+
+  // إغلاق القائمة عند النقر خارجها
+  const handleClickOutside = useCallback(
+    (e) => {
+      if (
+        isSidebarOpen &&
+        !e.target.closest(".sidebar") &&
+        !e.target.closest(".burger-menu")
+      ) {
+        setIsSidebarOpen(false);
+      }
+    },
+    [isSidebarOpen]
+  );
+
+  // إضافة/إزالة مستمع الأحداث
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [handleClickOutside]);
 
   return (
     <div className={`layout ${isSidebarOpen ? "menu-open" : ""}`}>
@@ -46,11 +77,9 @@ const Layout = ({ children, role, onSignOut }) => {
         </div>
       </header>
 
-      {/* ✅ إضافة الـ Overlay عند فتح القائمة الجانبية */}
       {isSidebarOpen && <div className="overlay" onClick={toggleSidebar}></div>}
 
-      <main className="main-content">
-        {/* Sidebar */}
+      <main className={`main-content ${isSidebarOpen ? "blur-effect" : ""}`}>
         <aside className={`sidebar ${isSidebarOpen ? "open" : "closed"}`}>
           <ul>
             <li className={location.pathname === "/home" ? "active" : ""}>
@@ -94,7 +123,11 @@ const Layout = ({ children, role, onSignOut }) => {
           </ul>
         </aside>
 
-        <div className="page-content">{children}</div>
+        <div className="page-content">
+          <div className={` ${isSidebarOpen ? "content-top-open" : "content-top"}`}>
+            {children}
+          </div>
+        </div>
       </main>
     </div>
   );
