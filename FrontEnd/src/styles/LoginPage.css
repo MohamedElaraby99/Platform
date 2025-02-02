@@ -101,29 +101,26 @@
 
 .login-title {
   font-family: "cairo", sans-serif;
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
+  font-size: larger;
+  font-weight: 700;
   color: #ffffff;
   text-align: center;
 }
 
 /* Input container styles */
 .input-containerr {
-  margin-bottom: 1.5rem;
-  margin-top: 0.5rem;
+  margin-bottom: 2px;
 }
 
 .input-containerr label {
   font-family: "cairo", sans-serif;
   display: block;
   font-weight: bold;
-  margin-bottom: 0.5rem;
   color: #ffffff;
 }
 
 .input-containerr input {
-  width: 90%;
+  width: 88%;
   padding: 0.75rem;
   font-size: 1rem;
   border: 1px solid #ddd;
@@ -163,9 +160,8 @@
 .toggle-password-buttonn {
   position: absolute;
   width: 40px;
-  top: 50%;
-  left: 20px; /* Position the button inside the input field */
-  transform: translateY(-50%);
+  top: 20%;
+  left: 7px; /* Position the button inside the input field */
   background: none;
   border: none;
   cursor: pointer;
@@ -174,13 +170,9 @@
 }
 
 .toggle-password-buttonn:hover {
-  transform: translateY(-12px);
   width: 40px;
   color: #4db5ff;
-  -webkit-transform: translateY(-12px);
-  -moz-transform: translateY(-12px);
-  -ms-transform: translateY(-12px);
-  -o-transform: translateY(-12px);
+  
 }
 
 /* Error message styles */
@@ -206,6 +198,7 @@
   color: #ffffff;
   gap: 0.5rem;
   cursor: pointer;
+  margin-bottom: 0;
 }
 
 .remember-me input {
@@ -216,8 +209,6 @@
 /* Login button */
 .login-button {
   font-family: "cairo", sans-serif;
-  width: 50%;
-  padding: 0.75rem;
   font-size: 1rem;
   background: #052a45;
   color: white;
@@ -287,7 +278,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    
     display: block;
     width: 200px;
     height: auto;
@@ -300,9 +290,8 @@
   .right-side {
     flex: 2;
     width: 100%;
-    padding: 1.5rem;
+    padding: 1rem;
     flex: 1 1 90%;
-    margin-top: 50px;
   }
 }
 

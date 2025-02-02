@@ -8,11 +8,12 @@ const VideoDetailsPage = () => {
   const [video] = useState(state?.video);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [quality, setQuality] = useState("auto");
+  const [quality, setQuality] = useState("large");
   const [volume, setVolume] = useState(50);
   const [isRotated, setIsRotated] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [speed, setSpeed] = useState(1);
   const videoContainerRef = useRef(null);
   const playerRef = useRef(null);
 
@@ -110,6 +111,15 @@ const VideoDetailsPage = () => {
     }
   };
 
+  // Added speed change handler
+  const handleSpeedChange = (event) => {
+    const newSpeed = parseFloat(event.target.value);
+    setSpeed(newSpeed);
+    if (playerRef.current) {
+      playerRef.current.setPlaybackRate(newSpeed);
+    }
+  };
+
   const handleTimelineChange = (event) => {
     const newTime = event.target.value;
     setProgress(newTime);
@@ -129,6 +139,8 @@ const VideoDetailsPage = () => {
   }
 
   const videoEmbedUrl = extractEmbedUrl(video?.lesson_link);
+
+  
 
   return (
     <div
@@ -152,62 +164,73 @@ const VideoDetailsPage = () => {
             ></iframe>
             <div className="video-con">
               <div className="timeline-container">
-              <span>{formatTime(progress)}</span>
-              <input
-                type="range"
-                className="timeline-slider"
-                min="0"
-                max={duration}
-                value={progress}
-                onChange={handleTimelineChange}
-              />
-              <span>{formatTime(duration)}</span>
+                <span>{formatTime(progress)}</span>
+                <input
+                  type="range"
+                  className="timeline-slider"
+                  min="0"
+                  max={duration}
+                  value={progress}
+                  onChange={handleTimelineChange}
+                />
+                <span>{formatTime(duration)}</span>
+              </div>
+
+              <div className="video-controls">
+                <button className="control-buttonn" onClick={handlePlayPause}>
+                  {isPlaying ? " إيقاف" : " تشغيل"}
+                </button>
+
+                <select
+                  className="control-select"
+                  onChange={handleQualityChange}
+                  value={quality}
+                >
+                  <option value="auto">تلقائي</option>
+                  <option value="highres">عالية جدًا</option>
+                  <option value="hd1080">1080p</option>
+                  <option value="hd720">720p</option>
+                  <option value="large">480p</option>
+                  <option value="medium">360p</option>
+                  <option value="small">240p</option>
+                </select>
+
+                <input
+                  type="range"
+                  className="volume-slider"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                />
+
+                {/* Modified speed control */}
+                <select
+                  className="control-select"
+                  onChange={handleSpeedChange}
+                  value={speed}
+                >
+                  <option value="0.5">0.5x</option>
+                  <option value="1">عادي</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2">2x</option>
+                </select>
+
+                <button
+                  className="control-buttonn"
+                  onClick={handleFullscreenToggle}
+                >
+                  {isFullscreen ? "🔲 تصغير" : "⛶ تكبير"}
+                </button>
+
+                <button
+                  className="control-buttonn rotate-button"
+                  onClick={handleRotateScreen}
+                >
+                   قلب الشاشة
+                </button>
+              </div>
             </div>
-
-            <div className="video-controls">
-              <button className="control-button" onClick={handlePlayPause}>
-                {isPlaying ? "⏸️ إيقاف" : "▶️ تشغيل"}
-              </button>
-
-              <select
-                className="control-select"
-                onChange={handleQualityChange}
-                value={quality}
-              >
-                <option value="auto">تلقائي</option>
-                <option value="highres">عالية جدًا</option>
-                <option value="hd1080">1080p</option>
-                <option value="hd720">720p</option>
-                <option value="large">480p</option>
-                <option value="medium">360p</option>
-                <option value="small">240p</option>
-              </select>
-
-              <input
-                type="range"
-                className="volume-slider"
-                min="0"
-                max="100"
-                value={volume}
-                onChange={handleVolumeChange}
-              />
-
-              <button
-                className="control-button"
-                onClick={handleFullscreenToggle}
-              >
-                {isFullscreen ? "🔲 تصغير" : "⛶ تكبير"}
-              </button>
-
-              <button
-                className="control-button rotate-button"
-                onClick={handleRotateScreen}
-              >
-                🔄 قلب الشاشة
-              </button>
-            </div>
-            </div>
-            
           </div>
 
           <div className="video-description-container">

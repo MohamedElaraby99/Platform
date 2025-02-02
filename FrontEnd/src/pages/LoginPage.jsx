@@ -92,7 +92,7 @@ const LoginForm = ({ setRole }) => {
                 src={require("./../images/logo.png")}
                 alt=""
               />
-              <h2 className="login-title">تسجيل الدخول</h2>
+              <p className="login-title">تسجيل الدخول</p>
               <form onSubmit={handleLogin} className="login-form">
                 <div className="input-containerr">
                   <label htmlFor="userName">اسم المستخدم</label>
