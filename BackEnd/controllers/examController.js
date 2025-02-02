@@ -390,7 +390,9 @@ const getExamDataForAdmin = async (req, res) => {
 
       // Create a map of students who have submitted the exam
       const submittedStudentIds = new Set(
-        examSubmissions.map((submission) => submission.user_id._id.toString())
+        examSubmissions.map((submission) => {
+          return submission.user_id?._id?.toString();
+        })
       );
       const currentTime = new Date();
 
@@ -427,8 +429,8 @@ const getExamDataForAdmin = async (req, res) => {
       // Map answers to include question details
       const submissionsWithQuestions = examSubmissions.map((submission) => ({
         student: {
-          name: submission.user_id.name,
-          stage: submission.user_id.stage,
+          name: submission?.user_id?.name || "Unknown",
+          stage: submission?.user_id?.stage || stage,
         },
         score: submission.score,
         status: "حضر", // "Did not attend"
