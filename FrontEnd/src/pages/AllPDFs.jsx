@@ -17,11 +17,14 @@ const AllPDFs = () => {
     const fetchPdfs = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/files`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/files`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setPdfs(response.data);
         setLoading(false);
       } catch (err) {
@@ -64,8 +67,6 @@ const AllPDFs = () => {
       return;
     }
 
-  
-
     setEditingPdf(_id);
     setEditData({ ...pdfToEdit });
     setMessage("");
@@ -87,8 +88,6 @@ const AllPDFs = () => {
       alert("تعذر حفظ التعديلات لأن معرف الملف غير موجود.");
       return;
     }
-
-  
 
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -133,7 +132,6 @@ const AllPDFs = () => {
 
   // Open a PDF in a new window
   const handleViewPdf = (file) => {
-    
     const newWindow = window.open("", "_blank", "fullscreen=yes");
     if (newWindow) {
       newWindow.document.write(`
@@ -257,7 +255,12 @@ const AllPDFs = () => {
                     <td>{pdf.stage}</td>
                     <td>
                       <button
-                        onClick={() => handleViewPdf(pdf.file)}
+                        onClick={() =>
+                          handleViewPdf(
+                            process.env.REACT_APP_PDF +
+                              pdf.file.split("/uploads/")[1]
+                          )
+                        }
                         className="view-button"
                       >
                         عرض الملف
