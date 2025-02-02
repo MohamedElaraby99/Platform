@@ -90,8 +90,8 @@ const HomePage = () => {
           <ul className="announcements-list">
             {announcements.map((announcement) => (
               <li key={announcement._id} className="announcement-item">
-                <h4>{announcement.title}</h4>
-                <p>{announcement.description}</p>
+                <h4 className="announcement-title">{announcement.title}</h4>
+                <p className="announcement-description">{announcement.description}</p>
               </li>
             ))}
           </ul>

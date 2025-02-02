@@ -222,7 +222,7 @@ const AllVideos = () => {
                       </button>
                     </>
                   ) : (
-                    <div className="actions">
+                    <div className="actionss">
                       <button
                         onClick={() => handleEdit(video)}
                         className="edit-button"
