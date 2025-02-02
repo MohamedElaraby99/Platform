@@ -141,3 +141,10 @@ h2 {
 .submit-button:hover {
   background-color: #0056b3;
 }
+
+@media  (max-width: 768px) {
+  .add-user-container {
+    width: 100%;
+  }
+  
+}
