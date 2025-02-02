@@ -83,7 +83,7 @@ const PdfPage = () => {
             <h3>{pdf.title}</h3>
             <div className="pdf-actions">
               <button
-                onClick={() => handleViewPdf(pdf.file)}
+                onClick={() => handleViewPdf("https://api.tawakol.live/uploads/"+pdf.file.split('/uploads/')[1])}
                 className="pdf-button"
               >
                 عرض الملف
