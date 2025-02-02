@@ -159,7 +159,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="actions">
+      <div className="actionsss">
         <div className="quick-upload">
           <h3>الرفع </h3>
 

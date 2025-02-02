@@ -133,8 +133,10 @@ const AllPDFs = () => {
 
   // Open a PDF in a new window
   const handleViewPdf = (file) => {
-	console.log(file)    
-const newWindow = window.open("", "_blank", "fullscreen=yes");
+
+    
+    const newWindow = window.open("", "_blank", "fullscreen=yes");
+
     if (newWindow) {
       newWindow.document.write(`
         <!DOCTYPE html>

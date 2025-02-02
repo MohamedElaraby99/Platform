@@ -13,12 +13,20 @@ const PdfPage = () => {
     const fetchPdfs = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // تأكد من وجود التوكن
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/files`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // تضمين التوكن في الطلب
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/files`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, // تضمين التوكن في الطلب
+            },
+          }
+        );
         setPdfFiles(response.data); // تخزين الملفات
+        console.log(
+          response.data[0]?.file.split('/uploads/')[1]
+        );
+        console.log(response.data);
+        
         setLoading(false);
       } catch (err) {
         setError("حدث خطأ أثناء تحميل الملفات.");
@@ -29,14 +37,12 @@ const PdfPage = () => {
     fetchPdfs();
   }, []);
 
- 
-  
-
   const handleViewPdf = (url) => {
     // فتح نافذة جديدة للعرض
     const newWindow = window.open("", "_blank", "fullscreen=yes");
 
     if (newWindow) {
+      
       newWindow.document.write(`
         <!DOCTYPE html>
         <html lang="en">

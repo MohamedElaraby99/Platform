@@ -62,42 +62,60 @@ const FileInputComponent = ({ onAddQuestions , onDeleteQuestion  }) => {
     const doc = parser.parseFromString(htmlContent, "text/html");
 
     const questions = [];
-    const paragraphs = doc.querySelectorAll("p");
+    const allElements = [...doc.querySelectorAll("p, li")]; // تضمين عناصر الفقرات والقوائم
 
     let currentQuestion = null;
 
-    paragraphs.forEach((p) => {
-      const text = p.textContent.trim();
-      const questionMatch = text.match(/^\d+[)-]?\s*(.*)$/);
-      const image = p.querySelector("img");
+    allElements.forEach((element) => {
+      const rawText = element.textContent;
+      // تنظيف النص من المسافات الزائدة والرموز الخفية
+      const cleanedText = rawText
+        .replace(/\s+/g, " ")
+        .replace(/[\u00A0]/g, " ")
+        .trim();
 
-      if (questionMatch) {
+      // اكتشاف السؤال (يدعم: "1)"، "-2"، "(3)"، إلخ)
+      if (
+        /^[-\d(\u0660-\u0669)]+[.)]\s+/.test(cleanedText) ||
+        cleanedText.startsWith("السؤال")
+      ) {
         if (currentQuestion) questions.push(currentQuestion);
         currentQuestion = {
-          question: questionMatch[1].trim(),
+          question: cleanedText.replace(/^[-\d(\u0660-\u0669)]+[.)]\s+/, ""),
           options: [],
           correctAnswer: null,
           image: null,
         };
-      } else if (/^[أ-ي]-|^[1-9]\./.test(text)) {
+      }
+      // اكتشاف الخيارات (تدعم: "أ-"، "ب."، "A-"، "1."، إلخ)
+      else if (/^([أ-ي]|[A-Za-z]|\d+)[-.)]\s/.test(cleanedText)) {
+        const optionText = cleanedText.replace(
+          /^([أ-ي]|[A-Za-z]|\d+)[-.)]\s/,
+          ""
+        );
         if (currentQuestion) {
-          currentQuestion.options.push(
-            text.replace(/^[أ-ي]-|^[1-9]\./, "").trim()
-          );
+          currentQuestion.options.push(optionText);
         }
-      } else if (text.startsWith("الإجابة:")) {
+      }
+      // اكتشاف الإجابة (تدعم: "الإجابة: ج"، "الجواب: 3"، إلخ)
+      else if (
+        cleanedText.startsWith("الإجابة:") ||
+        cleanedText.startsWith("الجواب:")
+      ) {
+        const answer = cleanedText.split(":")[1].trim();
         if (currentQuestion) {
-          currentQuestion.correctAnswer = text.replace("الإجابة:", "").trim();
+          currentQuestion.correctAnswer = answer;
         }
       }
 
+      // معالجة الصور
+      const image = element.querySelector("img");
       if (image && currentQuestion) {
-        currentQuestion.image = image.src;
+        currentQuestion.image = image.getAttribute("src");
       }
     });
 
     if (currentQuestion) questions.push(currentQuestion);
-
     return questions;
   };
 

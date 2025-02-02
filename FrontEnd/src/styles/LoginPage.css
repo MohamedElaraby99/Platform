@@ -265,6 +265,7 @@
     width: 100%;
     padding: 1.5rem;
     flex: 1 1 100%;
+    
   }
 }
 
@@ -301,5 +302,21 @@
     width: 100%;
     padding: 1.5rem;
     flex: 1 1 90%;
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 380px) {
+  .right-side {
+    margin-top: 20px;
+    flex: 2;
+    width: 100%;
+    padding: 1.5rem;
+    flex: 1 1 90%;
+    margin-bottom: 100px;
+  }
+
+  .footer {
+    margin-top: 50px;
   }
 }
