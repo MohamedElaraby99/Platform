@@ -159,6 +159,13 @@
   background-color: #c0392b;
 }
 
+.no-exams-message {
+  font-size: 18px;
+  color: #777;
+  text-align: center;
+  margin-top: 20px;
+  margin-right: 100px;
+}
 
 .students-container {
   margin-top: 20px;
