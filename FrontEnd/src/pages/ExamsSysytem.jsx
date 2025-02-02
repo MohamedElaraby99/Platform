@@ -101,7 +101,7 @@ const ExamsSystem = () => {
               )}
 
               <h3 className="exam-question">
-                السؤال {index + 1}: {q.text}
+                السؤال {index + 1}: {q.question}
               </h3>
 
               <ul className="exam-options-list">
