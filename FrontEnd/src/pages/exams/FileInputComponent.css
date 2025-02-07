@@ -29,7 +29,6 @@
   transition: all 0.3s ease;
 }
 
-
 .questions-container {
   margin-top: 20px;
 }
@@ -104,4 +103,12 @@ img.question-image {
   transition: all 0.3s ease;
   width: 100px;
   margin-bottom: 20px;
+}
+.explanation-textarea {
+  width: 100%;
+  height: 60px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
 }

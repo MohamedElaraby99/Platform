@@ -4,7 +4,7 @@ import mammoth from "mammoth";
 import Loader from "./../../pages/Loader.jsx";
 import "./FileInputComponent.css";
 
-const FileInputComponent = ({ onAddQuestions , onDeleteQuestion  }) => {
+const FileInputComponent = ({ onAddQuestions, onDeleteQuestion }) => {
   const [parsedQuestions, setParsedQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -85,6 +85,7 @@ const FileInputComponent = ({ onAddQuestions , onDeleteQuestion  }) => {
           options: [],
           correctAnswer: null,
           image: null,
+          why: "", // إضافة خانة للتعليل
         };
       }
       // اكتشاف الخيارات (تدعم: "أ-"، "ب."، "A-"، "1."، إلخ)
@@ -152,6 +153,14 @@ const FileInputComponent = ({ onAddQuestions , onDeleteQuestion  }) => {
     }
   };
 
+  const handleExplanationChange = (index, event) => {
+    setParsedQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions];
+      updatedQuestions[index].why = event.target.value;
+      return updatedQuestions;
+    });
+  };
+
   return (
     <div className="file-input-container">
       <h3>استخراج الأسئلة من ملف Word</h3>
@@ -209,6 +218,14 @@ const FileInputComponent = ({ onAddQuestions , onDeleteQuestion  }) => {
                   </li>
                 ))}
               </ul>
+              <label>
+                التعليل:
+                <textarea
+                  value={q.why}
+                  onChange={(e) => handleExplanationChange(index, e)}
+                  className="explanation-textarea"
+                />
+              </label>
               <button
                 onClick={() => handleDeleteQuestion(index)}
                 className="delette-button"
