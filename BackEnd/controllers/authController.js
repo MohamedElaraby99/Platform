@@ -73,6 +73,7 @@ const register = async (req, res) => {
     stage: user.stage,
     role: user.role,
     subject: user.subject,
+    name: user.name,
   });
 };
 
@@ -132,6 +133,7 @@ const login = async (req, res) => {
     role: foundUser.role,
     stage: foundUser.stage,
     subject: foundUser.subject,
+    name: foundUser.name,
   });
 };
 

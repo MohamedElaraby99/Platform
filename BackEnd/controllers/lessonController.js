@@ -21,7 +21,7 @@ const getAllLessons = async (req, res) => {
 };
 
 const createLesson = async (req, res) => {
-  const { title, lesson_link, stage, description, notes } = req.body;
+  const { title, lesson_link, stage, description, notes, subject } = req.body;
   if (!title) {
     return res.status(400).json({ message: " العنوان مطلوب" });
   }
@@ -31,15 +31,21 @@ const createLesson = async (req, res) => {
   if (!stage) {
     return res.status(400).json({ message: "المرحلة الدراسية مطلوبة" });
   }
+  if (!subject) {
+    return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
+  }
 
   try {
-    const lesson = await Lesson.create({
+    const lesson = new Lesson({
       title,
       lesson_link,
       stage,
       description,
       notes,
+      subject,
     });
+    await lesson.save();
+
     return res
       .status(200)
       .json({ message: "الفيديو تم انشاءه بنجاح", ...lesson });
@@ -50,7 +56,7 @@ const createLesson = async (req, res) => {
 
 const updateLesson = async (req, res) => {
   const { id } = req.params;
-  const { title, lesson_link, stage } = req.body;
+  const { title, lesson_link, stage, description, notes, subject } = req.body;
   if (!title) {
     return res.status(400).json({ message: "العنوان مطلوب" });
   }
@@ -59,6 +65,10 @@ const updateLesson = async (req, res) => {
   }
   if (!stage) {
     return res.status(400).json({ message: "المرحلة الدراسية مطلوبة" });
+  }
+
+  if (!subject) {
+    return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
   }
 
   const lesson = await Lesson.findByIdAndUpdate(id, req.body);
