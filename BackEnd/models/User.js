@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       enum: ["student", "admin"],
       required: true,
     },
+    subject: {
+      type: String,
+      enum: ["تاريخ وجغرافيا","جغرافيا", "تاريخ"],
+    },
   },
   { timestamps: true }
 );

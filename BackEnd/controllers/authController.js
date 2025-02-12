@@ -2,7 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jsonWebToken = require("jsonwebtoken");
 const register = async (req, res) => {
-  const { name, username, password, role, stage } = req.body;
+  const { name, username, password, role, stage, subject } = req.body;
   if (!name || !username || !password || !role) {
     return res.status(400).json({ message: "كل الحقول مطلوبة" });
   }
@@ -11,6 +11,11 @@ const register = async (req, res) => {
       return res
         .status(400)
         .json({ message: "المرحلة الدراسية مطلوبة اذا لم تكن مشرف" });
+    }
+    if (!subject) {
+      return res
+        .status(400)
+        .json({ message: "المادة الدراسية مطلوبة اذا لم تكن مشرف" });
     }
   }
 
@@ -27,6 +32,7 @@ const register = async (req, res) => {
     stage,
     password,
     role,
+    subject
   });
 
   const accessToken = jsonWebToken.sign(
@@ -35,10 +41,11 @@ const register = async (req, res) => {
         id: user._id,
         role: user.role,
         stage: user.stage,
+        subject: user.subject,
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "1d" }
+    { expiresIn: "30d" }
   );
 
   const refreshToken = jsonWebToken.sign(
@@ -50,14 +57,14 @@ const register = async (req, res) => {
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "30d" }
   );
 
   res.cookie("jwt", refreshToken, {
     httpOnly: true, // accessible only by web server
     secure: true, // https
     sameSite: "None", // cross-site cookie
-    maxAge: 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 30,
   });
 
   res.json({
@@ -65,6 +72,7 @@ const register = async (req, res) => {
     username: user.username,
     stage: user.stage,
     role: user.role,
+    subject: user.subject,
   });
 };
 
@@ -92,10 +100,11 @@ const login = async (req, res) => {
         id: foundUser._id,
         role: foundUser.role,
         stage: foundUser.stage,
+        subject: foundUser.subject,
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "1d" }
+    { expiresIn: "30d" }
   );
 
   const refreshToken = jsonWebToken.sign(
@@ -104,10 +113,11 @@ const login = async (req, res) => {
         id: foundUser._id,
         role: foundUser.role,
         stage: foundUser.stage,
+        subject: foundUser.subject,
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "30d" }
   );
   res.cookie("jwt", refreshToken, {
     httpOnly: true,
@@ -121,6 +131,7 @@ const login = async (req, res) => {
     username: foundUser.username,
     role: foundUser.role,
     stage: foundUser.stage,
+    subject: foundUser.subject,
   });
 };
 
@@ -143,10 +154,11 @@ const refreshToken = async (req, res) => {
             id: foundUser._id,
             role: foundUser.role,
             stage: foundUser.stage,
+            subject: foundUser.subject,
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1d" }
+        { expiresIn: "30d" }
       );
       res.json({ accessToken });
     }
