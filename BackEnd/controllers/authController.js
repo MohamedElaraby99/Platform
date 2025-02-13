@@ -73,6 +73,33 @@ const register = async (req, res) => {
     stage: user.stage,
     role: user.role,
     subject: user.subject,
+    name: user.name,
+  });
+};
+
+const registerUsers = async (req, res) => {
+
+
+  // const hashedPassword = await bcrypt.hash(password, 10);
+
+  // const users = await User.create({
+  //   name,
+  //   username,
+  //   stage,
+  //   password,
+  //   role,
+  //   subject
+  // });
+
+  if (req.body.length === 0) {
+    return res.status(400).json({ message: "لا يوجد مستخدمين" });
+    
+  }
+  
+
+  const newUsers = await User.insertMany(req.body);
+  res.json({
+    message: "تم تسجيل المستخدمين بنجاح",
   });
 };
 
@@ -132,6 +159,7 @@ const login = async (req, res) => {
     role: foundUser.role,
     stage: foundUser.stage,
     subject: foundUser.subject,
+    name: foundUser.name,
   });
 };
 
@@ -167,6 +195,7 @@ const refreshToken = async (req, res) => {
 
 module.exports = {
   register,
+  registerUsers,
   login,
   refreshToken,
 };

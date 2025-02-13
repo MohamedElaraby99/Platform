@@ -19,11 +19,14 @@ const AllVideos = () => {
           throw new Error("Access token is missing.");
         }
 
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/lessons`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setVideos(response.data);
         setError(null);
       } catch (err) {
@@ -127,6 +130,8 @@ const AllVideos = () => {
               <th>اسم الفيديو</th>
               <th>الرابط</th>
               <th>المرحلة الدراسية</th>
+              <th>المادة الدراسية</th>
+
               <th>الوصف</th>
               <th>الملاحظات</th>
               <th>الإجراءات</th>
@@ -184,6 +189,22 @@ const AllVideos = () => {
                     video.stage
                   )}
                 </td>
+                {editingVideo && editingVideo._id === video._id ? (
+                  <td>
+                    <select
+                      name="subject"
+                      value={editingVideo.subject}
+                      onChange={handleEditChange}
+                    >
+                      <option value="تاريخ">تاريخ</option>
+                      <option value="جغرافيا">جغرافيا</option>
+                      <option value="تاريخ وجغرافيا">تاريخ وجغرافيا</option>
+                    </select>
+                  </td>
+                ) : (
+                  <td>{video.subject}</td>
+                )}
+
                 <td>
                   {editingVideo && editingVideo._id === video._id ? (
                     <textarea

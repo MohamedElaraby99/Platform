@@ -51,7 +51,7 @@ const getUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { name, username, stage, password, role } = req.body;
+  const { name, username, stage, password, role, subject } = req.body;
   if (!name) {
     return res.status(400).json({ message: "الاسم مطلوب" });
   }
@@ -64,6 +64,11 @@ const updateUser = async (req, res) => {
         .status(400)
         .json({ message: "المرحلة الدراسية مطلوبة اذا لم تكن مشرف" });
     }
+    if (!subject) {
+      return res
+        .status(400)
+        .json({ message: "المادة الدراسية مطلوبة اذا لم تكن مشرف" });
+    }
   }
   if (!password) {
     return res.status(400).json({ message: "كلمة المرور مطلوبة " });
@@ -75,6 +80,7 @@ const updateUser = async (req, res) => {
   const user = await User.findByIdAndUpdate(id, {
     ...req.body,
     stage: role === "admin" ? "" : stage,
+    subject: role === "admin" ? "" : subject,
   });
 
   if (!user) {

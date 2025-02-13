@@ -15,6 +15,11 @@ const fileMetadataSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    subject: {
+      type: String,
+      enum: ["جغرافيا", "تاريخ"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const getAnnouncements = async (req, res) => {
   try {
-    const { role, stage } = req;
+    const { role, stage, subject } = req;
 
     let announcements;
 
@@ -25,6 +25,7 @@ const getAnnouncements = async (req, res) => {
       // Filter announcements where the specific stage key is true
       announcements = await Announcement.find({
         [`stage.${stageKey}`]: true, // Dynamic query for nested field
+        subject: subject === "تاريخ وجغرافيا" ? { $exists: true } : subject,
       });
     } else {
       // If the user has no stage (and is not admin), return an error
@@ -39,7 +40,7 @@ const getAnnouncements = async (req, res) => {
 
 const createAnnouncement = async (req, res) => {
   try {
-    const { title, description, stage } = req.body;
+    const { title, description, stage, subject } = req.body;
 
     // Validate `title`
     if (!title) {
@@ -49,6 +50,15 @@ const createAnnouncement = async (req, res) => {
     // Validate `description`
     if (!description) {
       return res.status(400).json({ message: "الوصف مطلوب" });
+    }
+
+    // Validate `subject`
+    if (!subject) {
+      return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
+    }
+
+    if (!["تاريخ وجغرافيا", "جغرافيا", "تاريخ"].includes(subject)) {
+      return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
     }
 
     // Validate `stage`
@@ -76,6 +86,7 @@ const createAnnouncement = async (req, res) => {
       title,
       description,
       stage,
+      subject,
     });
 
     return res.status(200).json(announcement);
@@ -88,7 +99,7 @@ const createAnnouncement = async (req, res) => {
 const updateAnnouncement = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, stage } = req.body;
+    const { title, description, stage, subject } = req.body;
 
     // Validate `id`
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
@@ -103,6 +114,15 @@ const updateAnnouncement = async (req, res) => {
     // Validate `description`
     if (!description) {
       return res.status(400).json({ message: "الوصف مطلوب" });
+    }
+
+    // Validate `subject`
+    if (!subject) {
+      return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
+    }
+
+    if (!["تاريخ وجغرافيا", "جغرافيا", "تاريخ"].includes(subject)) {
+      return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
     }
 
     // Validate `stage`
@@ -129,7 +149,7 @@ const updateAnnouncement = async (req, res) => {
     // Find and update the announcement
     const announcement = await Announcement.findByIdAndUpdate(
       id,
-      { title, description, stage },
+      { title, description, stage, subject },
       { new: true, runValidators: true } // Return updated document and run validators
     );
 

@@ -22,6 +22,11 @@ const examSchema = new mongoose.Schema(
       default: "امتحان",
       enum: ["امتحان", "تدريب"],
     },
+    subject: {
+      type: String,
+      enum: ["جغرافيا", "تاريخ"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

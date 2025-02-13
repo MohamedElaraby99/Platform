@@ -3,17 +3,18 @@ const Exam = require("../models/Exam");
 const Submission = require("../models/SubmitExam");
 const User = require("../models/User");
 const moment = require("moment-timezone");
+const e = require("express");
 
 const getExamsWithScores = async (req, res) => {
   try {
-    const { user_id, stage, role } = req;
+    const { user_id, stage, role, subject } = req;
     let exams;
     if (role === "admin") {
       // Admin can see all exams
       exams = await Exam.find();
     } else if (stage) {
       // Regular users see exams specific to their stage
-      exams = await Exam.find({ stage });
+      exams = await Exam.find({ stage, subject : subject === "تاريخ وجغرافيا" ? { $exists: true } : subject });
     } else {
       // If no stage is provided and user is not admin, return an error
       return res.status(403).json({ message: "Access denied" });
@@ -61,6 +62,7 @@ const getExamsWithScores = async (req, res) => {
         id: exam._id,
         title: exam.title,
         type: exam.type,
+        subject: exam.subject,
         description: exam.description,
         date: exam.date,
         duration: exam.duration,
@@ -81,7 +83,7 @@ const getExamsWithScores = async (req, res) => {
 
 const addExam = async (req, res) => {
   try {
-    const { title, description, date, duration, questions, stage, why, type } =
+    const { title, description, date, duration, questions, stage, why, type, subject } =
       req.body;
     // Validate required fields
     if (!title) {
@@ -89,6 +91,9 @@ const addExam = async (req, res) => {
     }
     if (!description) {
       return res.status(400).json({ message: "Exam description is required" });
+    }
+    if (!subject) {
+      return res.status(400).json({ message: "Exam subject is required" });
     }
     if (!date) {
       return res.status(400).json({ message: "Exam date is required" });
@@ -152,6 +157,7 @@ const addExam = async (req, res) => {
       stage,
       why,
       type,
+      subject
     });
 
     // Save to database
@@ -166,7 +172,7 @@ const addExam = async (req, res) => {
 
 const updateExam = async (req, res) => {
   const { id } = req.params; // Exam ID from URL parameters
-  const { title, description, date, duration, questions, stage, why, type } =
+  const { title, description, date, duration, questions, stage, why, type, subject } =
     req.body;
 
   try {
@@ -178,7 +184,8 @@ const updateExam = async (req, res) => {
       !duration &&
       !questions &&
       !stage &&
-      !type
+      !type&&
+      !subject
     ) {
       return res.status(400).json({ message: "No data provided for update" });
     }
@@ -235,6 +242,7 @@ const updateExam = async (req, res) => {
     if (stage) existingExam.stage = stage;
     if (why) existingExam.why = why;
     if (type) existingExam.type = type;
+    if (subject) existingExam.subject = subject;
 
     // Save updated exam
     const updatedExam = await existingExam.save();
@@ -415,7 +423,7 @@ const getExamDataForAdmin = async (req, res) => {
       let nonSubmittedStudents = [];
       if (examIsEnd) {
         nonSubmittedStudents = students
-          .filter((student) => !submittedStudentIds.has(student._id.toString()))
+          .filter((student) => !submittedStudentIds.has(student._id.toString())).filter((student) => student?.subject === exam?.subject)
           .map((student) => ({
             student: {
               name: student.name,
@@ -459,6 +467,7 @@ const getExamDataForAdmin = async (req, res) => {
         date: exam.date,
         duration: exam.duration,
         stage: exam.stage,
+        subject: exam.subject,
         exam_status: status,
         submissions: [...submissionsWithQuestions, ...nonSubmittedStudents],
       };
