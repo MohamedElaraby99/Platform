@@ -116,6 +116,7 @@ const AllExams = () => {
                   <th>تاريخ الامتحان</th>
                   <th>وقت الامتحان</th>
                   <th>نوع الامتحان </th>
+                  <th>مادة الامتحان</th>
                   <th>مدة الامتحان (دقائق)</th>
                   <th>حالة الامتحان</th>
                   <th>الإجراءات</th>
@@ -128,6 +129,7 @@ const AllExams = () => {
                     <td>{new Date(exam.date).toLocaleDateString()}</td>
                     <td>{new Date(exam.date).toLocaleTimeString()}</td>
                     <td>{exam.exam}</td>
+                    <td>{exam.subject}</td>
                     <td>{exam.duration}</td>
                     <td>{exam.exam_status}</td>
                     <td className="actionss">
@@ -160,7 +162,8 @@ const AllExams = () => {
                 <thead>
                   <tr>
                     <th>اسم الطالب</th>
-                    <th>المرحلة الدراسية</th>
+                      <th>المرحلة الدراسية</th>
+                    <th>المادة</th>
                     <th>الدرجة</th>
                     <th>الحالة</th>
                   </tr>
@@ -170,6 +173,7 @@ const AllExams = () => {
                     <tr key={index}>
                       <td>{submission.student.name}</td>
                       <td>{submission.student.stage}</td>
+                      <td>{submission.subject}</td>
                       <td>{submission.score}</td>
                       <td>{submission.status}</td>
                     </tr>

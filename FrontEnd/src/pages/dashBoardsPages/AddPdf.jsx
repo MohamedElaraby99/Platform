@@ -9,6 +9,7 @@ const AddPdf = () => {
     name: "",
     file: null,
     stage: "",
+    subject: "",
   });
 
   const [message, setMessage] = useState("");
@@ -44,7 +45,7 @@ const AddPdf = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!pdfData.name || !pdfData.file || !pdfData.stage) {
+    if (!pdfData.name || !pdfData.file || !pdfData.stage || !pdfData.subject) {
       setMessage("الرجاء ملء جميع الحقول");
       return;
     }
@@ -53,6 +54,7 @@ const AddPdf = () => {
     formData.append("title", pdfData.name);
     formData.append("file", pdfData.file);
     formData.append("stage", pdfData.stage);
+    formData.append("subject", pdfData.subject);
 
     const accessToken = localStorage.getItem("accessToken");
 
@@ -77,8 +79,8 @@ const AddPdf = () => {
         name: "",
         file: null,
         stage: "",
+        subject: "",
       });
-    
     } catch (error) {
       console.error("Error adding file:", error);
       toast.error(
@@ -148,10 +150,25 @@ const AddPdf = () => {
               value={pdfData.stage}
               onChange={handleChange}
             >
-              <option value="">اختر المرحلة الدراسية</option>
+              <option value="disabled">اختر المرحلة الدراسية</option>
               <option value="أولى ثانوي"> أولى ثانوي </option>
               <option value="ثانية ثانوي"> ثانية ثانوي </option>
               <option value="ثالثة ثانوي"> ثالثة ثانوي </option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="subject">المادة الدراسية :</label>
+            <select
+              id="subject"
+              name="subject"
+              value={pdfData.subject}
+              onChange={handleChange}
+            >
+              <option value="disabled">اختر المادة </option>
+              <option value="تاريخ">تاريخ </option>
+              <option value="جغرافيا">جغرافيا </option>
+              <option value="تاريخ وجغرافيا">تاريخ وجغرافيا </option>
             </select>
           </div>
 

@@ -98,6 +98,7 @@ const AllPDFs = () => {
           title: editData.title,
           stage: editData.stage,
           file: editData.file,
+          subject: editData.subject,
         },
         {
           headers: {
@@ -198,6 +199,7 @@ const AllPDFs = () => {
             <tr>
               <th>اسم الملف</th>
               <th>المرحلة الدراسية</th>
+              <th>المادة الدراسية</th>
               <th>رابط الملف</th>
               <th>الإجراءات</th>
             </tr>
@@ -229,6 +231,19 @@ const AllPDFs = () => {
                       </select>
                     </td>
                     <td>
+                      <select
+                        id="subject"
+                        name="subject"
+                        value={editData.subject}
+                        onChange={handleEditChange}
+                      >
+                        <option value="disabled">اختر المادة </option>
+                        <option value="تاريخ">تاريخ </option>
+                        <option value="جغرافيا">جغرافيا </option>
+                        <option value="تاريخ وجغرافيا">تاريخ وجغرافيا </option>
+                      </select>
+                    </td>
+                    <td>
                       <a
                         href={editData.file}
                         target="_blank"
@@ -254,6 +269,7 @@ const AllPDFs = () => {
                   <>
                     <td>{pdf.title}</td>
                     <td>{pdf.stage}</td>
+                    <td>{pdf.subject}</td>
                     <td>
                       <button
                         onClick={() =>

@@ -18,6 +18,7 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
     duration: "",
     stage: "",
     type: "",
+    subject: "",
   });
 
   const handleAddQuestions = (importedQuestions) => {
@@ -47,6 +48,7 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
       !examDetails.duration ||
       !examDetails.stage ||
       !examDetails.type ||
+      !examDetails.subject ||
       questions.length === 0
     ) {
       toast.error("يرجى ملء جميع الحقول وإضافة الأسئلة!");
@@ -61,6 +63,7 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
       questions,
       stage: examDetails.stage,
       type: examDetails.type,
+      subject: examDetails.subject
     };
 
   
@@ -86,6 +89,7 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
         duration: "",
         stage: "",
         type: "",
+        subject: "",
       });
       setQuestions([]);
     
@@ -167,6 +171,20 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
             <option value="أولى ثانوي">أولى ثانوي</option>
             <option value="ثانية ثانوي">ثانية ثانوي</option>
             <option value="ثالثة ثانوي">ثالثة ثانوي</option>
+          </select>
+        </label>
+        <label>
+          المادة:
+          <select
+            name="subject"
+            value={examDetails.subject}
+            onChange={handleInputChange}
+          >
+            <option value="" disabled>
+              اختر المادة
+            </option>
+            <option value="تاريخ">تاريخ</option>
+            <option value="جغرافيا">جغرافيا</option>
           </select>
         </label>
       </div>

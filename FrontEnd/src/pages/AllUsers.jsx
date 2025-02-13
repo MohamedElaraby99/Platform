@@ -15,6 +15,7 @@ const AllUsers = () => {
     stage: "",
     password: "",
     role: "",
+    subject: "تاريخ وجغرافيا",
   });
 
   const [selectedTable, setSelectedTable] = useState("students");
@@ -23,9 +24,12 @@ const AllUsers = () => {
     const fetchUsers = async () => {
       const accessToken = localStorage.getItem("accessToken");
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/users`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
         setUsers(response.data);
       } catch (err) {
         setError("حدث خطأ أثناء تحميل البيانات.");
@@ -41,7 +45,7 @@ const AllUsers = () => {
 
   const handleEdit = (user) => {
     setEditingUser(user);
-    setEditData({ ...user });
+    setEditData({ ...user , subject: "تاريخ وجغرافيا"});
   };
 
   const handleEditChange = (e) => {
@@ -53,7 +57,7 @@ const AllUsers = () => {
   };
 
   const handleEditSave = async () => {
-    if (!editData.name || !editData.username || !editData.password) {
+    if (!editData.name || !editData.username || !editData.password || !editData.subject) {
       alert("يرجى ملء جميع الحقول قبل الحفظ!");
       return;
     }
@@ -71,7 +75,7 @@ const AllUsers = () => {
         )
       );
       setEditingUser(null);
-      alert("تم تحديث المستخدم بنجاح!");
+      // alert("تم تحديث المستخدم بنجاح!");
     } catch (err) {
       alert("حدث خطأ أثناء تحديث المستخدم.");
     }
@@ -131,6 +135,7 @@ const AllUsers = () => {
                 <th>الاسم</th>
                 <th>اسم المستخدم</th>
                 <th>المرحلة</th>
+                <th>المادة الدراسية</th>
                 <th>كلمة المرور</th>
                 <th>الإجراءات</th>
               </tr>
@@ -168,6 +173,17 @@ const AllUsers = () => {
                         </select>
                       </td>
                       <td>
+                        <select
+                          name="subject"
+                          value={editData.subject}
+                          onChange={handleEditChange}
+                        >
+                          <option value="تاريخ">تاريخ</option>
+                          <option value="جغرافيا">جغرافيا</option>
+                          <option value="تاريخ وجغرافيا" >تاريخ وجغرافيا</option>
+                        </select>
+                      </td>
+                      <td>
                         <input
                           type="text"
                           name="password"
@@ -195,6 +211,7 @@ const AllUsers = () => {
                       <td>{student.name}</td>
                       <td>{student.username}</td>
                       <td>{student.stage}</td>
+                      <td>{student.subject}</td>
                       <td>{"*".repeat(student.password.length)}</td>
                       <td className="actions-cell">
                         <button

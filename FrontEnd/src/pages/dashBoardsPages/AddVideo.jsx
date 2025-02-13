@@ -7,6 +7,7 @@ const AddVideo = () => {
     title: "",
     lesson_link: "",
     stage: "",
+    subject: "",
     description: "", // وصف الفيديو
     notes: "", // ملاحظات الفيديو
   });
@@ -25,10 +26,17 @@ const AddVideo = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { title, youtubeLink, stage, description, notes } = videoData;
+    const { title, youtubeLink, stage, description, notes , subject } = videoData;
 
     // تحقق من أن الحقول ليست فارغة
-    if (!title || !youtubeLink || !stage || !description || !notes) {
+    if (
+      !title ||
+      !youtubeLink ||
+      !stage ||
+      !description ||
+      !notes ||
+      !subject
+    ) {
       setMessage("");
       setError("الرجاء ملء جميع الحقول.");
       return;
@@ -41,6 +49,7 @@ const AddVideo = () => {
       stage,
       description,
       notes,
+      subject,
     };
 
     try {
@@ -49,11 +58,15 @@ const AddVideo = () => {
       setMessage("");
 
       const accessToken = localStorage.getItem("accessToken"); // جلب التوكن من LocalStorage
-      await axios.post(`${process.env.REACT_APP_BASE_URL}/lessons`, requestData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`, // تضمين التوكن في الرؤوس
-        },
-      });
+      await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/lessons`,
+        requestData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // تضمين التوكن في الرؤوس
+          },
+        }
+      );
 
       setMessage("تم إضافة الفيديو بنجاح!");
       setError("");
@@ -65,6 +78,7 @@ const AddVideo = () => {
         stage: "",
         description: "",
         notes: "",
+        subject: "",
       });
     } catch (err) {
       setError("حدث خطأ أثناء إضافة الفيديو. الرجاء المحاولة مرة أخرى.");
@@ -114,6 +128,19 @@ const AddVideo = () => {
             <option value="أولى ثانوي">أولى ثانوي</option>
             <option value="ثانية ثانوي">ثانية ثانوي</option>
             <option value="ثالثة ثانوي">ثالثة ثانوي</option>
+          </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="subject">المادة الدراسية :</label>
+          <select
+            id="subject"
+            name="subject"
+            value={videoData.subject}
+            onChange={handleChange}
+          >
+            <option value="">اختر المادة </option>
+            <option value="تاريخ">تاريخ </option>
+            <option value="جغرافيا">جغرافيا </option>
           </select>
         </div>
         <div className="form-group">

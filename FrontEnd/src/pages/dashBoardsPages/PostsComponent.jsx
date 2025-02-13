@@ -9,6 +9,7 @@ const CreatePostComponent = () => {
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   const [selectedYears, setSelectedYears] = useState([]);
+  const [subject, setSubject] = useState("");
 
   // List of years
   const years = ["الصف الأول", "الصف الثاني", "الصف الثالث"];
@@ -17,7 +18,7 @@ const CreatePostComponent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !details || selectedYears.length === 0) {
+    if (!title || !details || !subject || selectedYears.length === 0) {
       toast.error("يرجى تعبئة جميع الحقول!");
       return;
     }
@@ -31,23 +32,29 @@ const CreatePostComponent = () => {
         stage_two: selectedYears.includes("الصف الثاني"),
         stage_three: selectedYears.includes("الصف الثالث"),
       },
+      subject,
     };
 
     const accessToken = localStorage.getItem("accessToken");
 
     try {
       // Send POST request to API
-      await axios.post(`${process.env.REACT_APP_BASE_URL}/announcements`, newPost, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
+      await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/announcements`,
+        newPost,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       // Reset fields
       setTitle("");
       setDetails("");
       setSelectedYears([]);
+      setSubject("");
 
       // Show success toast
       toast.success("تم إنشاء الإعلان بنجاح!");
@@ -70,6 +77,10 @@ const CreatePostComponent = () => {
     } else {
       setSelectedYears([...selectedYears, year]);
     }
+  };
+
+  const handleSubjectChange = (event) => {
+    setSubject(event.target.value);
   };
 
   return (
@@ -118,6 +129,21 @@ const CreatePostComponent = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="subject">المادة الدراسية :</label>
+          <select
+            id="subject"
+            name="subject"
+            value={subject}
+            onChange={handleSubjectChange}
+          >
+            <option value="">اختر المادة </option>
+            <option value="تاريخ">تاريخ </option>
+            <option value="جغرافيا">جغرافيا </option>
+            <option value="تاريخ وجغرافيا">تاريخ وجغرافيا </option>
+          </select>
         </div>
 
         <button type="submit" className="submit-btn">

@@ -11,6 +11,7 @@ const AllPostsComponent = () => {
   const [editingPost, setEditingPost] = useState(null);
   const [editContent, setEditContent] = useState("");
   const [editTitle, setEditTitle] = useState("");
+  const [editSubject, setEditSubject] = useState("");
   const [editStages, setEditStages] = useState({
     stage_one: false,
     stage_two: false,
@@ -55,6 +56,7 @@ const AllPostsComponent = () => {
   const viewPostDetails = (post) => {
     setSelectedPost(post);
     setEditingPost(null); // Exit editing mode
+    setEditSubject(post.subject);
   };
 
   // Function to open edit mode
@@ -68,11 +70,12 @@ const AllPostsComponent = () => {
       stage_three: post.stage.stage_three,
     });
     setSelectedPost(null); // Exit details view
+    setEditSubject(post.subject);
   };
 
   // Function to save edited post
   const saveEditPost = async () => {
-    if (!editTitle.trim() || !editContent.trim()) {
+    if (!editTitle.trim() || !editContent.trim() || !editSubject.trim()) {
       toast.error("العنوان ومحتوى الإعلان لا يمكن أن يكونا فارغين!");
       return;
     }
@@ -90,8 +93,6 @@ const AllPostsComponent = () => {
     const accessToken = localStorage.getItem("accessToken");
 
     try {
-      
-
       // Update the announcement on the server
       const response = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/announcements/${editingPost._id}`,
@@ -117,6 +118,7 @@ const AllPostsComponent = () => {
                 title: response.data.title,
                 description: response.data.description,
                 stage: response.data.stage,
+                subject: response.data.subject,
               }
             : post
         )
@@ -141,6 +143,7 @@ const AllPostsComponent = () => {
   const cancelEdit = () => {
     setEditingPost(null);
     setEditTitle("");
+    setSelectedPost("");
     setEditContent("");
     setEditStages({
       stage_one: false,
@@ -158,11 +161,14 @@ const AllPostsComponent = () => {
 
       try {
         // Delete the announcement from the server
-        await axios.delete(`${process.env.REACT_APP_BASE_URL}/announcements/${id}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        await axios.delete(
+          `${process.env.REACT_APP_BASE_URL}/announcements/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
         // Remove the announcement locally
         setPosts(posts.filter((post) => post._id !== id));
@@ -213,6 +219,7 @@ const AllPostsComponent = () => {
                 <li key={post._id} className="post-item">
                   <div className="post-content">
                     <h4>{post.title}</h4>
+                    <h5>{post.subject}</h5>
                     <ul>
                       {post.stage.stage_one && (
                         <li>المرحلة الدراسية: أولى ثانوي</li>

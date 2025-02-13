@@ -11,6 +11,7 @@ const AddUser = () => {
     username: "",
     password: "",
     stage: "",
+    subject: "",
   });
 
   // Handle form input changes
@@ -43,6 +44,10 @@ const AddUser = () => {
       toast.error("الرجاء اختيار المرحلة الدراسية!");
       return;
     }
+    if (user.type === "admin" && (!user.stage || !user.subject)) {
+      toast.error("الرجاء اختيار المرحلة الدراسية والمادة!");
+      return;
+    }
 
     // إعداد بيانات الطلب
     const requestData = {
@@ -51,6 +56,7 @@ const AddUser = () => {
       password: user.password,
       role: user.type,
       stage: user.type === "student" ? user.stage : undefined, // إذا كان مشرفًا، لا يتم إرسال المرحلة الدراسية
+      subject: user.type === "student" ? user.subject : undefined,
     };
 
     try {
@@ -70,9 +76,8 @@ const AddUser = () => {
         username: "",
         password: "",
         stage: "",
+        subject: "",
       });
-
-  
     } catch (error) {
       // معالجة الأخطاء
       console.error("Error adding user:", error);
@@ -147,6 +152,18 @@ const AddUser = () => {
                 <option value="أولى ثانوي">أولى ثانوي</option>
                 <option value="ثانية ثانوي">ثانية ثانوي</option>
                 <option value="ثالثة ثانوي">ثالثة ثانوي</option>
+              </select>
+              <label htmlFor="stage">المادة :</label>
+              <select
+                id="subject"
+                name="subject"
+                value={user.subject}
+                onChange={handleChange}
+              >
+                <option value="">اختر المادة </option>
+                <option value="تاريخ">تاريخ </option>
+                <option value="جغرافيا">جغرافيا </option>
+                <option value="تاريخ وجغرافيا">تاريخ وجغرافيا </option>
               </select>
             </div>
           )}
