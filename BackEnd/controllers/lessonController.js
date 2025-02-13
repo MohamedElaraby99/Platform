@@ -2,12 +2,16 @@ const Lesson = require("../models/Lesson");
 
 const getAllLessons = async (req, res) => {
   try {
-    const { role, stage, subject } = req;    
+    const { role, stage, subject } = req;
+    console.log('subject', subject);
+        
     let lessons;
     if (role === "admin") {
       lessons = await Lesson.find();
     } else if (stage) {
       lessons = await Lesson.find({ stage, subject : subject === "تاريخ وجغرافيا" ? { $exists: true } : subject });
+      console.log(lessons);
+      
     } else {
       // If the user has no stage (and is not admin), return an error
       return res.status(403).json({ message: "Access denied" });

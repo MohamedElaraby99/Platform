@@ -57,7 +57,7 @@ const createAnnouncement = async (req, res) => {
       return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
     }
 
-    if (["تاريخ وجغرافيا", "جغرافيا", "تاريخ"].includes(subject)) {
+    if (!["تاريخ وجغرافيا", "جغرافيا", "تاريخ"].includes(subject)) {
       return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
     }
 
@@ -121,7 +121,7 @@ const updateAnnouncement = async (req, res) => {
       return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
     }
 
-    if (["تاريخ وجغرافيا", "جغرافيا", "تاريخ"].includes(subject)) {
+    if (!["تاريخ وجغرافيا", "جغرافيا", "تاريخ"].includes(subject)) {
       return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
     }
 

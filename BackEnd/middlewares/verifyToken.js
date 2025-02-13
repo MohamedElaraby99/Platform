@@ -17,6 +17,7 @@ const verifyJWT = (req, res, next) => {
     req.user_id = decoded.userInfo.id;
     req.role = decoded.userInfo.role; // Assume the role is in userInfo
     req.stage = decoded.userInfo.stage; // Assume the stage is in userInfo
+    req.subject = decoded.userInfo.subject;
     console.log(req.user_id, req.role, req.stage);
 
     next();

@@ -51,7 +51,7 @@ const uploadFile = async (req, res) => {
     if (!["ثالثة ثانوي", "ثانية ثانوي", "أولى ثانوي"].includes(stage)) {
       return res.status(400).json({ message: "المرحلة الدراسية غير صالحة" });
     }
-    if (["جغرافيا", "تاريخ"].includes(subject)) {
+    if (!["جغرافيا", "تاريخ"].includes(subject)) {
       return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
     }
 
@@ -98,7 +98,7 @@ const updateFile = async (req, res) => {
       return res.status(400).json({ message: "المرحلة الدراسية غير صالحة" });
     }
 
-    if (["جغرافيا", "تاريخ"].includes(subject)) {
+    if (!["جغرافيا", "تاريخ"].includes(subject)) {
       return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
     }
 
