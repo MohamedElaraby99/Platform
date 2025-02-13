@@ -4,7 +4,7 @@ const path = require("path");
 
 const getFiles = async (req, res) => {
   try {
-    const { role, stage } = req;
+    const { role, stage, subject } = req;
     let files;
 
     if (role === "admin") {
@@ -12,7 +12,10 @@ const getFiles = async (req, res) => {
       files = await File.find();
     } else if (stage) {
       // Filter files by stage for non-admin users
-      files = await File.find({ stage });
+      files = await File.find({
+        stage,
+        subject: subject === "تاريخ وجغرافيا" ? { $exists: true } : subject,
+      });
     } else {
       // If the user has no stage (and is not admin), return an error
       return res.status(403).json({ message: "Access denied" });
@@ -33,7 +36,7 @@ const getFiles = async (req, res) => {
 // Upload a file with metadata
 const uploadFile = async (req, res) => {
   try {
-    const { title, stage } = req.body;
+    const { title, stage, subject } = req.body;
 
     // Validate required fields
     if (!req.file) {
@@ -48,30 +51,20 @@ const uploadFile = async (req, res) => {
     if (!["ثالثة ثانوي", "ثانية ثانوي", "أولى ثانوي"].includes(stage)) {
       return res.status(400).json({ message: "المرحلة الدراسية غير صالحة" });
     }
+    if (["جغرافيا", "تاريخ"].includes(subject)) {
+      return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
+    }
 
     console.log(req.file);
 
     const fileUrl = `/uploads/${req.file.filename}`;
-
-    // Check if file is Base64
-    // const isBase64 = (str) => {
-    //   const base64Regex =
-    //     /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/;
-    //   return base64Regex.test(str);
-    // };
-
-    // const base64Data = file.split(",")[1]; // Extract after the comma
-    // if (!isBase64(base64Data)) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "صيغة الملف غير صالحة. يجب أن تكون Base64" });
-    // }
 
     // Save metadata in a separate collection
     const newfile = new File({
       title,
       stage,
       file: fileUrl,
+      subject,
     });
 
     await newfile.save();
@@ -80,6 +73,8 @@ const uploadFile = async (req, res) => {
       fileId: newfile._id,
       title: newfile.title,
       stage: newfile.stage,
+      subject: newfile.subject,
+
       file: `${process.env.BASE_URL}${fileUrl}`, // Include the base URL
     });
   } catch (error) {
@@ -91,7 +86,7 @@ const uploadFile = async (req, res) => {
 const updateFile = async (req, res) => {
   const { id } = req.params;
   try {
-    const { title, stage } = req.body;
+    const { title, stage , subject} = req.body;
     // Validate required fields
     if (!title) {
       return res.status(400).json({ message: "العنوان مطلوب" });
@@ -101,6 +96,10 @@ const updateFile = async (req, res) => {
     }
     if (!["ثالثة ثانوي", "ثانية ثانوي", "أولى ثانوي"].includes(stage)) {
       return res.status(400).json({ message: "المرحلة الدراسية غير صالحة" });
+    }
+
+    if (["جغرافيا", "تاريخ"].includes(subject)) {
+      return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
     }
 
     // Fetch the existing file record
@@ -140,6 +139,7 @@ const updateFile = async (req, res) => {
         title,
         stage,
         file: fileUrl,
+        subject
       },
       { new: true } // Return the updated document
     );
@@ -148,6 +148,7 @@ const updateFile = async (req, res) => {
       fileId: updatedFile._id,
       title: updatedFile.title,
       stage: updatedFile.stage,
+      subject: updatedFile.subject,
       file: `${process.env.BASE_URL}${updatedFile.file}`, // Include the updated file URL
     });
   } catch (error) {
