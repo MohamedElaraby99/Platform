@@ -23,7 +23,7 @@ const lessonSchema = new mongoose.Schema(
     },
     subject: {
       type: String,
-      enum: ["تاريخ وجغرافيا","جغرافيا", "تاريخ"],
+      enum: ["جغرافيا", "تاريخ"],
       required: true,
     },
   },
