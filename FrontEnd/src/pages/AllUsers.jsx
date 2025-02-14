@@ -45,7 +45,7 @@ const AllUsers = () => {
 
   const handleEdit = (user) => {
     setEditingUser(user);
-    setEditData({ ...user , subject: "تاريخ وجغرافيا"});
+    setEditData({ ...user });
   };
 
   const handleEditChange = (e) => {
