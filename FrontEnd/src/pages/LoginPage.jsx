@@ -29,7 +29,7 @@ const LoginForm = ({ setRole }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // Make the API request to the login endpoint
+      
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/auth/login`,
         {
@@ -38,12 +38,18 @@ const LoginForm = ({ setRole }) => {
         }
       );
 
-      const { role, accessToken } = response.data;
+      console.log(response.data);
+      
+
+      const { role, accessToken, name, stage, subject } = response.data;
 
       // Set role and token in localStorage
       setRole(role);
       localStorage.setItem("role", role);
       localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("name", name);
+      localStorage.setItem("stage", stage);
+      localStorage.setItem("subject", subject);
 
       // If "Remember Me" is checked, save username and password
       if (rememberMe) {

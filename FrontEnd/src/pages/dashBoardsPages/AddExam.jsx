@@ -63,10 +63,8 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
       questions,
       stage: examDetails.stage,
       type: examDetails.type,
-      subject: examDetails.subject
+      subject: examDetails.subject,
     };
-
-  
 
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -92,7 +90,6 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
         subject: "",
       });
       setQuestions([]);
-    
     } catch (error) {
       console.error("حدث خطأ أثناء إنشاء الامتحان:", error);
       toast.error("حدث خطأ أثناء إنشاء الامتحان. حاول مرة أخرى.");
@@ -185,6 +182,22 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
             </option>
             <option value="تاريخ">تاريخ</option>
             <option value="جغرافيا">جغرافيا</option>
+          </select>
+        </label>
+        <label>
+          الوحدة:
+          <select name="unit">
+            <option value="" disabled>
+              اختر الوحدة
+            </option>
+            <option value="">الوحدة الأولى</option>
+            <option value="">الوحدة الثانية</option>
+            <option value="">الوحدة الثالثة</option>
+            <option value="">الوحدة الرابعة</option>
+            <option value="">الوحدة الخامسة</option>
+            <option value="">الوحدة السادسة</option>
+            <option value="">الوحدة السابعة</option>
+            <option value="">الوحدة الثامنة</option>
           </select>
         </label>
       </div>

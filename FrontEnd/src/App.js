@@ -30,6 +30,8 @@ import AllPostsComponent from "./pages/AllPostsComponent";
 import ScrollToTop from "./components/ScrollTop";
 import About from "./pages/about";
 import ResultComponent from "./pages/ResultComponent";
+import History from "./pages/History";
+import Geog from "./pages/Geog";
 
 const App = () => {
   const [role, setRole] = useState(null);
@@ -63,6 +65,8 @@ const App = () => {
             <Routes>
               <Route path="/home" element={<HomePage />} />
               <Route path="/courses" element={<CoursesPage />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/geog" element={<Geog />} />
               <Route path="/video-details/:id" element={<VideoDetailsPage />} />
               <Route path="/exams" element={<ExamsPage />} />
               <Route path="/exams/details/:id" element={<ExamDetails />} />

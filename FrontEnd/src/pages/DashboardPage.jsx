@@ -21,16 +21,23 @@ const Dashboard = () => {
 
   const [totalExams, setTotalExams] = useState(0);
 
+  const savedData = {
+    name: localStorage.getItem("name"),
+  };
+
   // دالة لجلب بيانات المستخدمين من الـ API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة من Local Storage
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/users`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
+            },
+          }
+        );
         setTotalUsers(response.data.length); // تخزين عدد المستخدمين
       } catch (error) {
         console.error("حدث خطأ أثناء جلب بيانات المستخدمين:", error);
@@ -45,11 +52,14 @@ const Dashboard = () => {
     const fetchLessons = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة من Local Storage
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/lessons`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, // إضافة رمز المصادقة إلى الرؤوس
+            },
+          }
+        );
         setTotalLessons(response.data.length); // تخزين عدد الدروس
       } catch (error) {
         console.error("حدث خطأ أثناء جلب بيانات الدروس:", error);
@@ -85,11 +95,14 @@ const Dashboard = () => {
     const fetchExams = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/files`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/files`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setTotalFiles(response.data.length); // تخزين عدد الملفات
       } catch (error) {
         console.error("حدث خطأ أثناء جلب بيانات الملفات:", error);
@@ -99,16 +112,18 @@ const Dashboard = () => {
     fetchExams();
   }, []);
 
-
   useEffect(() => {
     const fetchFiles = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/exams`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/exams`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setTotalExams(response.data.length); // تخزين عدد الملفات
       } catch (error) {
         console.error("حدث خطأ أثناء جلب بيانات الامتحانات:", error);
@@ -126,8 +141,10 @@ const Dashboard = () => {
     >
       <header className="dashboard-header">
         <div>
-          <h1>نظرة عامة على اللوحة</h1>
-          <p className="dashboard-welcome">مرحباً بك من جديد، مستر محمود</p>
+          <h1> لوحة تحكم المنصة </h1>
+          <p className="dashboard-welcome">
+            مرحباً بك من جديد، {savedData.name}{" "}
+          </p>
         </div>
       </header>
 

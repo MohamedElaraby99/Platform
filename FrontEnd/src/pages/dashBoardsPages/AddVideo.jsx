@@ -26,7 +26,8 @@ const AddVideo = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { title, youtubeLink, stage, description, notes , subject } = videoData;
+    const { title, youtubeLink, stage, description, notes, subject } =
+      videoData;
 
     // تحقق من أن الحقول ليست فارغة
     if (
@@ -141,6 +142,23 @@ const AddVideo = () => {
             <option value="">اختر المادة </option>
             <option value="تاريخ">تاريخ </option>
             <option value="جغرافيا">جغرافيا </option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="subject"> اختر الوحدة :</label>
+          <select name="unit">
+            <option value="" disabled>
+              اختر الوحدة
+            </option>
+            <option value="">الوحدة الأولى</option>
+            <option value="">الوحدة الثانية</option>
+            <option value="">الوحدة الثالثة</option>
+            <option value="">الوحدة الرابعة</option>
+            <option value="">الوحدة الخامسة</option>
+            <option value="">الوحدة السادسة</option>
+            <option value="">الوحدة السابعة</option>
+            <option value="">الوحدة الثامنة</option>
           </select>
         </div>
         <div className="form-group">

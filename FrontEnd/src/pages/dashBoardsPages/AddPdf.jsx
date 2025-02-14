@@ -172,6 +172,23 @@ const AddPdf = () => {
             </select>
           </div>
 
+          <div className="form-group">
+            <label htmlFor="subject"> اختر الوحدة :</label>
+            <select name="unit">
+              <option value="" disabled>
+                اختر الوحدة
+              </option>
+              <option value="">الوحدة الأولى</option>
+              <option value="">الوحدة الثانية</option>
+              <option value="">الوحدة الثالثة</option>
+              <option value="">الوحدة الرابعة</option>
+              <option value="">الوحدة الخامسة</option>
+              <option value="">الوحدة السادسة</option>
+              <option value="">الوحدة السابعة</option>
+              <option value="">الوحدة الثامنة</option>
+            </select>
+          </div>
+
           <button type="submit" className="submit-button">
             إضافة ملف PDF
           </button>
