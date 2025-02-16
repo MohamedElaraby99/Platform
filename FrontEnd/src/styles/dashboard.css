@@ -10,6 +10,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  justify-content: center;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  color: #2c3e50;
 }
 
 .invisible-char {

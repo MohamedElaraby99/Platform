@@ -57,7 +57,7 @@ const AllUsers = () => {
   };
 
   const handleEditSave = async () => {
-    if (!editData.name || !editData.username || !editData.password || !editData.subject) {
+    if (!editData.name || !editData.username || !editData.password ) {
       alert("يرجى ملء جميع الحقول قبل الحفظ!");
       return;
     }

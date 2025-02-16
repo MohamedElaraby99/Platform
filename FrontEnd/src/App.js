@@ -30,51 +30,12 @@ import AllPostsComponent from "./pages/AllPostsComponent";
 import ScrollToTop from "./components/ScrollTop";
 import About from "./pages/about";
 import ResultComponent from "./pages/ResultComponent";
+import History from "./pages/History";
+import Geog from "./pages/Geog";
 
 const App = () => {
   const [role, setRole] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
-
-  useEffect(() => {
-    // منع النقر الأيمن
-    const handleContextMenu = (e) => {
-      e.preventDefault();
-      return false;
-    };
-
-    // منع اختصارات لوحة المفاتيح
-    const handleKeyDown = (e) => {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && e.key === "I") || // Ctrl+Shift+I
-        (e.ctrlKey && e.shiftKey && e.key === "J") || // Ctrl+Shift+J
-        (e.ctrlKey && e.key === "U") // Ctrl+U
-      ) {
-        e.preventDefault();
-        alert("غير مسموح بفتح أدوات المطور!");
-      }
-    };
-
-    // اكتشاف فتح الأدوات
-    const checkDevTools = () => {
-      const widthThreshold = window.outerWidth - window.innerWidth > 160;
-      const heightThreshold = window.outerHeight - window.innerHeight > 160;
-      if (widthThreshold || heightThreshold) {
-        window.location.href = "/blocked";
-      }
-    };
-
-
-    document.addEventListener("contextmenu", handleContextMenu);
-    document.addEventListener("keydown", handleKeyDown);
-    const devToolsCheckInterval = setInterval(checkDevTools, 1000);
-
-    return () => {
-      document.removeEventListener("contextmenu", handleContextMenu);
-      document.removeEventListener("keydown", handleKeyDown);
-      clearInterval(devToolsCheckInterval);
-    };
-  }, []);
 
   useEffect(() => {
     const savedRole = localStorage.getItem("role");
@@ -88,7 +49,6 @@ const App = () => {
     setRole(null);
   };
 
-
   return (
     <Router>
       <ScrollToTop />
@@ -98,18 +58,15 @@ const App = () => {
         ) : !role ? (
           <Routes>
             <Route path="/login" element={<LoginForm setRole={setRole} />} />
-            <Route
-              path="/blocked"
-              element={<div>غير مسموح بفتح أدوات المطور!</div>}
-            />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         ) : (
           <Layout role={role} onSignOut={handleSignOut}>
             <Routes>
-              {/* ... جميع المسارات الموجودة مسبقًا ... */}
               <Route path="/home" element={<HomePage />} />
               <Route path="/courses" element={<CoursesPage />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/geog" element={<Geog />} />
               <Route path="/video-details/:id" element={<VideoDetailsPage />} />
               <Route path="/exams" element={<ExamsPage />} />
               <Route path="/exams/details/:id" element={<ExamDetails />} />
@@ -134,10 +91,6 @@ const App = () => {
               {role === "admin" && (
                 <Route path="/dashboard" element={<DashboardPage />} />
               )}
-              <Route
-                path="/blocked"
-                element={<div>غير مسموح بفتح أدوات المطور!</div>}
-              />
               <Route path="*" element={<Navigate to="/home" />} />
             </Routes>
             <Footer />
