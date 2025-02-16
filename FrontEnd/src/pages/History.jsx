@@ -7,7 +7,7 @@ import {
   FaChevronDown,
   FaChevronUp,
 } from "react-icons/fa";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./../styles/History.css";
 
 const History = () => {
@@ -73,7 +73,9 @@ const History = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={() => navigate("/courses")}
+                onClick={() =>
+                  navigate("/courses", { state: { subject: "تاريخ", unit: 1 } })
+                }
               >
                 {unit.title}
               </div>

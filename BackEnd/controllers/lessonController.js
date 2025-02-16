@@ -3,11 +3,14 @@ const Lesson = require("../models/Lesson");
 const getAllLessons = async (req, res) => {
   try {
     const { role, stage } = req;
-    const { subject, unit } = req.params;
+    const { subject, unit } = req.query;
+    
     let lessons;
+    
     if (role === "admin") {
       lessons = await Lesson.find();
-    } else if (stage) {
+    }
+    if (stage || subject || unit) {
       lessons = await Lesson.find({
         stage,
         subject,

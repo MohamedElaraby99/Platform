@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "./../styles/courses.css";
 import Loader from "./Loader";
 
 const CoursesPage = () => {
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const {subject} = location.state;
+
 
   // حالة لتخزين الفيديوهات
   const [videos, setVideos] = useState([]);
@@ -17,7 +21,7 @@ const CoursesPage = () => {
     const fetchVideos = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons`, {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons?subject=${subject}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`, // تضمين التوكن
           },

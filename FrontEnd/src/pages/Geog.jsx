@@ -74,7 +74,7 @@ const Geog = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={() => navigate("/courses")}
+                onClick={() => navigate("/courses",  { subject: "جغرافيا", unit: 1 })}
               >
                 {unit.title}
               </div>

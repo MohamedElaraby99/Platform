@@ -10,6 +10,7 @@ const AddPdf = () => {
     file: null,
     stage: "",
     subject: "",
+    unit: "",
   });
 
   const [message, setMessage] = useState("");
@@ -45,7 +46,13 @@ const AddPdf = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!pdfData.name || !pdfData.file || !pdfData.stage || !pdfData.subject) {
+    if (
+      !pdfData.name ||
+      !pdfData.file ||
+      !pdfData.stage ||
+      !pdfData.subject ||
+      !pdfData.unit
+    ) {
       setMessage("الرجاء ملء جميع الحقول");
       return;
     }
@@ -55,6 +62,7 @@ const AddPdf = () => {
     formData.append("file", pdfData.file);
     formData.append("stage", pdfData.stage);
     formData.append("subject", pdfData.subject);
+    formData.append("unit", pdfData.unit);
 
     const accessToken = localStorage.getItem("accessToken");
 
@@ -80,6 +88,7 @@ const AddPdf = () => {
         file: null,
         stage: "",
         subject: "",
+        unit: "",
       });
     } catch (error) {
       console.error("Error adding file:", error);
@@ -168,24 +177,28 @@ const AddPdf = () => {
               <option value="disabled">اختر المادة </option>
               <option value="تاريخ">تاريخ </option>
               <option value="جغرافيا">جغرافيا </option>
-              <option value="تاريخ وجغرافيا">تاريخ وجغرافيا </option>
             </select>
           </div>
 
           <div className="form-group">
             <label htmlFor="subject"> اختر الوحدة :</label>
-            <select name="unit">
+            <select
+              id="unit"
+              name="unit"
+              value={pdfData.unit}
+              onChange={handleChange}
+            >
               <option value="" disabled>
                 اختر الوحدة
               </option>
-              <option value="">الوحدة الأولى</option>
-              <option value="">الوحدة الثانية</option>
-              <option value="">الوحدة الثالثة</option>
-              <option value="">الوحدة الرابعة</option>
-              <option value="">الوحدة الخامسة</option>
-              <option value="">الوحدة السادسة</option>
-              <option value="">الوحدة السابعة</option>
-              <option value="">الوحدة الثامنة</option>
+              <option value="1h">الوحدة الأولى</option>
+              <option value="2h">الوحدة الثانية</option>
+              <option value="3h">الوحدة الثالثة</option>
+              <option value="4h">الوحدة الرابعة</option>
+              <option value="5h">الوحدة الخامسة</option>
+              <option value="6h">الوحدة السادسة</option>
+              <option value="7h">الوحدة السابعة</option>
+              <option value="8h">الوحدة الثامنة</option>
             </select>
           </div>
 
