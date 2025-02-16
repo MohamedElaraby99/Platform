@@ -34,7 +34,7 @@ const getAllLessons = async (req, res) => {
 };
 
 const createLesson = async (req, res) => {
-  const { title, lesson_link, stage, description, notes, subject } = req.body;
+  const { title, lesson_link, stage, description, notes, subject, unit } = req.body;
   if (!title) {
     return res.status(400).json({ message: " العنوان مطلوب" });
   }
@@ -47,6 +47,9 @@ const createLesson = async (req, res) => {
   if (!subject) {
     return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
   }
+  if (!unit) {
+    return res.status(400).json({ message: "الوحدة مطلوبة" });
+  }
 
   try {
     const lesson = new Lesson({
@@ -56,6 +59,7 @@ const createLesson = async (req, res) => {
       description,
       notes,
       subject,
+      unit,
     });
     await lesson.save();
 
@@ -69,7 +73,7 @@ const createLesson = async (req, res) => {
 
 const updateLesson = async (req, res) => {
   const { id } = req.params;
-  const { title, lesson_link, stage, description, notes, subject } = req.body;
+  const { title, lesson_link, stage, description, notes, subject, unit } = req.body;
   if (!title) {
     return res.status(400).json({ message: "العنوان مطلوب" });
   }
@@ -84,6 +88,9 @@ const updateLesson = async (req, res) => {
     return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
   }
 
+  if (!unit) {
+    return res.status(400).json({ message: "الوحدة مطلوبة" });
+  }
   const lesson = await Lesson.findByIdAndUpdate(id, req.body);
 
   if (!lesson) {
