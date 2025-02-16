@@ -568,3 +568,21 @@ body {
     font-size: 1.5rem;
   }
 }
+
+.logo-container {
+  opacity: 0;
+  transform: translateX(30px);
+  animation: fadeInUp 0.9s forwards;
+  -webkit-animation: fadeInUp 0.9s forwards;
+  -webkit-transform: translateX(30px);
+  -moz-transform: translateX(30px);
+  -ms-transform: translateX(30px);
+  -o-transform: translateX(30px);
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
