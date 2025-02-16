@@ -4,18 +4,26 @@ const getAllLessons = async (req, res) => {
   try {
     const { role, stage } = req;
     const { subject, unit } = req.query;
-    
+
     let lessons;
-    
+
     if (role === "admin") {
+      if (stage || subject || unit) {
+        lessons = await Lesson.find({
+          stage: stage === "" ? { $exists: true } : stage,
+          subject: subject === "" ? { $exists: true } : subject,
+          unit: unit === "" ? { $exists: true } : unit,
+        });
+      }
       lessons = await Lesson.find();
-    }
-    if (stage || subject || unit) {
-      lessons = await Lesson.find({
-        stage,
-        subject,
-        unit,
-      });
+    } else if (role !== "admin") {
+      if (stage || subject || unit) {
+        lessons = await Lesson.find({
+          stage,
+          subject,
+          unit,
+        });
+      }
     } else {
       // If the user has no stage (and is not admin), return an error
       return res.status(403).json({ message: "Access denied" });
