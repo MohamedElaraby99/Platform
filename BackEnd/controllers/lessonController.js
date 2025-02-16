@@ -14,8 +14,7 @@ const getAllLessons = async (req, res) => {
           subject: subject === "" ? { $exists: true } : subject,
           unit: unit === "" ? { $exists: true } : unit,
         });
-      }
-      lessons = await Lesson.find();
+      } else lessons = await Lesson.find();
     } else if (role !== "admin") {
       if (stage || subject || unit) {
         lessons = await Lesson.find({
