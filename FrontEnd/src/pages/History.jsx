@@ -74,7 +74,7 @@ const History = () => {
                 key={unit.id}
                 className="unit-item"
                 onClick={() =>
-                  navigate("/courses", { state: { subject: "تاريخ", unit: 1 } })
+                  navigate("/courses", { state: { subject: "تاريخ", unit: unit.id} })
                 }
               >
                 {unit.title}

@@ -7,7 +7,7 @@ import FileInputComponent from "./../../pages/exams/FileInputComponent";
 import ManualInputComponent from "./../../pages/exams/ManualInputComponent";
 import moment from "moment";
 
-const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
+const CreateExamComponent = () => {
   const [questions, setQuestions] = useState([]);
   const [inputMode, setInputMode] = useState("file");
   const [examDetails, setExamDetails] = useState({
@@ -190,14 +190,14 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
             <option value="" disabled>
               اختر الوحدة
             </option>
-            <option value="">الوحدة الأولى</option>
-            <option value="">الوحدة الثانية</option>
-            <option value="">الوحدة الثالثة</option>
-            <option value="">الوحدة الرابعة</option>
-            <option value="">الوحدة الخامسة</option>
-            <option value="">الوحدة السادسة</option>
-            <option value="">الوحدة السابعة</option>
-            <option value="">الوحدة الثامنة</option>
+            <option value="1">الوحدة الأولى</option>
+            <option value="2">الوحدة الثانية</option>
+            <option value="3">الوحدة الثالثة</option>
+            <option value="4">الوحدة الرابعة</option>
+            <option value="5">الوحدة الخامسة</option>
+            <option value="6">الوحدة السادسة</option>
+            <option value="7">الوحدة السابعة</option>
+            <option value="8">الوحدة الثامنة</option>
           </select>
         </label>
       </div>

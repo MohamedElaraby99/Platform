@@ -53,7 +53,6 @@ const Geog = () => {
     }));
   };
 
-
   return (
     <div className="history-container">
       <header className="history-header">
@@ -74,7 +73,11 @@ const Geog = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={() => navigate("/courses",  { subject: "جغرافيا", unit: 1 })}
+                onClick={() =>
+                  navigate("/courses", {
+                    state: { subject: "جغرافيا", unit: unit.id },
+                  })
+                }
               >
                 {unit.title}
               </div>

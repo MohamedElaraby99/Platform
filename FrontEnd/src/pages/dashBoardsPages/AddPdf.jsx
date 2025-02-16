@@ -191,14 +191,14 @@ const AddPdf = () => {
               <option value="" disabled>
                 اختر الوحدة
               </option>
-              <option value="1h">الوحدة الأولى</option>
-              <option value="2h">الوحدة الثانية</option>
-              <option value="3h">الوحدة الثالثة</option>
-              <option value="4h">الوحدة الرابعة</option>
-              <option value="5h">الوحدة الخامسة</option>
-              <option value="6h">الوحدة السادسة</option>
-              <option value="7h">الوحدة السابعة</option>
-              <option value="8h">الوحدة الثامنة</option>
+              <option value="1">الوحدة الأولى</option>
+              <option value="2">الوحدة الثانية</option>
+              <option value="3">الوحدة الثالثة</option>
+              <option value="4">الوحدة الرابعة</option>
+              <option value="5">الوحدة الخامسة</option>
+              <option value="6">الوحدة السادسة</option>
+              <option value="7">الوحدة السابعة</option>
+              <option value="8">الوحدة الثامنة</option>
             </select>
           </div>
 

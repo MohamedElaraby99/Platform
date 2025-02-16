@@ -8,7 +8,7 @@ const CoursesPage = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const {subject} = location.state;
+  const {subject, unit} = location.state;
 
 
   // حالة لتخزين الفيديوهات
@@ -21,7 +21,7 @@ const CoursesPage = () => {
     const fetchVideos = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // الحصول على رمز المصادقة
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons?subject=${subject}`, {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/lessons?subject=${subject}&unit=${unit}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`, // تضمين التوكن
           },
