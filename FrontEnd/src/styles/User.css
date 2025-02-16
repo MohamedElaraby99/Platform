@@ -117,3 +117,10 @@
     font-size: 0.9rem;
   }
 }
+
+.user-page {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1.5s forwards;
+  -webkit-animation: fadeInUp 1.5s forwards;
+}

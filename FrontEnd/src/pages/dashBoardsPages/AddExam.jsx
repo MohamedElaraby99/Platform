@@ -133,7 +133,7 @@ const CreateExamComponent = () => {
               اختر نوع الامتحان
             </option>
             <option value="امتحان">امتحان</option>
-            <option value="تدريب">تدريبات</option>
+            <option value="تدريب">واجبات</option>
           </select>
         </label>
         <label>
