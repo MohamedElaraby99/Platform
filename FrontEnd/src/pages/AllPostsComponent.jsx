@@ -100,6 +100,7 @@ const AllPostsComponent = () => {
           title: editTitle,
           description: editContent,
           stage: editStages,
+          subject: editSubject, // Ensure subject is sent
         },
         {
           headers: {

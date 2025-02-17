@@ -22,10 +22,15 @@ const getAnnouncements = async (req, res) => {
       if (!stageKey) {
         return res.status(400).json({ message: "المرحلة غير معروفة" });
       }
-      // Filter announcements where the specific stage key is true
+
+      // Filter announcements where the specific stage key is true and subject matches
       announcements = await Announcement.find({
         [`stage.${stageKey}`]: true, // Dynamic query for nested field
-        subject: subject === "تاريخ وجغرافيا" ? { $exists: true } : subject,
+        $or: [
+          { subject: subject },
+          { subject: "تاريخ وجغرافيا" },
+          { subject: subject === "تاريخ" ? "تاريخ" : "جغرافيا" },
+        ],
       });
     } else {
       // If the user has no stage (and is not admin), return an error
@@ -34,6 +39,7 @@ const getAnnouncements = async (req, res) => {
 
     return res.status(200).json(announcements);
   } catch (error) {
+    console.error("Error retrieving announcements:", error);
     return res.status(500).json({ message: "حدث خطأ أثناء استرجاع الإعلان" });
   }
 };
@@ -91,7 +97,7 @@ const createAnnouncement = async (req, res) => {
 
     return res.status(200).json(announcement);
   } catch (error) {
-    console.error(error);
+    console.error("Error creating announcement:", error);
     return res.status(500).json({ message: "حدث خطأ أثناء إنشاء الإعلان" });
   }
 };
@@ -159,7 +165,7 @@ const updateAnnouncement = async (req, res) => {
 
     return res.status(200).json(announcement);
   } catch (error) {
-    console.error(error);
+    console.error("Error updating announcement:", error);
     return res.status(500).json({ message: "حدث خطأ أثناء تحديث الإعلان" });
   }
 };
@@ -173,6 +179,7 @@ const deleteAnnouncement = async (req, res) => {
     }
     return res.status(200).json({ message: "تم حذف الإعلان بنجاح" });
   } catch (error) {
+    console.error("Error deleting announcement:", error);
     return res.status(500).json({ message: "حدث خطأ أثناء حذف الإعلان" });
   }
 };
