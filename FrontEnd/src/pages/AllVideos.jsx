@@ -208,7 +208,7 @@ const AllVideos = () => {
                 {editingVideo && editingVideo._id === video._id ? (
                   <td>
                     <input
-                      type="text"
+                      type="number"
                       name="unit"
                       value={editingVideo.unit}
                       onChange={handleEditChange}
