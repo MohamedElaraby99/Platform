@@ -151,10 +151,13 @@ const AddVideo = () => {
 
         <div className="form-group">
           <label htmlFor="subject"> اختر الوحدة :</label>
-          <select name="unit" value={videoData.unit} onChange={handleChange}>
-            <option value="" disabled>
-              اختر الوحدة
-            </option>
+          <select
+            name="unit"
+            type="number"
+            value={videoData.unit}
+            onChange={handleChange}
+          >
+            <option value="disabled">اختر الوحدة</option>
             <option value="0">الوحدة التمهيدية </option>
             <option value="1">الوحدة الأولى</option>
             <option value="2">الوحدة الثانية</option>
