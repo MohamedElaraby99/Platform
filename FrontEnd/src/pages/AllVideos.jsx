@@ -131,7 +131,6 @@ const AllVideos = () => {
               <th>الرابط</th>
               <th>المرحلة الدراسية</th>
               <th>المادة الدراسية</th>
-              <th>الوحدة</th>
               <th>الوصف</th>
               <th>الملاحظات</th>
               <th>الإجراءات</th>
@@ -203,20 +202,6 @@ const AllVideos = () => {
                   </td>
                 ) : (
                   <td>{video.subject}</td>
-                )}
-
-                {editingVideo && editingVideo._id === video._id ? (
-                  <td>
-                    <input
-                      type="number"
-                      name="unit"
-                      value={editingVideo.unit}
-                      onChange={handleEditChange}
-                      className="edit-input"
-                    />
-                  </td>
-                ) : (
-                  <td>{video.unit}</td>
                 )}
 
                 <td>
