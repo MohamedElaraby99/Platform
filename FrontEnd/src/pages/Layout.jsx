@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./../styles/Layout.css";
 
-const Layout = ({ children, role, onSignOut }) => {
+const Layout = ({ children, role }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -13,6 +13,7 @@ const Layout = ({ children, role, onSignOut }) => {
 
   // إدارة حالة التمرير
   useEffect(() => {
+    
     if (isSidebarOpen) {
       document.body.classList.add("menu-open");
     } else {
@@ -87,26 +88,16 @@ const Layout = ({ children, role, onSignOut }) => {
                 <span className="material-icons">home</span> الرئيسية
               </Link>
             </li>
-            <li
-              className={
-                location.pathname.startsWith("/courses") ? "active" : ""
-              }
-            >
-              <Link to="/courses">
-                <span className="material-icons">book</span> الفيديوهات
-                التعليمية
+            <li className={location.pathname === "/history" ? "active" : ""}>
+              <Link to="/history">
+                <span class="material-icons">history_edu</span>
+                التاريخ
               </Link>
             </li>
-            <li
-              className={location.pathname.startsWith("/exams") ? "active" : ""}
-            >
-              <Link to="/exams">
-                <span className="material-icons">edit</span> الامتحانات
-              </Link>
-            </li>
-            <li className={location.pathname === "/pdf" ? "active" : ""}>
-              <Link to="/pdf">
-                <span className="material-icons">picture_as_pdf</span> ملفات PDF
+            <li className={location.pathname === "/geog" ? "active" : ""}>
+              <Link to="/geog">
+                <span class="material-icons">public</span>
+                الجغرافيا
               </Link>
             </li>
             {role === "admin" && (
@@ -116,7 +107,7 @@ const Layout = ({ children, role, onSignOut }) => {
                 }
               >
                 <Link to="/dashboard">
-                  <span className="material-icons">settings</span> لوحة التحكم
+                  <span className="material-icons">settings</span>  التحكم
                 </Link>
               </li>
             )}
@@ -124,7 +115,9 @@ const Layout = ({ children, role, onSignOut }) => {
         </aside>
 
         <div className="page-content">
-          <div className={` ${isSidebarOpen ? "content-top-open" : "content-top"}`}>
+          <div
+            className={` ${isSidebarOpen ? "content-top-open" : "content-top"}`}
+          >
             {children}
           </div>
         </div>

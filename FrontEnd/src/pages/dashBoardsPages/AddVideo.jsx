@@ -10,6 +10,7 @@ const AddVideo = () => {
     subject: "",
     description: "", // وصف الفيديو
     notes: "", // ملاحظات الفيديو
+    unit: "",
   });
 
   const [message, setMessage] = useState("");
@@ -26,7 +27,8 @@ const AddVideo = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { title, youtubeLink, stage, description, notes , subject } = videoData;
+    const { title, youtubeLink, stage, description, notes, subject, unit } =
+      videoData;
 
     // تحقق من أن الحقول ليست فارغة
     if (
@@ -35,7 +37,8 @@ const AddVideo = () => {
       !stage ||
       !description ||
       !notes ||
-      !subject
+      !subject ||
+      !unit
     ) {
       setMessage("");
       setError("الرجاء ملء جميع الحقول.");
@@ -50,6 +53,7 @@ const AddVideo = () => {
       description,
       notes,
       subject,
+      unit,
     };
 
     try {
@@ -79,6 +83,7 @@ const AddVideo = () => {
         description: "",
         notes: "",
         subject: "",
+        unit: "",
       });
     } catch (err) {
       setError("حدث خطأ أثناء إضافة الفيديو. الرجاء المحاولة مرة أخرى.");
@@ -141,6 +146,24 @@ const AddVideo = () => {
             <option value="">اختر المادة </option>
             <option value="تاريخ">تاريخ </option>
             <option value="جغرافيا">جغرافيا </option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="subject"> اختر الوحدة :</label>
+          <select name="unit" value={videoData.unit} onChange={handleChange}>
+            <option value="" disabled>
+              اختر الوحدة
+            </option>
+            <option value="0">الوحدة التمهيدية </option>
+            <option value="1">الوحدة الأولى</option>
+            <option value="2">الوحدة الثانية</option>
+            <option value="3">الوحدة الثالثة</option>
+            <option value="4">الوحدة الرابعة</option>
+            <option value="5">الوحدة الخامسة</option>
+            <option value="6">الوحدة السادسة</option>
+            <option value="7">الوحدة السابعة</option>
+            <option value="8">الوحدة الثامنة</option>
           </select>
         </div>
         <div className="form-group">

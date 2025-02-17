@@ -2,16 +2,26 @@ const Lesson = require("../models/Lesson");
 
 const getAllLessons = async (req, res) => {
   try {
-    const { role, stage, subject } = req;
-    console.log('subject', subject);
-        
+    const { role, stage } = req;
+    const { subject, unit } = req.query;
+
     let lessons;
     if (role === "admin") {
-      lessons = await Lesson.find();
-    } else if (stage) {
-      lessons = await Lesson.find({ stage, subject : subject === "تاريخ وجغرافيا" ? { $exists: true } : subject });
-      console.log(lessons);
-      
+      if (stage || subject || unit) {
+        lessons = await Lesson.find({
+          stage: stage === "" ? { $exists: true } : stage,
+          subject: subject === "" ? { $exists: true } : subject,
+          unit: unit === "" ? { $exists: true } : unit,
+        });
+      } else lessons = await Lesson.find();
+    } else if (role !== "admin") {
+      if (stage || subject || unit) {
+        lessons = await Lesson.find({
+          stage,
+          subject,
+          unit,
+        });
+      }
     } else {
       // If the user has no stage (and is not admin), return an error
       return res.status(403).json({ message: "Access denied" });
@@ -23,7 +33,7 @@ const getAllLessons = async (req, res) => {
 };
 
 const createLesson = async (req, res) => {
-  const { title, lesson_link, stage, description, notes, subject } = req.body;
+  const { title, lesson_link, stage, description, notes, subject, unit } = req.body;
   if (!title) {
     return res.status(400).json({ message: " العنوان مطلوب" });
   }
@@ -36,6 +46,9 @@ const createLesson = async (req, res) => {
   if (!subject) {
     return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
   }
+  if (!unit) {
+    return res.status(400).json({ message: "الوحدة مطلوبة" });
+  }
 
   try {
     const lesson = new Lesson({
@@ -45,6 +58,7 @@ const createLesson = async (req, res) => {
       description,
       notes,
       subject,
+      unit,
     });
     await lesson.save();
 
@@ -58,7 +72,7 @@ const createLesson = async (req, res) => {
 
 const updateLesson = async (req, res) => {
   const { id } = req.params;
-  const { title, lesson_link, stage, description, notes, subject } = req.body;
+  const { title, lesson_link, stage, description, notes, subject, unit } = req.body;
   if (!title) {
     return res.status(400).json({ message: "العنوان مطلوب" });
   }
@@ -73,6 +87,9 @@ const updateLesson = async (req, res) => {
     return res.status(400).json({ message: "المادة الدراسية مطلوبة" });
   }
 
+  if (!unit) {
+    return res.status(400).json({ message: "الوحدة مطلوبة" });
+  }
   const lesson = await Lesson.findByIdAndUpdate(id, req.body);
 
   if (!lesson) {

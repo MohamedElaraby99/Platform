@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const fileMetadataSchema = new mongoose.Schema(
   {
     title: {
@@ -18,6 +19,10 @@ const fileMetadataSchema = new mongoose.Schema(
     subject: {
       type: String,
       enum: ["جغرافيا", "تاريخ"],
+      required: true,
+    }, 
+    unit: {
+      type: Number,
       required: true,
     },
   },

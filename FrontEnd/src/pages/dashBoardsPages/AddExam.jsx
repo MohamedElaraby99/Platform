@@ -7,7 +7,7 @@ import FileInputComponent from "./../../pages/exams/FileInputComponent";
 import ManualInputComponent from "./../../pages/exams/ManualInputComponent";
 import moment from "moment";
 
-const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
+const CreateExamComponent = () => {
   const [questions, setQuestions] = useState([]);
   const [inputMode, setInputMode] = useState("file");
   const [examDetails, setExamDetails] = useState({
@@ -19,6 +19,7 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
     stage: "",
     type: "",
     subject: "",
+    unit: "",
   });
 
   const handleAddQuestions = (importedQuestions) => {
@@ -49,6 +50,7 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
       !examDetails.stage ||
       !examDetails.type ||
       !examDetails.subject ||
+      !examDetails.unit ||
       questions.length === 0
     ) {
       toast.error("يرجى ملء جميع الحقول وإضافة الأسئلة!");
@@ -63,10 +65,9 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
       questions,
       stage: examDetails.stage,
       type: examDetails.type,
-      subject: examDetails.subject
+      subject: examDetails.subject,
+      unit: examDetails.unit
     };
-
-  
 
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -90,9 +91,9 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
         stage: "",
         type: "",
         subject: "",
+        unit : "",
       });
       setQuestions([]);
-    
     } catch (error) {
       console.error("حدث خطأ أثناء إنشاء الامتحان:", error);
       toast.error("حدث خطأ أثناء إنشاء الامتحان. حاول مرة أخرى.");
@@ -136,7 +137,7 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
               اختر نوع الامتحان
             </option>
             <option value="امتحان">امتحان</option>
-            <option value="تدريب">تدريبات</option>
+            <option value="تدريب">واجبات</option>
           </select>
         </label>
         <label>
@@ -185,6 +186,27 @@ const CreateExamComponent = ({ onAddQuestions, onDeleteQuestion }) => {
             </option>
             <option value="تاريخ">تاريخ</option>
             <option value="جغرافيا">جغرافيا</option>
+          </select>
+        </label>
+        <label>
+          الوحدة:
+          <select
+            name="unit"
+            value={examDetails.unit}
+            onChange={handleInputChange}
+          >
+            <option value="" disabled>
+              اختر الوحدة
+            </option>
+            <option value="0">الوحدة التمهيدية </option>
+            <option value="1">الوحدة الأولى</option>
+            <option value="2">الوحدة الثانية</option>
+            <option value="3">الوحدة الثالثة</option>
+            <option value="4">الوحدة الرابعة</option>
+            <option value="5">الوحدة الخامسة</option>
+            <option value="6">الوحدة السادسة</option>
+            <option value="7">الوحدة السابعة</option>
+            <option value="8">الوحدة الثامنة</option>
           </select>
         </label>
       </div>

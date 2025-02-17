@@ -7,14 +7,28 @@ const e = require("express");
 
 const getExamsWithScores = async (req, res) => {
   try {
-    const { user_id, stage, role, subject } = req;
+    const { user_id, stage, role } = req;
+    const { subject, unit, type } = req.query;
+
     let exams;
     if (role === "admin") {
-      // Admin can see all exams
-      exams = await Exam.find();
-    } else if (stage) {
-      // Regular users see exams specific to their stage
-      exams = await Exam.find({ stage, subject : subject === "تاريخ وجغرافيا" ? { $exists: true } : subject });
+      if (stage || subject || unit || type) {
+        exams = await Exam.find({
+          stage: stage === "" ? { $exists: true } : stage,
+          subject: subject === "" ? { $exists: true } : subject,
+          unit: unit === "" ? { $exists: true } : unit,
+          type: type === "" ? { $exists: true } : type,
+        });
+      } else exams = await Exam.find();
+    } else if (role !== "admin") {
+      if (stage || subject || unit) {
+        exams = await Exam.find({
+          stage,
+          subject,
+          unit,
+          type,
+        });
+      }
     } else {
       // If no stage is provided and user is not admin, return an error
       return res.status(403).json({ message: "Access denied" });
@@ -83,8 +97,18 @@ const getExamsWithScores = async (req, res) => {
 
 const addExam = async (req, res) => {
   try {
-    const { title, description, date, duration, questions, stage, why, type, subject } =
-      req.body;
+    const {
+      title,
+      description,
+      date,
+      duration,
+      questions,
+      stage,
+      why,
+      type,
+      subject,
+      unit,
+    } = req.body;
     // Validate required fields
     if (!title) {
       return res.status(400).json({ message: "Exam title is required" });
@@ -97,6 +121,10 @@ const addExam = async (req, res) => {
     }
     if (!date) {
       return res.status(400).json({ message: "Exam date is required" });
+    }
+
+    if (!unit) {
+      return res.status(400).json({ message: "الوحدة مطلوبة" });
     }
 
     const examDate = moment.tz(date, "Africa/Cairo");
@@ -157,7 +185,8 @@ const addExam = async (req, res) => {
       stage,
       why,
       type,
-      subject
+      subject,
+      unit,
     });
 
     // Save to database
@@ -172,22 +201,36 @@ const addExam = async (req, res) => {
 
 const updateExam = async (req, res) => {
   const { id } = req.params; // Exam ID from URL parameters
-  const { title, description, date, duration, questions, stage, why, type, subject } =
-    req.body;
+  const {
+    title,
+    description,
+    date,
+    duration,
+    questions,
+    stage,
+    why,
+    type,
+    subject,
+    unit,
+  } = req.body;
 
   try {
     // Validate required fields
-    if (
-      !title &&
-      !description &&
-      !date &&
-      !duration &&
-      !questions &&
-      !stage &&
-      !type&&
-      !subject
-    ) {
-      return res.status(400).json({ message: "No data provided for update" });
+    if (!title) {
+      return res.status(400).json({ message: "Exam title is required" });
+    }
+    if (!description) {
+      return res.status(400).json({ message: "Exam description is required" });
+    }
+    if (!subject) {
+      return res.status(400).json({ message: "Exam subject is required" });
+    }
+    if (!date) {
+      return res.status(400).json({ message: "Exam date is required" });
+    }
+
+    if (!unit) {
+      return res.status(400).json({ message: "الوحدة مطلوبة" });
     }
 
     if (!date) {
@@ -243,6 +286,7 @@ const updateExam = async (req, res) => {
     if (why) existingExam.why = why;
     if (type) existingExam.type = type;
     if (subject) existingExam.subject = subject;
+    if (unit) existingExam.unit = unit;
 
     // Save updated exam
     const updatedExam = await existingExam.save();
@@ -423,7 +467,8 @@ const getExamDataForAdmin = async (req, res) => {
       let nonSubmittedStudents = [];
       if (examIsEnd) {
         nonSubmittedStudents = students
-          .filter((student) => !submittedStudentIds.has(student._id.toString())).filter((student) => student?.subject === exam?.subject)
+          .filter((student) => !submittedStudentIds.has(student._id.toString()))
+          .filter((student) => student?.subject === exam?.subject)
           .map((student) => ({
             student: {
               name: student.name,

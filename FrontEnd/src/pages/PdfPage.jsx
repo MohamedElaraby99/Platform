@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./../styles/pdfs.css";
 import Loader from "./Loader";
+import {useLocation} from "react-router-dom";
 
-const PdfPage = () => {
+const PdfPage = ({ state }) => {
+  const location = useLocation();
+  const {subject, unit} = location.state;
+  console.log(subject, unit);
   const [pdfFiles, setPdfFiles] = useState([]); // حالة لتخزين ملفات PDF
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,7 +18,7 @@ const PdfPage = () => {
       try {
         const accessToken = localStorage.getItem("accessToken"); // تأكد من وجود التوكن
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/files`,
+          `${process.env.REACT_APP_BASE_URL}/files?subject=${subject}&unit=${unit}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`, // تضمين التوكن في الطلب
@@ -34,6 +38,7 @@ const PdfPage = () => {
 
     fetchPdfs();
   }, []);
+
 
   const handleViewPdf = (url) => {
     // فتح نافذة جديدة للعرض

@@ -172,7 +172,6 @@
 .toggle-password-buttonn:hover {
   width: 40px;
   color: #4db5ff;
-  
 }
 
 /* Error message styles */
@@ -245,7 +244,6 @@
     display: block;
     width: 300px;
     height: auto;
-   
   }
   .left-side {
     display: none; /* Hide left side on small screens */
@@ -256,7 +254,6 @@
     width: 100%;
     padding: 1.5rem;
     flex: 1 1 100%;
-    
   }
 }
 
@@ -281,7 +278,6 @@
     display: block;
     width: 200px;
     height: auto;
-   
   }
   .left-side {
     display: none; /* Hide left side on small screens */
@@ -307,5 +303,26 @@
 
   .footer {
     margin-top: 50px;
+  }
+}
+
+.footer {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.9s forwards;
+  -webkit-animation: fadeInUp 0.9s forwards;
+}
+
+.login-page {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.9s forwards;
+  -webkit-animation: fadeInUp 0.9s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
