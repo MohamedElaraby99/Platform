@@ -98,7 +98,9 @@ const History = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={() => navigate("/exams")}
+                onClick={navigate("/courses", {
+                  state: { subject: "تاريخ", unit: unit.id },
+                })}
               >
                 {unit.title}
               </div>
@@ -119,7 +121,9 @@ const History = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={() => navigate("/exams")}
+                onClick={navigate("/courses", {
+                  state: { subject: "تاريخ", unit: unit.id },
+                })}
               >
                 {unit.title}
               </div>
@@ -140,7 +144,11 @@ const History = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={() => navigate("/pdf")}
+                onClick={() =>
+                  navigate("/pdf", {
+                    state: { subject: "تاريخ", unit: unit.id },
+                  })
+                }
               >
                 {unit.title}
               </div>

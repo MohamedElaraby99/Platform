@@ -4,18 +4,27 @@ const path = require("path");
 
 const getFiles = async (req, res) => {
   try {
-    const { role, stage, subject } = req;
+    const { role, stage } = req;
+    const { subject, unit } = req.query;
+    console.log(subject, unit, "");
     let files;
 
     if (role === "admin") {
-      // Admin can access all files
-      files = await File.find();
-    } else if (stage) {
-      // Filter files by stage for non-admin users
-      files = await File.find({
-        stage,
-        subject: subject === "تاريخ وجغرافيا" ? { $exists: true } : subject,
-      });
+      if (stage || subject || unit) {
+        files = await File.find({
+          stage: stage === "" ? { $exists: true } : stage,
+          subject: subject === "" ? { $exists: true } : subject,
+          unit: unit === "" ? { $exists: true } : unit,
+        });
+      } else files = await File.find();
+    } else if (role !== "admin") {
+      if (stage || subject || unit) {
+        files = await File.find({
+          stage,
+          subject,
+          unit,
+        });
+      }
     } else {
       // If the user has no stage (and is not admin), return an error
       return res.status(403).json({ message: "Access denied" });
@@ -36,7 +45,7 @@ const getFiles = async (req, res) => {
 // Upload a file with metadata
 const uploadFile = async (req, res) => {
   try {
-    const { title, stage, subject } = req.body;
+    const { title, stage, subject, unit } = req.body;
 
     // Validate required fields
     if (!req.file) {
@@ -54,6 +63,9 @@ const uploadFile = async (req, res) => {
     if (!["جغرافيا", "تاريخ"].includes(subject)) {
       return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
     }
+    if (!unit) {
+      return res.status(400).json({ message: "الوحدة مطلوبة" });
+    }
 
     console.log(req.file);
 
@@ -65,6 +77,7 @@ const uploadFile = async (req, res) => {
       stage,
       file: fileUrl,
       subject,
+      unit,
     });
 
     await newfile.save();
@@ -74,7 +87,7 @@ const uploadFile = async (req, res) => {
       title: newfile.title,
       stage: newfile.stage,
       subject: newfile.subject,
-
+      unit: newfile.unit,
       file: `${process.env.BASE_URL}${fileUrl}`, // Include the base URL
     });
   } catch (error) {
@@ -86,7 +99,7 @@ const uploadFile = async (req, res) => {
 const updateFile = async (req, res) => {
   const { id } = req.params;
   try {
-    const { title, stage , subject} = req.body;
+    const { title, stage, subject } = req.body;
     // Validate required fields
     if (!title) {
       return res.status(400).json({ message: "العنوان مطلوب" });
@@ -100,6 +113,9 @@ const updateFile = async (req, res) => {
 
     if (!["جغرافيا", "تاريخ"].includes(subject)) {
       return res.status(400).json({ message: "المادة الدراسية غير صالحة" });
+    }
+    if (!unit) {
+      return res.status(400).json({ message: "الوحدة مطلوبة" });
     }
 
     // Fetch the existing file record
@@ -139,7 +155,8 @@ const updateFile = async (req, res) => {
         title,
         stage,
         file: fileUrl,
-        subject
+        subject,
+        unit,
       },
       { new: true } // Return the updated document
     );
@@ -149,6 +166,7 @@ const updateFile = async (req, res) => {
       title: updatedFile.title,
       stage: updatedFile.stage,
       subject: updatedFile.subject,
+      unit: updatedFile.unit,
       file: `${process.env.BASE_URL}${updatedFile.file}`, // Include the updated file URL
     });
   } catch (error) {
@@ -175,15 +193,17 @@ const deleteFile = async (req, res) => {
       path.basename(file.file)
     );
 
-    // Delete the file from the file system
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.error("Error deleting file:", err);
-        return res
-          .status(500)
-          .json({ message: "حدث خطأ أثناء حذف الملف من النظام" });
-      }
-    });
+    if (filePath) {
+      // Delete the file from the file system
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+          return res
+            .status(500)
+            .json({ message: "حدث خطأ أثناء حذف الملف من النظام" });
+        }
+      });
+    }
 
     // Delete the file record from the database
     await file.deleteOne();

@@ -8,7 +8,6 @@ const ExamsPage = () => {
   const [filteredExams, setFilteredExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedType, setSelectedType] = useState("all"); // Filter by type
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -40,22 +39,6 @@ const ExamsPage = () => {
     fetchExams();
   }, []);
 
-  // Filter exams by type
-  useEffect(() => {
-    let filtered = exams;
-
-    if (selectedType !== "all") {
-      filtered = filtered.filter(
-        (exam) =>
-          exam.type && exam.type.toLowerCase() === selectedType.toLowerCase()
-      );
-    }
-
-  
-    setFilteredExams(filtered);
-  }, [selectedType, exams]);
-
-
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
@@ -66,19 +49,6 @@ const ExamsPage = () => {
     <div className="exams-page">
       <h2>الامتحانات</h2>
 
-      {/* Filters */}
-      <div className="filter-container">
-        <label htmlFor="exam-type">تصفية حسب النوع:</label>
-        <select
-          id="exam-type"
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
-        >
-          <option value="all" disabled>الكل</option>
-          <option value="امتحان">امتحان</option>
-          <option value="تدريب">تدريب</option>
-        </select>
-      </div>
 
       <div className="exams-container">
         {filteredExams.map((exam) => {

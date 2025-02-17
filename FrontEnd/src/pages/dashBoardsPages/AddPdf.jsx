@@ -188,9 +188,7 @@ const AddPdf = () => {
               value={pdfData.unit}
               onChange={handleChange}
             >
-              <option value="" disabled>
-                اختر الوحدة
-              </option>
+              <option value="disabled">اختر الوحدة</option>
               <option value="1">الوحدة الأولى</option>
               <option value="2">الوحدة الثانية</option>
               <option value="3">الوحدة الثالثة</option>

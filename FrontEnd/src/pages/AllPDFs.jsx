@@ -7,7 +7,7 @@ const AllPDFs = () => {
   const [pdfs, setPdfs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [editingPdf, setEditingPdf] = useState(null);
-  const [editData, setEditData] = useState({ title: "", file: "", stage: "" });
+  const [editData, setEditData] = useState({ title: "", file: "", stage: "" , subject: "", unit: ""});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
@@ -74,7 +74,7 @@ const AllPDFs = () => {
 
   // Handle input changes during editing
   const handleEditChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value  } = e.target;
     setEditData({
       ...editData,
       [name]: value,
@@ -99,6 +99,7 @@ const AllPDFs = () => {
           stage: editData.stage,
           file: editData.file,
           subject: editData.subject,
+          unit: editData.unit,
         },
         {
           headers: {
@@ -112,7 +113,7 @@ const AllPDFs = () => {
       );
       setPdfs(updatedPdfs);
       setEditingPdf(null);
-      setEditData({ title: "", file: "", stage: "" });
+      setEditData({ title: "", file: "", stage: "" , subject: "", unit: ""});
       setMessage("تم تعديل البيانات بنجاح!");
 
       // Reload the page after successful save
@@ -200,6 +201,7 @@ const AllPDFs = () => {
               <th>اسم الملف</th>
               <th>المرحلة الدراسية</th>
               <th>المادة الدراسية</th>
+              <th>الوحدة الدراسية</th>
               <th>رابط الملف</th>
               <th>الإجراءات</th>
             </tr>
@@ -227,7 +229,7 @@ const AllPDFs = () => {
                       >
                         <option value="أولى ثانوي">أولى ثانوي</option>
                         <option value="ثانية ثانوي">ثاني ثانوي</option>
-                        <option value="ثالثة ثانوي">ثالث ثانوي</option>
+                        <option value="ثالثة ثانوي">ثالثة ثانوي</option>
                       </select>
                     </td>
                     <td>
@@ -240,7 +242,25 @@ const AllPDFs = () => {
                         <option value="disabled">اختر المادة </option>
                         <option value="تاريخ">تاريخ </option>
                         <option value="جغرافيا">جغرافيا </option>
-                        <option value="تاريخ وجغرافيا">تاريخ وجغرافيا </option>
+                      </select>
+                    </td>
+                    <td>
+                      <select
+                        id="unit"
+                        name="unit"
+                        value={editData.unit}
+                        onChange={handleEditChange}
+                      >
+                        <option value="disabled">اختر الوحدة </option>
+                        <option value="الوحدة الاولى">الوحدة الاولى </option>
+                        <option value="الوحدة الثانية">الوحدة الثانية </option>
+                        <option value="الوحدة الثالثة">الوحدة الثالثة </option>
+                        <option value="الوحدة الرابعة">الوحدة الرابعة </option>
+                        <option value="الوحدة الخامسة">الوحدة الخامسة </option>
+                        <option value="الوحدة السادسة">الوحدة السادسة </option>
+                        <option value="الوحدة السابعة">الوحدة السابعة </option>
+                        <option value="الوحدة الثامنة">الوحدة الثامنة </option>
+
                       </select>
                     </td>
                     <td>
@@ -269,7 +289,8 @@ const AllPDFs = () => {
                   <>
                     <td>{pdf.title}</td>
                     <td>{pdf.stage}</td>
-                    <td>{pdf.subject}</td>
+                      <td>{pdf.subject}</td>
+                      <td>{pdf.unit}</td>
                     <td>
                       <button
                         onClick={() =>
