@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaFilePdf,
   FaVideo,
@@ -18,32 +18,75 @@ const Geog = () => {
     assignments: false,
     pdfs: false,
   });
+  const [isSubscribed, setIsSubscribed] = useState(true);
+
+  // استرداد المرحلة الدراسية والدور و subject من localStorage
+  const stage = localStorage.getItem("stage");
+  const role = localStorage.getItem("role");
+  const subject = localStorage.getItem("subject");
+
+  // فحص الاشتراك
+  useEffect(() => {
+    if (
+      role === "student" &&
+      subject !== "جغرافيا" &&
+      subject !== "تاريخ وجغرافيا"
+    ) {
+      setIsSubscribed(false);
+    }
+  }, [role, subject]);
 
   // بيانات الوحدات مع روابط الصفحات
   const courseUnits = {
-    videos: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      title: `الوحدة ${i + 1}`,
-      path: `/history/unit/${i + 1}/videos`,
-    })),
+    videos: [
+      ...(stage === "ثالثة ثانوي" || role === "admin"
+        ? [{ id: 0, title: "الوحدة التمهيدية", path: "/history/unit/0/videos" }]
+        : []),
+      ...Array.from({ length: 4 }, (_, i) => ({
+        id: i + 1,
+        title: `الوحدة ${i + 1}`,
+        path: `/history/unit/${i + 1}/videos`,
+      })),
+    ],
 
-    exams: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      title: `الوحدة ${i + 1}`,
-      path: `/history/unit/${i + 1}/exams`,
-    })),
+    exams: [
+      ...(stage === "ثالثة ثانوي" || role === "admin"
+        ? [{ id: 0, title: "الوحدة التمهيدية", path: "/history/unit/0/exams" }]
+        : []),
+      ...Array.from({ length: 4 }, (_, i) => ({
+        id: i + 1,
+        title: `الوحدة ${i + 1}`,
+        path: `/history/unit/${i + 1}/exams`,
+      })),
+    ],
 
-    assignments: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      title: `الوحدة ${i + 1}`,
-      path: `/history/unit/${i + 1}/assignments`,
-    })),
+    assignments: [
+      ...(stage === "ثالثة ثانوي" || role === "admin"
+        ? [
+            {
+              id: 0,
+              title: "الوحدة التمهيدية",
+              path: "/history/unit/0/assignments",
+            },
+          ]
+        : []),
+      ...Array.from({ length: 4 }, (_, i) => ({
+        id: i + 1,
+        title: `الوحدة ${i + 1}`,
+        path: `/history/unit/${i + 1}/assignments`,
+      })),
+    ],
 
-    pdfs: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      title: `الوحدة ${i + 1}`,
-      path: `/history/unit/${i + 1}/pdfs`,
-    })),
+    pdfs: [
+      ...(stage === "ثالثة ثانوي" || role === "admin"
+        ? [{ id: 0, title: "الوحدة التمهيدية", path: "/history/unit/0/pdfs" }]
+        : []),
+      ...Array.from({ length: 4 }, (_, i) => ({
+        id: i + 1,
+        title: `الوحدة ${i + 1}`,
+        path: `/history/unit/${i + 1}/pdfs`,
+      })),
+    ],
   };
 
   const toggleSection = (section) => {
@@ -52,6 +95,24 @@ const Geog = () => {
       [section]: !prev[section],
     }));
   };
+
+  if (!isSubscribed) {
+    return (
+      <div className="history-container">
+        <header className="history-header">
+          <h1>مادة الجغرافيا</h1>
+        </header>
+        <p className="about-imag ">
+          <img
+            src={require("./../images/pngwing.com.png")}
+            alt="Not Allowed"
+            className="Not-Image"
+          />
+        </p>
+        <p>عذرًا، أنت غير مشترك في هذه المادة.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="history-container">
@@ -98,7 +159,15 @@ const Geog = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={() => navigate("/exams")}
+                onClick={() =>
+                  navigate("/exams", {
+                    state: {
+                      subject: "جغرافيا",
+                      unit: unit.id,
+                      type: "امتحان",
+                    },
+                  })
+                }
               >
                 {unit.title}
               </div>
@@ -119,7 +188,15 @@ const Geog = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={() => navigate("/exams")}
+                onClick={() =>
+                  navigate("/exams", {
+                    state: {
+                      subject: "جغرافيا",
+                      unit: unit.id,
+                      type: "تدريب",
+                    },
+                  })
+                }
               >
                 {unit.title}
               </div>
@@ -141,8 +218,11 @@ const Geog = () => {
                 key={unit.id}
                 className="unit-item"
                 onClick={() =>
-                  navigate("/courses", {
-                    state: { subject: "جغرافيا", unit: unit.id },
+                  navigate("/pdf", {
+                    state: {
+                      subject: "جغرافيا",
+                      unit: unit.id,
+                    },
                   })
                 }
               >

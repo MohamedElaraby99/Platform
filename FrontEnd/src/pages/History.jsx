@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaFilePdf,
   FaVideo,
@@ -18,32 +18,61 @@ const History = () => {
     assignments: false,
     pdfs: false,
   });
+  const [isSubscribed, setIsSubscribed] = useState(true);
+
+  // استرداد المرحلة الدراسية والدور و subject من localStorage
+  const stage = localStorage.getItem("stage");
+  const role = localStorage.getItem("role");
+  const subject = localStorage.getItem("subject");
+
+  // فحص الاشتراك
+  useEffect(() => {
+    if (
+      role === "student" &&
+      subject !== "تاريخ" &&
+      subject !== "تاريخ وجغرافيا"
+    ) {
+      setIsSubscribed(false);
+    }
+  }, [role, subject]);
 
   // بيانات الوحدات مع روابط الصفحات
   const courseUnits = {
-    videos: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      title: `الوحدة ${i + 1}`,
-      path: `/history/unit/${i + 1}/videos`,
-    })),
+    videos: Array.from(
+      { length: stage === "ثالثة ثانوي" || role === "admin" ? 8 : 4 },
+      (_, i) => ({
+        id: i + 1,
+        title: `الوحدة ${i + 1}`,
+        path: `/history/unit/${i + 1}/videos`,
+      })
+    ),
 
-    exams: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      title: `الوحدة ${i + 1}`,
-      path: `/history/unit/${i + 1}/exams`,
-    })),
+    exams: Array.from(
+      { length: stage === "ثالثة ثانوي" || role === "admin" ? 8 : 4 },
+      (_, i) => ({
+        id: i + 1,
+        title: `الوحدة ${i + 1}`,
+        path: `/history/unit/${i + 1}/exams`,
+      })
+    ),
 
-    assignments: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      title: `الوحدة ${i + 1}`,
-      path: `/history/unit/${i + 1}/assignments`,
-    })),
+    assignments: Array.from(
+      { length: stage === "ثالثة ثانوي" || role === "admin" ? 8 : 4 },
+      (_, i) => ({
+        id: i + 1,
+        title: `الوحدة ${i + 1}`,
+        path: `/history/unit/${i + 1}/assignments`,
+      })
+    ),
 
-    pdfs: Array.from({ length: 8 }, (_, i) => ({
-      id: i + 1,
-      title: `الوحدة ${i + 1}`,
-      path: `/history/unit/${i + 1}/pdfs`,
-    })),
+    pdfs: Array.from(
+      { length: stage === "ثالثة ثانوي" || role === "admin" ? 8 : 4 },
+      (_, i) => ({
+        id: i + 1,
+        title: `الوحدة ${i + 1}`,
+        path: `/history/unit/${i + 1}/pdfs`,
+      })
+    ),
   };
 
   const toggleSection = (section) => {
@@ -52,6 +81,25 @@ const History = () => {
       [section]: !prev[section],
     }));
   };
+
+  if (!isSubscribed) {
+    return (
+      <div className="history-container">
+        <header className="history-header expandable-section">
+          <h1>مادة التاريخ</h1>
+        </header>
+        <p className="about-imag ">
+          <img
+            src={require("./../images/pngwing.com.png")}
+            alt="Not Allowed"
+            className="Not-Image"
+          />
+        </p>
+
+        <p className="history-titl">عذرًا، أنت غير مشترك في هذه المادة.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="history-container">
@@ -98,9 +146,11 @@ const History = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={navigate("/courses", {
-                  state: { subject: "تاريخ", unit: unit.id },
-                })}
+                onClick={() =>
+                  navigate("/exams", {
+                    state: { subject: "تاريخ", unit: unit.id, type: "امتحان" },
+                  })
+                }
               >
                 {unit.title}
               </div>
@@ -121,9 +171,11 @@ const History = () => {
               <div
                 key={unit.id}
                 className="unit-item"
-                onClick={navigate("/courses", {
-                  state: { subject: "تاريخ", unit: unit.id },
-                })}
+                onClick={() =>
+                  navigate("/exams", {
+                    state: { subject: "تاريخ", unit: unit.id, type: "تدريب" },
+                  })
+                }
               >
                 {unit.title}
               </div>

@@ -19,6 +19,7 @@ const AllUsers = () => {
   });
 
   const [selectedTable, setSelectedTable] = useState("students");
+  const [selectedStage, setSelectedStage] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -57,7 +58,7 @@ const AllUsers = () => {
   };
 
   const handleEditSave = async () => {
-    if (!editData.name || !editData.username || !editData.password ) {
+    if (!editData.name || !editData.username || !editData.password) {
       alert("يرجى ملء جميع الحقول قبل الحفظ!");
       return;
     }
@@ -99,7 +100,11 @@ const AllUsers = () => {
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const students = filteredUsers.filter((user) => user.role === "student");
+  const students = filteredUsers.filter(
+    (user) =>
+      user.role === "student" &&
+      (selectedStage ? user.stage === selectedStage : true)
+  );
   const admins = filteredUsers.filter((user) => user.role === "admin");
 
   if (loading) return <Loader />;
@@ -124,6 +129,18 @@ const AllUsers = () => {
           <option value="students">جدول الطلاب</option>
           <option value="admins">جدول المشرفين</option>
         </select>
+        {selectedTable === "students" && (
+          <select
+            value={selectedStage}
+            onChange={(e) => setSelectedStage(e.target.value)}
+            className="stage-selector"
+          >
+            <option value="">كل المراحل</option>
+            <option value="أولى ثانوي">أولى ثانوي</option>
+            <option value="ثانية ثانوي">ثانية ثانوي</option>
+            <option value="ثالثة ثانوي">ثالثة ثانوي</option>
+          </select>
+        )}
       </div>
 
       {selectedTable === "students" && (
@@ -180,7 +197,7 @@ const AllUsers = () => {
                         >
                           <option value="تاريخ">تاريخ</option>
                           <option value="جغرافيا">جغرافيا</option>
-                          <option value="تاريخ وجغرافيا" >تاريخ وجغرافيا</option>
+                          <option value="تاريخ وجغرافيا">تاريخ وجغرافيا</option>
                         </select>
                       </td>
                       <td>

@@ -19,6 +19,7 @@ const CreateExamComponent = () => {
     stage: "",
     type: "",
     subject: "",
+    unit: "",
   });
 
   const handleAddQuestions = (importedQuestions) => {
@@ -49,6 +50,7 @@ const CreateExamComponent = () => {
       !examDetails.stage ||
       !examDetails.type ||
       !examDetails.subject ||
+      !examDetails.unit ||
       questions.length === 0
     ) {
       toast.error("يرجى ملء جميع الحقول وإضافة الأسئلة!");
@@ -64,6 +66,7 @@ const CreateExamComponent = () => {
       stage: examDetails.stage,
       type: examDetails.type,
       subject: examDetails.subject,
+      unit: examDetails.unit
     };
 
     try {
@@ -88,6 +91,7 @@ const CreateExamComponent = () => {
         stage: "",
         type: "",
         subject: "",
+        unit : "",
       });
       setQuestions([]);
     } catch (error) {
@@ -186,10 +190,15 @@ const CreateExamComponent = () => {
         </label>
         <label>
           الوحدة:
-          <select name="unit">
+          <select
+            name="unit"
+            value={examDetails.unit}
+            onChange={handleInputChange}
+          >
             <option value="" disabled>
               اختر الوحدة
             </option>
+            <option value="0">الوحدة التمهيدية </option>
             <option value="1">الوحدة الأولى</option>
             <option value="2">الوحدة الثانية</option>
             <option value="3">الوحدة الثالثة</option>
