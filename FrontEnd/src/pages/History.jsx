@@ -96,13 +96,13 @@ const History = () => {
           />
         </p>
 
-        <p className="history-titl">عذرًا، أنت غير مشترك في هذه المادة.</p>
+        <p className="Errorr">عذرًا، أنت غير مشترك في هذه المادة.</p>
       </div>
     );
   }
 
   return (
-    <div className="history-container">
+    <div className="history-container centerrr">
       <header className="history-header">
         <h1>
           <FaBook /> مادة التاريخ
