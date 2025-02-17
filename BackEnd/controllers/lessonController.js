@@ -6,7 +6,6 @@ const getAllLessons = async (req, res) => {
     const { subject, unit } = req.query;
 
     let lessons;
-
     if (role === "admin") {
       if (stage || subject || unit) {
         lessons = await Lesson.find({

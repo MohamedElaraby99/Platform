@@ -27,6 +27,10 @@ const examSchema = new mongoose.Schema(
       enum: ["جغرافيا", "تاريخ"],
       required: true,
     },
+    unit: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
