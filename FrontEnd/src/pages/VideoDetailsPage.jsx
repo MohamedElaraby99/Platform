@@ -73,6 +73,22 @@ const VideoDetailsPage = () => {
     }
   };
 
+  const handleForward = () => {
+    if (playerRef.current) {
+      const currentTime = playerRef.current.getCurrentTime();
+      playerRef.current.seekTo(currentTime + 10, true);
+      setProgress(currentTime + 10);
+    }
+  };
+
+  const handleBackward = () => {
+    if (playerRef.current) {
+      const currentTime = playerRef.current.getCurrentTime();
+      playerRef.current.seekTo(Math.max(currentTime - 10, 0), true);
+      setProgress(Math.max(currentTime - 10, 0));
+    }
+  };
+
   const handleRotateScreen = () => {
     setIsRotated(!isRotated);
     if (window.screen.orientation) {
@@ -140,8 +156,6 @@ const VideoDetailsPage = () => {
 
   const videoEmbedUrl = extractEmbedUrl(video?.lesson_link);
 
-  
-
   return (
     <div
       className={`video-details-page-container ${
@@ -177,8 +191,16 @@ const VideoDetailsPage = () => {
               </div>
 
               <div className="video-controls">
+                <button className="control-buttonn" onClick={handleBackward}>
+                  →
+                </button>
+
                 <button className="control-buttonn" onClick={handlePlayPause}>
                   {isPlaying ? " إيقاف" : " تشغيل"}
+                </button>
+
+                <button className="control-buttonn" onClick={handleForward}>
+                  ←
                 </button>
 
                 <select
@@ -227,7 +249,7 @@ const VideoDetailsPage = () => {
                   className="control-buttonn rotate-button"
                   onClick={handleRotateScreen}
                 >
-                   قلب الشاشة
+                  قلب الشاشة
                 </button>
               </div>
             </div>
