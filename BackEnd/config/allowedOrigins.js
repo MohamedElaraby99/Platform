@@ -1,3 +1,4 @@
+
 const allowedOrigins = [
   "https://tawakol.live",
   "https://www.tawakol.live",
