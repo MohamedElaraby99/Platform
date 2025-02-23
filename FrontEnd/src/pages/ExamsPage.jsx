@@ -10,7 +10,7 @@ const ExamsPage = () => {
   const [error, setError] = useState(null);
 
   const location = useLocation();
-  const { subject, unit, type } = location.state;
+  const { subject = "", unit = "", type = "" } = location.state || {};
 
   useEffect(() => {
     const fetchExams = async () => {

@@ -117,7 +117,6 @@ const AllExams = () => {
                   <th>وقت الامتحان</th>
                   <th>نوع الامتحان </th>
                   <th>مادة الامتحان</th>
-                  <th>الوحدة </th>
                   <th>مدة الامتحان (دقائق)</th>
                   <th>حالة الامتحان</th>
                   <th>الإجراءات</th>
@@ -131,7 +130,6 @@ const AllExams = () => {
                     <td>{new Date(exam.date).toLocaleTimeString()}</td>
                     <td>{exam.exam}</td>
                     <td>{exam.subject}</td>
-                    <td>{exam.unit}</td>
                     <td>{exam.duration}</td>
                     <td>{exam.exam_status}</td>
                     <td className="actionss">
@@ -139,7 +137,7 @@ const AllExams = () => {
                         className="view-students-button"
                         onClick={() => handleViewSubmissions(exam)}
                       >
-                         النتائج 
+                        النتائج
                       </button>
                       <button
                         onClick={() => handleDelete(exam.examId)}
@@ -165,9 +163,6 @@ const AllExams = () => {
                   <tr>
                     <th>اسم الطالب</th>
                     <th>المرحلة الدراسية</th>
-                    <th>المادة</th>
-                    <th>الوحدة </th>
-
                     <th>الدرجة</th>
                     <th>الحالة</th>
                   </tr>
@@ -177,8 +172,6 @@ const AllExams = () => {
                     <tr key={index}>
                       <td>{submission.student.name}</td>
                       <td>{submission.student.stage}</td>
-                      <td>{submission.subject}</td>
-                      <td>{submission.unit}</td>
                       <td>{submission.score}</td>
                       <td>{submission.status}</td>
                     </tr>
