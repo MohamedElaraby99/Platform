@@ -32,6 +32,12 @@ import About from "./pages/about";
 import ResultComponent from "./pages/ResultComponent";
 import History from "./pages/History";
 import Geog from "./pages/Geog";
+import LandingPage from "./pages/landingPage";
+import Loader from "./pages/Loader";
+import SignUpPage from "./pages/SignUpPage";
+import GeoS from "./pages/GS.jsx";
+import HistS from "./pages/HS.jsx";
+import Payment from "./pages/Payment.jsx";
 
 const App = () => {
   const [role, setRole] = useState(null);
@@ -54,9 +60,15 @@ const App = () => {
       <ScrollToTop />
       <div style={{ direction: "rtl" }}>
         {!isInitialized ? (
-          <p>Loading...</p>
+          <Loader />
         ) : !role ? (
           <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/landing" element={<LandingPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/geo" element={<GeoS />} />
+            <Route path="/history" element={<HistS />} />
             <Route path="/login" element={<LoginForm setRole={setRole} />} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
