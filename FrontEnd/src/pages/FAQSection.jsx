@@ -44,22 +44,29 @@ const FAQSection = () => {
     <div className="question-section">
       <h2 className="question-title">الأسئلة الشائعة</h2>
       <h1 className="question-subtitle">عندك أي سؤال؟</h1>
-      <div className="question-container">
-        {faqData.map((item, index) => (
-          <div
-            key={index}
-            className={`question-card ${activeIndex === index ? "active" : ""}`}
-            onClick={() => toggleAccordion(index)}
-          >
-            <div className="question-header">
-              <div className="question-icon">
-                <CircleHelp className="question-icon-svg" />
+      <div className="question-content">
+        <div className="question-image">
+          <img className="question-imagee" src={require("./../images/inquiry.webp")} alt="" />
+        </div>
+        <div className="question-container">
+          {faqData.map((item, index) => (
+            <div
+              key={index}
+              className={`question-card ${
+                activeIndex === index ? "active" : ""
+              }`}
+              onClick={() => toggleAccordion(index)}
+            >
+              <div className="question-header">
+                <div className="question-icon">
+                  <CircleHelp className="question-icon-svg" />
+                </div>
+                <h3 className="question-text">{item.question}</h3>
               </div>
-              <h3 className="question-text">{item.question}</h3>
+              <p className="question-answerrr">{item.answer}</p>
             </div>
-            <p className="question-answerrr">{item.answer}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

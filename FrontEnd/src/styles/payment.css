@@ -1,0 +1,213 @@
+.payment-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--color-primary);
+}
+
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-secondary);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 400px;
+}
+
+.payment-form label {
+  margin-bottom: 10px;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.payment-form input {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  font-size: 16px;
+  background-color: var(--color-secondary);
+}
+
+.payment-form button {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: var(--primary-color);
+  font-size: 16px;
+  cursor: pointer;
+  color: white;
+}
+
+.payment-form button:hover {
+  background-color: var(--primary-color);
+}
+
+.payment-form button:active {
+  background-color: var(--color-primary-darker);
+}
+
+.payment-form .error {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.payment-form .success {
+  color: green;
+  margin-bottom: 10px;
+}
+
+.payment-form .loading {
+  color: blue;
+  margin-bottom: 10px;
+}
+
+.payment-form .loading::after {
+  content: "...";
+  animation: loading 1s infinite;
+}
+.payment-title {
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.payment-method {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-secondary);
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.payment-screenshot {
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.payment-screenshot-input {
+  margin-top: 20px;
+}
+
+.payment-icons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.payment-icon-container {
+  text-align: center;
+}
+
+.payment-icon {
+  width: 50px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.custom-select {
+  position: relative;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.selected-option {
+  display: flex;
+  align-items: center;
+  
+}
+
+.selected-option img {
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
+}
+
+.options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  color: var(--primary-color);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  z-index: 1000;
+  margin-bottom: 20px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  
+}
+
+.option-image {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  margin-left: 5px;
+}
+
+.option img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.option:hover {
+  background-color: var(--footer-bg);
+}
+
+.copy-number {
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.payment-number {
+  margin-right: 5px;
+}
+
+@keyframes loading {
+  0% {
+    content: ".";
+  }
+  25% {
+    content: "..";
+  }
+  50% {
+    content: "...";
+  }
+  75% {
+    content: "..";
+  }
+  100% {
+    content: ".";
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .payment-form {
+    width: 100%;
+  }
+}
+
+/* Add more responsive styles as needed */

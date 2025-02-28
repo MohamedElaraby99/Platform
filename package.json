@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "aos": "^2.3.4",
+    "lucide-react": "^0.476.0",
+    "react-floating-whatsapp": "^5.0.8",
+    "react-lazyload": "^3.2.1"
+  }
+}

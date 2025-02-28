@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import LazyLoad from "react-lazyload";
-import { Moon, Sun, LogIn } from "lucide-react";
+import { Moon, Sun, LogIn, Copy } from "lucide-react";
 import Loader from "./Loader";
 import "./../styles/landingPage.css";
 import { useNavigate } from "react-router-dom";
@@ -9,21 +9,27 @@ import "./../styles/payment.css";
 import { FloatingWhatsApp } from "react-floating-whatsapp";
 import "aos/dist/aos.css";
 import AOS from "aos";
+import we from "./../images/we.png";
+import InstaPay from "./../images/InstaPay.png";
+import Voda from "./../images/voda.png";
+import Etisalat from "./../images/Etisalat.png";
+import Orange from "./../images/Orange.png";
 
 const Payment = () => {
   const [formData, setFormData] = useState({
-    paymentMethod: "", // طريقة الدفع
-    paymentScreenshot: null, // ملف السكرين شوت
+    paymentMethod: "",
+    paymentScreenshot: null,
   });
 
-  const [error, setError] = useState(""); // حالة لتتبع رسالة الخطأ
+  const [error, setError] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const paymentMethods = [
-    "إنستا باي (InstaPay)",
-    "فودافون كاش (Vodafone Cash)",
-    "اتصالات كاش (Etisalat Cash)",
-    "أورانج كاش (Orange Cash)",
-    "وي باي (wePay)",
+    { name: "إنستا باي (InstaPay)", image: InstaPay },
+    { name: "فودافون كاش (Vodafone Cash)", image: Voda },
+    { name: "اتصالات كاش (Etisalat Cash)", image: Etisalat },
+    { name: "أورانج كاش (Orange Cash)", image: Orange },
+    { name: "وي باي (wePay)", image: we },
   ];
 
   const paymentNumbers = {
@@ -54,8 +60,13 @@ const Payment = () => {
     const { name, value, files } = e.target;
     setFormData({
       ...formData,
-      [name]: files ? files[0] : value, // التعامل مع رفع الملفات
+      [name]: files ? files[0] : value,
     });
+  };
+
+  const handleSelect = (method) => {
+    setFormData({ ...formData, paymentMethod: method });
+    setIsOpen(false);
   };
 
   const handleSubmit = (e) => {
@@ -73,21 +84,16 @@ const Payment = () => {
 
     setError("");
     console.log("Payment Data Submitted:", formData);
-    // هنا يمكنك إضافة منطق إرسال البيانات إلى الخادم
   };
+
+   const copyNumber = (number) => {
+     navigator.clipboard.writeText(number);
+     alert("تم نسخ الرقم: " + number);
+   };
 
   return (
     <div dir="rtl">
-      <LazyLoad
-        height={100}
-        offset={100}
-        once
-        placeholder={
-          <div>
-            <Loader />
-          </div>
-        }
-      >
+      <LazyLoad height={100} offset={100} once placeholder={<Loader />}>
         <nav className="nav" data-aos="fade-down">
           <div
             className="nav-logo navv"
@@ -118,40 +124,72 @@ const Payment = () => {
       <LazyLoad height={100} offset={100} once>
         <div className="payment-container">
           <div className="payment-content">
-            <h1>الدفع</h1>
+            <h1 className="payment-title">الدفع</h1>
             <form className="payment-form" onSubmit={handleSubmit}>
-              <label>
-                اختر طريقة الدفع:
-                <select
-                  name="paymentMethod"
-                  value={formData.paymentMethod}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="" disabled>
-                    اختر طريقة الدفع
-                  </option>
-                  {paymentMethods.map((method) => (
-                    <option key={method} value={method}>
-                      {method}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <div className="custom-select" onClick={() => setIsOpen(!isOpen)}>
+                <div className="selected-option">
+                  {formData.paymentMethod ? (
+                    <>
+                      <img
+                        src={
+                          paymentMethods.find(
+                            (method) => method.name === formData.paymentMethod
+                          ).image
+                        }
+                        alt={formData.paymentMethod}
+                      />
+                      <span>{formData.paymentMethod}</span>
+                    </>
+                  ) : (
+                    <span>اختر طريقة الدفع</span>
+                  )}
+                </div>
+                {isOpen && (
+                  <div className="options">
+                    {paymentMethods.map((method) => (
+                      <div
+                        key={method.name}
+                        className="option"
+                        onClick={() => handleSelect(method.name)}
+                      >
+                        <img
+                          className="option-image"
+                          src={method.image}
+                          alt={method.name}
+                        />
+                        <span>{method.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {formData.paymentMethod && (
                 <div className="payment-instructions">
                   <p>
-                    قم بالتحويل على الرقم:{" "}
-                    <strong>{paymentNumbers[formData.paymentMethod]}</strong>
+                    قم بالتحويل على الرقم :
+                    <strong className="payment-number">
+                      {paymentNumbers[formData.paymentMethod]}{" "}
+                      <span
+                        className="copy-number"
+                        onClick={() =>
+                          copyNumber(paymentNumbers[formData.paymentMethod])
+                        }
+                      >
+                      
+                        <Copy size={20} />
+                      </span>
+                    </strong>
                   </p>
                   <p>
-                    ثم ارفع سكرين شوت للتحويل هنا، وفي خلال 24 ساعة سيرسل لك
-                    المستر على الواتساب بأن تم تفعيل حسابك ويتحدث معك مباشرة.
+                    ثم ارسل لقطة الشاشة (سكرين شوت) للتحويل هنا، وفي خلال 24
+                    ساعة سيرسل لك المستر على الواتساب بأن تم تفعيل حسابك ويتحدث
+                    معك مباشرة.
                   </p>
-                  <label>
-                    رفع سكرين شوت التحويل:
+                  <label className="payment-screenshot">
+                    ارسل لقطة الشاشة للتحويل الخاص بك :
                     <input
+                      className="payment-screenshot-input"
                       type="file"
                       name="paymentScreenshot"
                       onChange={handleChange}
@@ -169,16 +207,7 @@ const Payment = () => {
         </div>
       </LazyLoad>
 
-      <LazyLoad
-        height={200}
-        offset={100}
-        once
-        placeholder={
-          <div>
-            <Loader />
-          </div>
-        }
-      >
+      <LazyLoad height={200} offset={100} once placeholder={<Loader />}>
         <footer className="footerr">
           <div className="footer-container">
             <div className="footer-section">
@@ -259,7 +288,7 @@ const Payment = () => {
           <div className="footer-bottom">
             <p className="footer-text">
               © {new Date().getFullYear()} - منصة مستر محمود توكل - جميع الحقوق
-              - محفوظة
+              محفوظة
             </p>
             <p>
               <a
